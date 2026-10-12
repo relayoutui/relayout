@@ -10,6 +10,7 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    environment: npm   # waits for approval; holds NPM_TOKEN
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
