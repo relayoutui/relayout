@@ -9,7 +9,7 @@ on:
 
 jobs:
   publish:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     environment: release  # v* tags only; npm trusts only this environment
     permissions:
       contents: read
