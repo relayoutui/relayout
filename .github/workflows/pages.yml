@@ -23,6 +23,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - run: sed -i "s/__VERSION__/v${GITHUB_REF_NAME#v}/g" docs/assets/css/relayout.css
+
       - uses: actions/configure-pages@v5
 
       - uses: actions/upload-pages-artifact@v3
