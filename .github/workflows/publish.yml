@@ -10,7 +10,10 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
-    environment: release
+    environment: release  # v* tags only; npm trusts only this environment
+    permissions:
+      contents: read
+      id-token: write   # npm trusted publishing
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
@@ -18,12 +21,10 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '24'
           registry-url: 'https://registry.npmjs.org'
 
       - run: rm -f package-lock.json && npm install
       - run: npm version ${GITHUB_REF_NAME#v} --no-git-tag-version
       - run: sed -i "s/__VERSION__/v${GITHUB_REF_NAME#v}/g" src/scss/relayout.scss
-      - run: npm publish --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - run: npm stage publish --access public
