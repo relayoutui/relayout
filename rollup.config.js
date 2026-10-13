@@ -39,7 +39,7 @@ export default {
     banner: `/*!
  * Relayout - Responsive layout system
  * Copyright (c) 2025 Lucian Pacurar
- * MIT License: https://github.com/codesensedev/relayout/blob/main/LICENSE 
+ * MIT License: https://github.com/relayoutui/relayout/blob/main/LICENSE 
  */`
   },
   plugins: [

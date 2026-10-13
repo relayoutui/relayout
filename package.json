@@ -1,5 +1,5 @@
 {
-  "name": "@codesense/relayout",
+  "name": "@relayoutui/relayout",
   "version": "0.0.0",
   "type": "module",
   "description": "Responsive layout system",
@@ -26,9 +26,10 @@
     "build:css": "sass src/scss/relayout.scss dist/css/relayout.css --style=compressed --no-source-map",
     "build:js": "rollup -c"
   },
+  "homepage": "https://relayoutui.github.io/relayout/",
   "repository": {
     "type": "git",
-    "url": "https://github.com/codesensedev/relayout"
+    "url": "https://github.com/relayoutui/relayout"
   },
   "devDependencies": {
     "@rollup/plugin-node-resolve": "^16.0.3",
