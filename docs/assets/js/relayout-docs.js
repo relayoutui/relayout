@@ -3353,7 +3353,7 @@ const $n=Qe(class extends Xe{constructor(){super(...arguments),this.key=q}render
                         library="fab" 
                         name="npm"
                         label="NPM"
-                        href="https://www.npmjs.com/package/@codesense/relayout"
+                        href="https://www.npmjs.com/package/@relayoutui/relayout"
                         target="_blank"
                         style="font-size: 1.5rem;"
                     ></sl-icon-button>
@@ -3361,7 +3361,7 @@ const $n=Qe(class extends Xe{constructor(){super(...arguments),this.key=q}render
                         library="fas" 
                         name="cube"
                         label="jsdelivr"
-                        href="https://www.jsdelivr.com/package/npm/@codesense/relayout"
+                        href="https://www.jsdelivr.com/package/npm/@relayoutui/relayout"
                         target="_blank"
                         style="font-size: 1.25rem;"
                     ></sl-icon-button>
@@ -3369,7 +3369,7 @@ const $n=Qe(class extends Xe{constructor(){super(...arguments),this.key=q}render
                         library="fab" 
                         name="github"
                         label="Code"
-                        href="https://github.com/codesensedev/relayout"
+                        href="https://github.com/relayoutui/relayout"
                         style="font-size: 1.25rem;"
                         target="_blank"
                     ></sl-icon-button>

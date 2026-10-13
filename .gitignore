@@ -1,3 +1,5 @@
 .npmrc
+.vscode
 dist/
 node_modules/
+var/
