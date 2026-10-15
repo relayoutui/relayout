@@ -12,11 +12,14 @@ function minifyLitCSS() {
         // Regex matches `css` preceded by a word boundary or property access
         const transformed = code.replace(/(\bcss)\s*`([\s\S]*?)`/g, (match, tag, css) => {
           const minified = css
+            .replace(/\/\*[\s\S]*?\*\//g, '')   // Remove comments
             .replace(/\s*\n\s*/g, ' ')           // Remove newlines and extra spaces
-            .replace(/\s*([{}:;,])\s*/g, '$1')   // Remove spaces around punctuation
+            .replace(/\s*([{};,])\s*/g, '$1')    // Remove spaces around punctuation, except before ':' (see below)
             .replace(/:\s+/g, ':')               // Remove spaces after colons
             .replace(/\s+/g, ' ')                // Collapse multiple spaces
             .trim();
+          // A space before ':' is kept: in ':host([x]) ::slotted(y)' it is the descendant combinator, and
+          // without it the selector becomes ':host([x])::slotted(y)', which never matches.
           
           return `${tag}\`${minified}\``;
         });
