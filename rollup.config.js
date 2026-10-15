@@ -41,7 +41,7 @@ export default {
     sourcemap: true,
     banner: `/*!
  * Relayout - Responsive layout system
- * Copyright (c) 2025 Lucian Pacurar
+ * Copyright (c) 2025 Codesense LLC
  * MIT License: https://github.com/relayoutui/relayout/blob/main/LICENSE 
  */`
   },
