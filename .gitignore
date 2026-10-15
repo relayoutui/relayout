@@ -3,3 +3,6 @@
 dist/
 node_modules/
 var/
+
+# The website, relayoutui/pages, is its own repo, cloned into pages/
+pages/
