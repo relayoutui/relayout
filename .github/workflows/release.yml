@@ -1,0 +1,93 @@
+name: Release
+run-name: "${{ inputs.dry_run && 'Dry run: release' || 'Release' }}${{ inputs.version && format(' {0}', inputs.version) || '' }}"
+
+# The Release button: Actions → Release → Run workflow, from main. It checks the next release, tags
+# main's head with it and starts publish.yml on the tag, which stages the version on npm. You approve
+# it on npmjs.com (Staged packages) with 2FA, and publish.yml's last job publishes the GitHub release
+# once npm serves the version. The steps are in .github/scripts/release.mjs.
+#
+# A tag pushed with GITHUB_TOKEN starts no workflow. A workflow_dispatch is the exception, which is
+# why the last step starts publish.yml itself, on the tag: the release environment, which npm's
+# trusted publisher names, admits v* tags only.
+#
+# Two runs at once can't make the same release: GitHub refuses a tag that already exists.
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version, e.g. v0.3.0. Empty: the next patch"
+        required: false
+        default: ""
+      dry_run:
+        description: "Dry run: show what would be released, tag nothing"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write   # push the tag
+  actions: write    # start publish.yml on it
+
+jobs:
+  release:
+    name: Tag the release
+    runs-on: ubuntu-24.04
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+    steps:
+      # A branch's copy of this workflow and the script may differ from main's, and the tag goes on main
+      - name: Check this runs from main
+        if: ${{ github.ref != 'refs/heads/main' }}
+        run: |
+          echo "::error::Run this from main, not ${GITHUB_REF#refs/heads/}."
+          exit 1
+
+      # Full history and the tags: the checks compare with the last release
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '24'
+
+      # The annotated tag records who pressed the button
+      - name: Check and tag
+        id: tag
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ inputs.version }}
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: |
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "${GITHUB_ACTOR_ID}+${GITHUB_ACTOR}@users.noreply.github.com"
+          set --
+          if [ "$DRY_RUN" = "true" ]; then set -- --dry-run; fi
+          node .github/scripts/release.mjs tag "$VERSION" "$@" 2>&1 | tee "$RUNNER_TEMP/release.txt"
+
+      - name: Summary
+        if: ${{ always() }}
+        run: |
+          [ -f "$RUNNER_TEMP/release.txt" ] || exit 0
+          {
+            echo '```text'
+            cat "$RUNNER_TEMP/release.txt"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Start publish.yml on the tag
+        if: ${{ steps.tag.outputs.tag != '' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.tag.outputs.tag }}
+        run: |
+          if ! gh workflow run publish.yml --repo "$GITHUB_REPOSITORY" --ref "$TAG"; then
+            echo "::error::$TAG is pushed, but publish.yml didn't start. Start it by hand: Actions → Publish to npm → Run workflow → Use workflow from: $TAG."
+            exit 1
+          fi
+          {
+            echo "Started publish.yml on $TAG: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/workflows/publish.yml"
+            echo ""
+            echo "Next: approve the staged version on npmjs.com (Staged packages). The GitHub release follows once npm serves it."
+          } >> "$GITHUB_STEP_SUMMARY"
