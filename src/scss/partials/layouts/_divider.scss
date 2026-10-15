@@ -17,9 +17,11 @@
 
 .rl-divider {
     &.vertical {
-        /* vertical */
+        /* vertical: a height of 100% would stop align-self: stretch, so a row with no height gave a dot;
+           min-height covers a parent whose height is set but that isn't a flex container */
         width: 0;
-        height: 100%;
+        height: auto;
+        min-height: 100%;
         border-left: var(--rl-border-default);
     }
 }

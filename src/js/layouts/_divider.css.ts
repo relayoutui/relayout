@@ -16,9 +16,10 @@ export const _dividerCss = css`
     }
 
     :host([vertical]) {
-        /* vertical */
+        /* vertical, see the note in the SCSS */
         width: 0;
-        height: 100%;
+        height: auto;
+        min-height: 100%;
         border-top: none;
         border-left: var(--rl-border-default);
     }
