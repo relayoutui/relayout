@@ -28,3 +28,31 @@ jobs:
       - run: npm version ${GITHUB_REF_NAME#v} --no-git-tag-version
       - run: sed -i "s/__VERSION__/v${GITHUB_REF_NAME#v}/g" src/scss/relayout.scss
       - run: npm stage publish --access public
+
+  # You approve the staged version on npmjs.com, with 2FA, and npm then serves it. This job waits for
+  # that, up to an hour, and publishes the GitHub release, unless release-next has already. Approved
+  # later: re-run this job.
+  github-release:
+    name: GitHub release
+    needs: publish
+    if: ${{ startsWith(github.ref, 'refs/tags/v') }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 70
+    permissions:
+      contents: write   # publish the release
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+    steps:
+      # The tags: the notes run from the last release
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '24'
+
+      - name: Wait for npm, then publish the GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node .github/scripts/release.mjs finish "$GITHUB_REF_NAME"
