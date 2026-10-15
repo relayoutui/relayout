@@ -15,20 +15,22 @@ The width modifier comes in six sizes, each setting a `max-width` value and cent
 - **`rl-width-xl`**: Maximum width of `64rem` (1024px) - wide content areas, dashboards
 - **`rl-width-2xl`**: Maximum width of `80rem` (1280px) - maximum width for large layouts
 
-### Width with stack
+`rl-width-fill` isn't one of these limits: it makes an element take the remaining width in a row. See [Height, fill and scroll](#/content/mods/height).
+
+### Width with column
 
 Width modifiers help constrain vertical content for better readability.
 
 ```preview
-<div class="rl-stack rl-gap-m rl-padding-l rl-border rl-radius-m rl-width-m">
-    <div>This is a stack with medium width constraint</div>
+<div class="rl-column rl-gap-m rl-padding-l rl-border rl-radius-m rl-width-m">
+    <div>This is a column with medium width constraint</div>
     <div>Perfect for text content and articles</div>
     <div>Automatically centered horizontally</div>
 </div>
 ```
 
 ```preview
-<div class="rl-stack rl-gap-m">
+<div class="rl-column rl-gap-m">
     <div class="rl-border rl-padding-m rl-radius-m rl-width-xs">
         <div>Extra small width</div>
         <div>Narrow column</div>
@@ -40,12 +42,12 @@ Width modifiers help constrain vertical content for better readability.
 </div>
 ```
 
-### Width with cluster
+### Width with row
 
-Width modifiers constrain the wrapping behavior of clusters by limiting the available space.
+Width modifiers constrain the wrapping behavior of rows by limiting the available space.
 
 ```preview
-<div class="rl-cluster rl-gap-m rl-padding-l rl-border rl-radius-m rl-width-s">
+<div class="rl-row rl-gap-m rl-padding-l rl-border rl-radius-m rl-width-s">
     <div>Tag 1</div>
     <div>Tag 2</div>
     <div>Tag 3</div>
@@ -56,68 +58,20 @@ Width modifiers constrain the wrapping behavior of clusters by limiting the avai
 ```
 
 ```preview
-<div class="rl-stack rl-gap-m">
-    <div class="rl-cluster rl-gap-s rl-padding-m rl-border rl-radius-m rl-width-xs">
+<div class="rl-column rl-gap-m">
+    <div class="rl-row rl-gap-s rl-padding-m rl-border rl-radius-m rl-width-xs">
         <div>Narrow</div>
-        <div>Cluster</div>
+        <div>Row</div>
         <div>Wraps</div>
         <div>Early</div>
     </div>
-    <div class="rl-cluster rl-gap-s rl-padding-m rl-border rl-radius-m rl-width-xl">
+    <div class="rl-row rl-gap-s rl-padding-m rl-border rl-radius-m rl-width-xl">
         <div>Wide</div>
-        <div>Cluster</div>
+        <div>Row</div>
         <div>More</div>
         <div>Space</div>
         <div>To</div>
         <div>Flow</div>
-    </div>
-</div>
-```
-
-### Width with flank
-
-Width modifiers help control the overall span of flank layouts.
-
-```preview
-<div class="rl-flank rl-gap-m rl-padding-l rl-border rl-radius-m rl-width-l">
-    <div>Logo</div>
-    <div>Navigation expands within constrained width</div>
-</div>
-```
-
-```preview
-<div class="rl-stack rl-gap-m">
-    <div class="rl-flank rl-gap-m rl-padding-m rl-border rl-radius-m rl-width-s">
-        <div>Nav</div>
-        <div>Small width</div>
-    </div>
-    <div class="rl-flank rl-gap-m rl-padding-m rl-border rl-radius-m rl-width-xl">
-        <div>Brand</div>
-        <div>Extra large width for navigation</div>
-    </div>
-</div>
-```
-
-### Width with split
-
-Width modifiers control how far apart split elements can be positioned.
-
-```preview
-<div class="rl-split rl-gap-m rl-padding-l rl-border rl-radius-m rl-width-m">
-    <div>Left</div>
-    <div>Right</div>
-</div>
-```
-
-```preview
-<div class="rl-stack rl-gap-m">
-    <div class="rl-split rl-gap-m rl-padding-m rl-border rl-radius-m rl-width-xs">
-        <div>A</div>
-        <div>B</div>
-    </div>
-    <div class="rl-split rl-gap-m rl-padding-m rl-border rl-radius-m rl-width-2xl">
-        <div>Start</div>
-        <div>End</div>
     </div>
 </div>
 ```
@@ -138,7 +92,7 @@ Width modifiers constrain the overall grid container, affecting how many columns
 ```
 
 ```preview
-<div class="rl-stack rl-gap-m">
+<div class="rl-column rl-gap-m">
     <div class="rl-grid rl-gap-m rl-padding-m rl-border rl-radius-m rl-width-s">
         <div>A</div>
         <div>B</div>
@@ -167,7 +121,7 @@ Width modifiers can constrain frame containers while maintaining centering behav
 ```
 
 ```preview
-<div class="rl-stack rl-gap-m">
+<div class="rl-column rl-gap-m">
     <div class="rl-frame rl-padding-m rl-border rl-radius-m rl-width-xs" style="height: 10em;">
         <div>Small frame</div>
     </div>
@@ -182,7 +136,7 @@ Width modifiers can constrain frame containers while maintaining centering behav
 All width sizes shown together for easy comparison:
 
 ```preview
-<div class="rl-stack rl-gap-m">
+<div class="rl-column rl-gap-m">
     <div class="rl-border rl-padding-m rl-radius-m rl-width-xs">
         <div>xs (20rem / 320px)</div>
     </div>
@@ -209,10 +163,10 @@ All width sizes shown together for easy comparison:
 Demonstrate visual hierarchy through width variation:
 
 ```preview
-<div class="rl-stack rl-gap-l rl-padding-xl rl-border rl-radius-m rl-width-2xl">
-    <div class="rl-stack rl-gap-m rl-padding-l rl-border rl-radius-m rl-width-xl">
+<div class="rl-column rl-gap-l rl-padding-xl rl-border rl-radius-m rl-width-2xl">
+    <div class="rl-column rl-gap-m rl-padding-l rl-border rl-radius-m rl-width-xl">
         <div>Extra large container (xl)</div>
-        <div class="rl-stack rl-gap-m rl-padding-m rl-border rl-radius-m rl-width-l">
+        <div class="rl-column rl-gap-m rl-padding-m rl-border rl-radius-m rl-width-l">
             <div>Large container (l)</div>
             <div class="rl-padding-m rl-border rl-radius-m rl-width-m">
                 Medium container (m)
@@ -223,11 +177,11 @@ Demonstrate visual hierarchy through width variation:
 ```
 
 ```preview
-<div class="rl-stack rl-gap-m">
+<div class="rl-column rl-gap-m">
     <div class="rl-padding-m rl-border rl-radius-m rl-width-2xl">
         Full width header (2xl)
     </div>
-    <div class="rl-stack rl-gap-m rl-width-l">
+    <div class="rl-column rl-gap-m rl-width-l">
         <div class="rl-padding-m rl-border rl-radius-m">
             Content area (l)
         </div>
@@ -243,16 +197,16 @@ Demonstrate visual hierarchy through width variation:
 Width modifiers create focused, readable layouts:
 
 ```preview
-<div class="rl-stack rl-gap-l">
-    <div class="rl-flank rl-gap-m rl-padding-m rl-border rl-radius-m rl-width-2xl">
+<div class="rl-column rl-gap-l">
+    <div class="rl-row rl-gap-m rl-padding-m rl-border rl-radius-m rl-width-2xl">
         <div>Logo</div>
-        <div class="rl-cluster rl-gap-m">
+        <div class="rl-row rl-gap-m rl-width-fill">
             <div>Home</div>
             <div>Products</div>
             <div>About</div>
         </div>
     </div>
-    <div class="rl-stack rl-gap-m rl-padding-l rl-border rl-radius-m rl-width-l">
+    <div class="rl-column rl-gap-m rl-padding-l rl-border rl-radius-m rl-width-l">
         <div>Main Article Content</div>
         <div>Constrained to large width for readability</div>
         <div>Perfect for blog posts and documentation</div>
@@ -270,16 +224,16 @@ Width modifiers create focused, readable layouts:
 Width modifiers help create focused, scannable forms:
 
 ```preview
-<div class="rl-stack rl-gap-l rl-padding-l rl-border rl-radius-m rl-width-s">
-    <div class="rl-stack rl-gap-s">
+<div class="rl-column rl-gap-l rl-padding-l rl-border rl-radius-m rl-width-s">
+    <div class="rl-column rl-gap-s">
         <div>Email Address</div>
         <div class="rl-border rl-padding-m rl-radius-s">input field</div>
     </div>
-    <div class="rl-stack rl-gap-s">
+    <div class="rl-column rl-gap-s">
         <div>Password</div>
         <div class="rl-border rl-padding-m rl-radius-s">input field</div>
     </div>
-    <div class="rl-split rl-gap-m">
+    <div class="rl-row rl-justify-between rl-gap-m">
         <div class="rl-border rl-padding-m rl-radius-m">Cancel</div>
         <div class="rl-border rl-padding-m rl-radius-m">Submit</div>
     </div>
@@ -291,25 +245,25 @@ Width modifiers help create focused, scannable forms:
 Width modifiers create visual structure for cards and content blocks:
 
 ```preview
-<div class="rl-stack rl-gap-m">
-    <div class="rl-stack rl-gap-m rl-padding-l rl-border rl-radius-m rl-width-m">
+<div class="rl-column rl-gap-m">
+    <div class="rl-column rl-gap-m rl-padding-l rl-border rl-radius-m rl-width-m">
         <div style="font-weight: bold;">Featured Article</div>
         <div>This card uses medium width for article previews</div>
-        <div class="rl-cluster rl-gap-s">
+        <div class="rl-row rl-gap-s">
             <div class="rl-border rl-padding-s rl-radius-s">Read More</div>
             <div class="rl-border rl-padding-s rl-radius-s">Share</div>
         </div>
     </div>
     <div class="rl-grid rl-gap-m rl-width-xl">
-        <div class="rl-stack rl-gap-s rl-padding-m rl-border rl-radius-m">
+        <div class="rl-column rl-gap-s rl-padding-m rl-border rl-radius-m">
             <div>Card 1</div>
             <div>Preview text</div>
         </div>
-        <div class="rl-stack rl-gap-s rl-padding-m rl-border rl-radius-m">
+        <div class="rl-column rl-gap-s rl-padding-m rl-border rl-radius-m">
             <div>Card 2</div>
             <div>Preview text</div>
         </div>
-        <div class="rl-stack rl-gap-s rl-padding-m rl-border rl-radius-m">
+        <div class="rl-column rl-gap-s rl-padding-m rl-border rl-radius-m">
             <div>Card 3</div>
             <div>Preview text</div>
         </div>
@@ -322,27 +276,27 @@ Width modifiers create visual structure for cards and content blocks:
 Width modifiers organize complex dashboard layouts:
 
 ```preview
-<div class="rl-stack rl-gap-m">
-    <div class="rl-flank rl-gap-m rl-padding-m rl-border rl-radius-m rl-width-2xl">
+<div class="rl-column rl-gap-m">
+    <div class="rl-row rl-gap-m rl-padding-m rl-border rl-radius-m rl-width-2xl">
         <div>Dashboard</div>
-        <div class="rl-cluster rl-gap-m">
+        <div class="rl-row rl-gap-m rl-width-fill">
             <div>Settings</div>
             <div>Profile</div>
             <div>Logout</div>
         </div>
     </div>
-    <div class="rl-stack rl-gap-m rl-width-xl">
-        <div class="rl-split rl-gap-m">
-            <div class="rl-stack rl-gap-s rl-padding-m rl-border rl-radius-m" style="flex: 1;">
+    <div class="rl-column rl-gap-m rl-width-xl">
+        <div class="rl-row rl-gap-m">
+            <div class="rl-column rl-gap-s rl-padding-m rl-border rl-radius-m rl-width-fill">
                 <div>Total Users</div>
                 <div>1,234</div>
             </div>
-            <div class="rl-stack rl-gap-s rl-padding-m rl-border rl-radius-m" style="flex: 1;">
+            <div class="rl-column rl-gap-s rl-padding-m rl-border rl-radius-m rl-width-fill">
                 <div>Revenue</div>
                 <div>$56,789</div>
             </div>
         </div>
-        <div class="rl-stack rl-gap-s rl-padding-l rl-border rl-radius-m">
+        <div class="rl-column rl-gap-s rl-padding-l rl-border rl-radius-m">
             <div>Recent Activity</div>
             <div class="rl-divider"></div>
             <div>Activity item 1</div>

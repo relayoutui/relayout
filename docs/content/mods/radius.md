@@ -14,14 +14,14 @@ Apply class `rl-radius-*` to a layout container or element with a border, where 
 - **`rl-radius-xl`** - Extra large radius (1.5rem / 24px)
 - **`rl-radius-2xl`** - Double extra large radius (2.25rem / 36px)
 
-### Radius with stack
+### Radius with column
 
-Radius on stacks creates rounded corners for vertical containers, useful for cards, panels, and forms.
+Radius on columns creates rounded corners for vertical containers, useful for cards, panels, and forms.
 
 #### `rl-radius-s`
 
 ```preview
-<div class="rl-stack rl-border rl-radius-s rl-padding-m rl-gap-s">
+<div class="rl-column rl-border rl-radius-s rl-padding-m rl-gap-s">
     <div>Item 1</div>
     <div>Item 2</div>
     <div>Item 3</div>
@@ -31,7 +31,7 @@ Radius on stacks creates rounded corners for vertical containers, useful for car
 #### `rl-radius-m`
 
 ```preview
-<div class="rl-stack rl-border rl-radius-m rl-padding-m rl-gap-s">
+<div class="rl-column rl-border rl-radius-m rl-padding-m rl-gap-s">
     <div>Item 1</div>
     <div>Item 2</div>
     <div>Item 3</div>
@@ -41,7 +41,7 @@ Radius on stacks creates rounded corners for vertical containers, useful for car
 #### `rl-radius-l`
 
 ```preview
-<div class="rl-stack rl-border rl-radius-l rl-padding-m rl-gap-s">
+<div class="rl-column rl-border rl-radius-l rl-padding-m rl-gap-s">
     <div>Item 1</div>
     <div>Item 2</div>
     <div>Item 3</div>
@@ -51,7 +51,7 @@ Radius on stacks creates rounded corners for vertical containers, useful for car
 #### `rl-radius-xl`
 
 ```preview
-<div class="rl-stack rl-border rl-radius-xl rl-padding-l rl-gap-s">
+<div class="rl-column rl-border rl-radius-xl rl-padding-l rl-gap-s">
     <div>Item 1</div>
     <div>Item 2</div>
     <div>Item 3</div>
@@ -61,19 +61,19 @@ Radius on stacks creates rounded corners for vertical containers, useful for car
 #### `rl-radius-2xl`
 
 ```preview
-<div class="rl-stack rl-border rl-radius-2xl rl-padding-l rl-gap-s">
+<div class="rl-column rl-border rl-radius-2xl rl-padding-l rl-gap-s">
     <div>Item 1</div>
     <div>Item 2</div>
     <div>Item 3</div>
 </div>
 ```
 
-### Radius with cluster
+### Radius with row
 
-Rounded corners on cluster layouts create softer, more approachable groups of tags or buttons.
+Rounded corners on row layouts create softer, more approachable groups of tags or buttons.
 
 ```preview
-<div class="rl-cluster rl-border rl-radius-s rl-gap-m rl-padding-m">
+<div class="rl-row rl-border rl-radius-s rl-gap-m rl-padding-m">
     <div>Tag 1</div>
     <div>Tag 2</div>
     <div>Tag 3</div>
@@ -82,7 +82,7 @@ Rounded corners on cluster layouts create softer, more approachable groups of ta
 ```
 
 ```preview
-<div class="rl-cluster rl-border rl-radius-m rl-gap-m rl-padding-l">
+<div class="rl-row rl-border rl-radius-m rl-gap-m rl-padding-l">
     <div>Button A</div>
     <div>Button B</div>
     <div>Button C</div>
@@ -90,64 +90,12 @@ Rounded corners on cluster layouts create softer, more approachable groups of ta
 ```
 
 ```preview
-<div class="rl-cluster rl-border rl-radius-xl rl-gap-s rl-padding-l">
+<div class="rl-row rl-border rl-radius-xl rl-gap-s rl-padding-l">
     <div>Badge 1</div>
     <div>Badge 2</div>
     <div>Badge 3</div>
     <div>Badge 4</div>
     <div>Badge 5</div>
-</div>
-```
-
-### Radius with flank
-
-Rounded corners on flanks soften navigation bars and toolbars.
-
-```preview
-<div class="rl-flank rl-border rl-radius-s rl-gap-m rl-padding-m">
-    <div>Logo</div>
-    <div>Navigation Menu</div>
-</div>
-```
-
-```preview
-<div class="rl-flank rl-border rl-radius-m rl-gap-l rl-padding-l">
-    <div>Brand</div>
-    <div>Content Area</div>
-</div>
-```
-
-```preview
-<div class="rl-flank rl-border rl-radius-l rl-gap-m rl-padding-l">
-    <div>Left Item</div>
-    <div>Main Content</div>
-</div>
-```
-
-### Radius with split
-
-Rounded corners on splits create polished layouts for distributed content.
-
-```preview
-<div class="rl-split rl-border rl-radius-s rl-gap-m rl-padding-m">
-    <div>Left</div>
-    <div>Center</div>
-    <div>Right</div>
-</div>
-```
-
-```preview
-<div class="rl-split rl-border rl-radius-m rl-gap-m rl-padding-l">
-    <div>Start</div>
-    <div>End</div>
-</div>
-```
-
-```preview
-<div class="rl-split rl-border rl-radius-xl rl-gap-m rl-padding-l">
-    <div>Item A</div>
-    <div>Item B</div>
-    <div>Item C</div>
 </div>
 ```
 
@@ -214,7 +162,7 @@ Rounded corners on frames create polished presentation areas for centered conten
 Radius can be applied to individual items within containers for varied visual effects.
 
 ```preview
-<div class="rl-stack rl-gap-m">
+<div class="rl-column rl-gap-m">
     <div class="rl-border rl-radius-s rl-padding-m">Small radius item</div>
     <div class="rl-border rl-radius-m rl-padding-m">Medium radius item</div>
     <div class="rl-border rl-radius-l rl-padding-m">Large radius item</div>
@@ -231,7 +179,7 @@ Radius can be applied to individual items within containers for varied visual ef
 ```
 
 ```preview
-<div class="rl-cluster rl-gap-m">
+<div class="rl-row rl-gap-m">
     <div class="rl-border rl-radius-s rl-padding-s">Tag 1</div>
     <div class="rl-border rl-radius-s rl-padding-s">Tag 2</div>
     <div class="rl-border rl-radius-s rl-padding-s">Tag 3</div>
@@ -244,7 +192,7 @@ Radius can be applied to individual items within containers for varied visual ef
 Visual comparison of all radius sizes on the same layout type:
 
 ```preview
-<div class="rl-stack rl-gap-m">
+<div class="rl-column rl-gap-m">
     <div class="rl-border rl-radius-0 rl-padding-m">
         No radius (0) - Square corners
     </div>
@@ -274,9 +222,9 @@ Visual comparison of all radius sizes on the same layout type:
 Different radius values at different nesting levels create visual hierarchy and depth.
 
 ```preview
-<div class="rl-stack rl-border rl-radius-l rl-gap-m rl-padding-l">
+<div class="rl-column rl-border rl-radius-l rl-gap-m rl-padding-l">
     <div>Outer container with large radius</div>
-    <div class="rl-stack rl-border rl-radius-s rl-gap-s rl-padding-m">
+    <div class="rl-column rl-border rl-radius-s rl-gap-s rl-padding-m">
         <div>Nested container with small radius</div>
         <div>Creates visual hierarchy</div>
     </div>
@@ -284,13 +232,13 @@ Different radius values at different nesting levels create visual hierarchy and 
 ```
 
 ```preview
-<div class="rl-stack rl-border rl-radius-xl rl-gap-l rl-padding-xl">
-    <div class="rl-cluster rl-border rl-radius-m rl-gap-m rl-padding-m">
+<div class="rl-column rl-border rl-radius-xl rl-gap-l rl-padding-xl">
+    <div class="rl-row rl-border rl-radius-m rl-gap-m rl-padding-m">
         <div>Tag A</div>
         <div>Tag B</div>
         <div>Tag C</div>
     </div>
-    <div class="rl-split rl-border rl-radius-m rl-gap-m rl-padding-m">
+    <div class="rl-row rl-justify-between rl-border rl-radius-m rl-gap-m rl-padding-m">
         <div>Left</div>
         <div>Right</div>
     </div>
@@ -302,16 +250,16 @@ Different radius values at different nesting levels create visual hierarchy and 
 Radius combined with other modifiers creates polished UI components.
 
 ```preview
-<div class="rl-stack rl-border rl-radius-m">
+<div class="rl-column rl-border rl-radius-m">
     <div class="rl-padding-m">Header Section</div>
     <div class="rl-divider"></div>
-    <div class="rl-stack rl-gap-s rl-padding-m">
+    <div class="rl-column rl-gap-s rl-padding-m">
         <div>Content Line 1</div>
         <div>Content Line 2</div>
         <div>Content Line 3</div>
     </div>
     <div class="rl-divider"></div>
-    <div class="rl-split rl-gap-m rl-padding-m">
+    <div class="rl-row rl-justify-between rl-gap-m rl-padding-m">
         <div>Cancel</div>
         <div>Save</div>
     </div>
@@ -319,10 +267,10 @@ Radius combined with other modifiers creates polished UI components.
 ```
 
 ```preview
-<div class="rl-stack rl-gap-m">
-    <div class="rl-flank rl-border rl-radius-s rl-gap-m rl-padding-m">
+<div class="rl-column rl-gap-m">
+    <div class="rl-row rl-border rl-radius-s rl-gap-m rl-padding-m">
         <div>Navigation</div>
-        <div>Actions</div>
+        <div class="rl-width-fill">Actions</div>
     </div>
     <div class="rl-grid rl-border rl-radius-m rl-gap-m rl-padding-l">
         <div>Widget 1</div>
@@ -339,26 +287,26 @@ Radius is essential for creating modern card-based designs.
 
 ```preview
 <div class="rl-grid rl-gap-m">
-    <div class="rl-stack rl-border rl-radius-m rl-padding-m rl-gap-s">
+    <div class="rl-column rl-border rl-radius-m rl-padding-m rl-gap-s">
         <h3>Card Title 1</h3>
         <p>Card content goes here.</p>
-        <div class="rl-cluster rl-gap-s">
+        <div class="rl-row rl-gap-s">
             <div>Tag</div>
             <div>Label</div>
         </div>
     </div>
-    <div class="rl-stack rl-border rl-radius-m rl-padding-m rl-gap-s">
+    <div class="rl-column rl-border rl-radius-m rl-padding-m rl-gap-s">
         <h3>Card Title 2</h3>
         <p>Card content goes here.</p>
-        <div class="rl-cluster rl-gap-s">
+        <div class="rl-row rl-gap-s">
             <div>Tag</div>
             <div>Label</div>
         </div>
     </div>
-    <div class="rl-stack rl-border rl-radius-m rl-padding-m rl-gap-s">
+    <div class="rl-column rl-border rl-radius-m rl-padding-m rl-gap-s">
         <h3>Card Title 3</h3>
         <p>Card content goes here.</p>
-        <div class="rl-cluster rl-gap-s">
+        <div class="rl-row rl-gap-s">
             <div>Tag</div>
             <div>Label</div>
         </div>
@@ -371,7 +319,7 @@ Radius is essential for creating modern card-based designs.
 Combining varying radius values creates distinct visual styles.
 
 ```preview
-<div class="rl-stack rl-gap-m">
+<div class="rl-column rl-gap-m">
     <div class="rl-border rl-radius-s rl-padding-m">Subtle rounded corners</div>
     <div class="rl-border rl-radius-l rl-padding-m">Prominent rounded corners</div>
     <div class="rl-border rl-radius-2xl rl-padding-m">Very rounded corners</div>
@@ -379,7 +327,7 @@ Combining varying radius values creates distinct visual styles.
 ```
 
 ```preview
-<div class="rl-cluster rl-gap-m">
+<div class="rl-row rl-gap-m">
     <div class="rl-border rl-radius-s rl-padding-s">Tag</div>
     <div class="rl-border rl-radius-m rl-padding-s">Chip</div>
     <div class="rl-border rl-radius-xl rl-padding-s">Pill</div>
@@ -392,7 +340,7 @@ Combining varying radius values creates distinct visual styles.
 Rounded corners soften navigation components and menus.
 
 ```preview
-<div class="rl-stack rl-border rl-radius-m">
+<div class="rl-column rl-border rl-radius-m">
     <div class="rl-padding-m">Dashboard</div>
     <div class="rl-divider"></div>
     <div class="rl-padding-m">Projects</div>
@@ -404,9 +352,9 @@ Rounded corners soften navigation components and menus.
 ```
 
 ```preview
-<div class="rl-flank rl-border rl-radius-l rl-gap-m rl-padding-m">
+<div class="rl-row rl-border rl-radius-l rl-gap-m rl-padding-m">
     <div>Logo</div>
-    <div class="rl-cluster rl-gap-m">
+    <div class="rl-row rl-gap-m rl-width-fill">
         <div>Home</div>
         <div>Products</div>
         <div>About</div>
@@ -420,18 +368,18 @@ Rounded corners soften navigation components and menus.
 Rounded panels create distinct, organized sections in layouts.
 
 ```preview
-<div class="rl-stack rl-gap-l">
-    <div class="rl-stack rl-border rl-radius-m rl-padding-l rl-gap-m">
+<div class="rl-column rl-gap-l">
+    <div class="rl-column rl-border rl-radius-m rl-padding-l rl-gap-m">
         <h3>Profile Information</h3>
-        <div class="rl-stack rl-gap-s">
+        <div class="rl-column rl-gap-s">
             <div>Name: John Doe</div>
             <div>Email: john@example.com</div>
             <div>Role: Developer</div>
         </div>
     </div>
-    <div class="rl-stack rl-border rl-radius-m rl-padding-l rl-gap-m">
+    <div class="rl-column rl-border rl-radius-m rl-padding-l rl-gap-m">
         <h3>Account Settings</h3>
-        <div class="rl-stack rl-gap-s">
+        <div class="rl-column rl-gap-s">
             <div>Theme: Auto</div>
             <div>Language: English</div>
             <div>Notifications: On</div>
@@ -445,7 +393,7 @@ Rounded panels create distinct, organized sections in layouts.
 Different radius sizes for different component types:
 
 ```preview
-<div class="rl-stack rl-gap-m">
+<div class="rl-column rl-gap-m">
     <div class="rl-border rl-radius-s rl-padding-s">
         Small radius - Subtle, for compact UI elements
     </div>

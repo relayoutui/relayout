@@ -1,12 +1,12 @@
 ## Grid `(rl-grid)`
 
-The grid arranges elements in a responsive grid layout with automatically sized columns. Items flow into columns that resize based on available space, with each column maintaining a minimum width. The grid automatically creates new rows when elements don't fit in the current row.
+The grid places elements in cells of equal width. Each cell has a minimum width, and as many cells fit side by side as the available width allows; the elements that don't fit continue on a new line. The cells widen to share the space that's left.
 
-Grids are well suited for card layouts, image galleries, product listings, dashboard widgets, and any collection of similar items that should be displayed in a uniform grid structure.
+Grids are well suited for card layouts, image galleries, product listings, dashboard widgets, and any collection of similar items that should be displayed in a uniform grid structure. A grid is also the way to make equal columns that stack on narrow screens; for equal columns that never stack, use a [row](#/content/layouts/row) with `rl-nowrap` and `rl-width-fill` on each element.
 
 #### `rl-grid`
 
-By default, the grid uses `auto-fit` behavior with columns that have a minimum width of `6.25rem` (100px). Columns expand to fill available space.
+By default, the grid uses `auto-fit` behavior with cells that have a minimum width of `6.25rem` (100px). Cells expand to fill available space.
 
 ```preview|debug
 <div class="rl-grid">
@@ -24,7 +24,7 @@ By default, the grid uses `auto-fit` behavior with columns that have a minimum w
 
 ### Grid auto-fit variants
 
-Auto-fit behavior collapses empty columns, allowing existing columns to expand and fill the available space.
+Auto-fit behavior collapses empty cells, allowing the cells in use to expand and fill the available space.
 
 Apply class `rl-grid-fit-*` to the grid container, where `*` can be `xs`, `s`, `m`, `l`, `xl`, or `2xl`.
 
@@ -126,7 +126,7 @@ Apply class `rl-grid-fit-*` to the grid container, where `*` can be `xs`, `s`, `
 
 ### Grid auto-fill variants
 
-Auto-fill behavior maintains empty column tracks, creating a more rigid grid structure even when some columns are empty.
+Auto-fill behavior keeps room for empty cells, creating a more rigid grid structure even when a line isn't full.
 
 Apply class `rl-grid-fill-*` to the grid container, where `*` can be `xs`, `s`, `m`, `l`, `xl`, or `2xl`.
 
@@ -425,9 +425,9 @@ Apply class `rl-width-*` to the container, where `*` can be `xs`, `s`, `m`, `l`,
 
 By default, containers take up only the height needed for their content. Height classes control how containers fill vertical space.
 
-Apply class `rl-height-full` to make the container fill 100% of its parent's height with vertical scrolling if needed.
+Apply class `rl-height-full` to make the container fill 100% of its parent's height. It doesn't scroll on its own: add `rl-scroll` if its content can be taller.
 
-Apply class `rl-height-fill` to make the container grow to fill available space in a flex layout.
+Apply class `rl-height-fill` to make a grid take the remaining height inside a column. See [Height, fill and scroll](#/content/mods/height).
 
 #### `rl-height-full`
 
@@ -445,7 +445,7 @@ Apply class `rl-height-fill` to make the container grow to fill available space 
 #### `rl-height-fill`
 
 ```preview|debug
-<div class="rl-stack" style="height: 15em; border: 1px solid #ccc;">
+<div class="rl-column" style="height: 15em; border: 1px solid #ccc;">
     <div class="rl-border rl-padding-m">Header</div>
     <div class="rl-grid rl-gap-m rl-height-fill rl-border rl-padding-m">
         <div>Item 1</div>
@@ -458,15 +458,15 @@ Apply class `rl-height-fill` to make the container grow to fill available space 
 
 ### Usage notes
 
-The grid layout uses CSS Grid for responsive column-based layouts:
+The grid layout uses CSS Grid for responsive cells of equal width:
 
 - **Base class required**: All grid variants (`rl-grid-fit-*`, `rl-grid-fill-*`) must include `rl-grid` class
-- **Auto-fit behavior**: Collapses empty columns, allowing existing columns to expand and fill space
-- **Auto-fill behavior**: Maintains empty column tracks, creating a more rigid grid structure
-- **Column sizing**: Uses `repeat(auto-fit/fill, minmax(MIN, 1fr))` pattern
+- **Auto-fit behavior**: Collapses empty cells, allowing the cells in use to expand and fill space
+- **Auto-fill behavior**: Keeps room for empty cells, creating a more rigid grid structure
+- **Cell sizing**: Uses `grid-template-columns: repeat(auto-fit/fill, minmax(MIN, 1fr))`
 - **Minimum widths**: Six size options from `xs` (3.125rem) to `2xl` (20rem)
 - **Default variant**: `rl-grid` alone uses auto-fit with 6.25rem minimum (same as `rl-grid-fit-s`)
-- **Responsive columns**: Number of columns adjusts automatically based on container width and minimum size
+- **Responsive cells**: The number of cells per line adjusts automatically based on container width and minimum size
 - **Alignment**: `rl-align-*` controls vertical positioning within cells, `rl-justify-*` controls horizontal
 
-The grid is ideal for card layouts, image galleries, product listings, and any collection where items should be displayed in uniform columns that adapt responsively. Use auto-fit when you want columns to expand, auto-fill when you want a more rigid structure.
+The grid is ideal for card layouts, image galleries, product listings, and any collection where items should be displayed in cells of equal width that adapt responsively. Use auto-fit when you want cells to expand, auto-fill when you want a more rigid structure.

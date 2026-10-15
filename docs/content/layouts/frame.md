@@ -179,7 +179,7 @@ The frame layout is designed to fill 100% of its parent container's width and he
 - Images are handled specially to maintain aspect ratio with `object-fit: contain`
 
 ```preview
-<div class="rl-stack rl-gap-m">
+<div class="rl-column rl-gap-m">
     <div class="rl-frame rl-border rl-radius-m rl-padding-m" style="height: 12em;">
         <div>
             <h3>Hero Content</h3>
