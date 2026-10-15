@@ -1,0 +1,27 @@
+/*
+ * column
+ */
+
+// Keep in sync with: src/js/layouts/_column.css.ts
+
+.rl-column {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: start;
+    gap: var(--rl-gap-default);
+
+    /* Column specific text alignment */
+    &.rl-align-start { text-align: start; }
+    &.rl-align-center { text-align: center; }
+    &.rl-align-end { text-align: end; }
+
+    /* only the fill child gives up space */
+    & > * { flex-shrink: 0; }
+
+    /* grow; basis auto keeps long content from overlapping the next child, and min-height 0 lets a nested scroll area shrink */
+    & > .rl-height-fill { flex: 999 1 auto; min-height: 0; }
+
+    /* stretch across, even with rl-align-* */
+    & > .rl-width-fill { align-self: stretch; width: auto; }
+}

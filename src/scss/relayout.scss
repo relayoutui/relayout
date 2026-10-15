@@ -9,10 +9,8 @@
 @use 'partials/base/_base';
 
 // layouts
-@use 'partials/layouts/_stack';
-@use 'partials/layouts/_flank';
-@use 'partials/layouts/_split';
-@use 'partials/layouts/_cluster';
+@use 'partials/layouts/_column';
+@use 'partials/layouts/_row';
 @use 'partials/layouts/_grid';
 @use 'partials/layouts/_frame';
 @use 'partials/layouts/_divider';
@@ -25,6 +23,7 @@
 @use 'partials/mods/_justify';
 @use 'partials/mods/_width';
 @use 'partials/mods/_height';
+@use 'partials/mods/_scroll';
 @use 'partials/mods/_border';
 @use 'partials/mods/_color';
 @use 'partials/mods/_radius';

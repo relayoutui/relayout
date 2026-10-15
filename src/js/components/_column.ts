@@ -1,6 +1,6 @@
 import { SlotElement } from '../base/slot-element';
 import { customElement } from 'lit/decorators.js';
-import { _splitCss } from '../layouts/_split.css';
+import { _columnCss } from '../layouts/_column.css';
 import { _alignCss } from '../mods/_align.css';
 import { _borderCss } from '../mods/_border.css';
 import { _colorCss } from '../mods/_color.css';
@@ -10,15 +10,15 @@ import { _heightCss } from '../mods/_height.css';
 import { _justifyCss } from '../mods/_justify.css';
 import { _paddingCss } from '../mods/_padding.css';
 import { _radiusCss } from '../mods/_radius.css';
+import { _scrollCss } from '../mods/_scroll.css';
 import { _shadowCss } from '../mods/_shadow.css';
 import { _widthCss } from '../mods/_width.css';
-import { _wrappingCss } from '../mods/_wrapping.css';
 
-@customElement('rl-split')
-export class Split extends SlotElement 
+@customElement('rl-column')
+export class Column extends SlotElement 
 {
     static styles = [
-        _splitCss,
+        _columnCss,
         // applicable mods
         _alignCss,
         _borderCss,
@@ -29,14 +29,14 @@ export class Split extends SlotElement
         _justifyCss,
         _paddingCss,
         _radiusCss,
+        _scrollCss,
         _shadowCss,
         _widthCss,
-        _wrappingCss,
     ];
 }
 
 declare global {
     interface HTMLElementTagNameMap {
-        'rl-split': Split;
+        'rl-column': Column;
     }
 }

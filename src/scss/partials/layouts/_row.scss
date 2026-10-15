@@ -1,0 +1,23 @@
+/*
+ * row
+ */
+
+// Keep in sync with: src/js/layouts/_row.css.ts
+
+.rl-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: start;
+    flex-wrap: wrap;
+    gap: var(--rl-gap-default);
+
+    /* grow; no min-width, so the child still wraps at its longest word */
+    & > .rl-width-fill { flex: 999 1 0; }
+
+    /* stretch across, even with rl-align-* */
+    & > .rl-height-fill { align-self: stretch; height: auto; }
+
+    /* no wrap point to protect, so allow truncation */
+    &.rl-nowrap > .rl-width-fill { min-width: 0; }
+}
