@@ -9,7 +9,7 @@ Dividers are well suited for separating list items, sections of content, menu it
 By default, the divider creates a horizontal line that stretches to fill the full width of its container.
 
 ```preview
-<div class="rl-stack rl-gap-m">
+<div class="rl-column rl-gap-m">
     <div>Acta non verba</div>
     <div class="rl-divider"></div>
     <div>Tempus fugit</div>
@@ -22,10 +22,10 @@ By default, the divider creates a horizontal line that stretches to fill the ful
 
 Dividers adapt to their container and work seamlessly with different layout types.
 
-#### Dividers in stack
+#### Dividers in column
 
 ```preview
-<div class="rl-stack rl-border">
+<div class="rl-column rl-border">
     <div class="rl-padding-m">First item</div>
     <div class="rl-divider"></div>
     <div class="rl-padding-m">Second item</div>
@@ -34,10 +34,10 @@ Dividers adapt to their container and work seamlessly with different layout type
 </div>
 ```
 
-#### Dividers in cluster
+#### Dividers in row
 
 ```preview
-<div class="rl-cluster rl-gap-m">
+<div class="rl-row rl-gap-m">
     <div>Tag 1</div>
     <div class="rl-divider vertical"></div>
     <div>Tag 2</div>
@@ -46,10 +46,10 @@ Dividers adapt to their container and work seamlessly with different layout type
 </div>
 ```
 
-#### Dividers in split
+#### Dividers in a row with `rl-justify-between`
 
 ```preview
-<div class="rl-split rl-gap-m">
+<div class="rl-row rl-justify-between rl-gap-m">
     <div>Left item</div>
     <div class="rl-divider vertical"></div>
     <div>Right item</div>
@@ -63,22 +63,22 @@ Apply class `vertical` to the divider element to create a vertical separator lin
 #### `.vertical`
 
 ```preview|debug
-<div class="rl-flank rl-gap-m" style="height: 5em;">
+<div class="rl-row rl-gap-m" style="height: 5em;">
     <div>Navigation</div>
     <div class="rl-divider vertical"></div>
-    <div>Content</div>
+    <div class="rl-width-fill">Content</div>
 </div>
 ```
 
-Vertical dividers are particularly useful in horizontal layouts like flank, split, and cluster.
+Vertical dividers are particularly useful in rows.
 
 ```preview
-<div class="rl-flank rl-gap-l rl-padding-m rl-border">
+<div class="rl-row rl-gap-l rl-padding-m rl-border">
     <div>Home</div>
     <div class="rl-divider vertical"></div>
     <div>About</div>
     <div class="rl-divider vertical"></div>
-    <div>Contact</div>
+    <div class="rl-width-fill">Contact</div>
 </div>
 ```
 
@@ -87,7 +87,7 @@ Vertical dividers are particularly useful in horizontal layouts like flank, spli
 Dividers work well with bordered containers and padded elements to create clean, separated layouts.
 
 ```preview
-<div class="rl-stack rl-border rl-radius-m">
+<div class="rl-column rl-border rl-radius-m">
     <div class="rl-padding-m">Profile Information</div>
     <div class="rl-divider"></div>
     <div class="rl-padding-m">Account Settings</div>
@@ -97,13 +97,13 @@ Dividers work well with bordered containers and padded elements to create clean,
 ```
 
 ```preview
-<div class="rl-stack rl-gap-m">
-    <div class="rl-stack rl-border rl-radius-m">
+<div class="rl-column rl-gap-m">
+    <div class="rl-column rl-border rl-radius-m">
         <div class="rl-padding-m">Item 1</div>
         <div class="rl-divider"></div>
         <div class="rl-padding-m">Item 2</div>
     </div>
-    <div class="rl-stack rl-border rl-radius-m">
+    <div class="rl-column rl-border rl-radius-m">
         <div class="rl-padding-m">Item 3</div>
         <div class="rl-divider"></div>
         <div class="rl-padding-m">Item 4</div>
@@ -116,10 +116,10 @@ Dividers work well with bordered containers and padded elements to create clean,
 Dividers are commonly used in menus and navigation components.
 
 ```preview
-<div class="rl-flank rl-gap-m rl-border rl-padding-m rl-radius-m">
+<div class="rl-row rl-gap-m rl-border rl-padding-m rl-radius-m">
     <div>Logo</div>
     <div class="rl-divider vertical"></div>
-    <div class="rl-cluster rl-gap-m">
+    <div class="rl-row rl-gap-m rl-width-fill">
         <div>Products</div>
         <div class="rl-divider vertical"></div>
         <div>Services</div>
@@ -130,7 +130,7 @@ Dividers are commonly used in menus and navigation components.
 ```
 
 ```preview
-<div class="rl-stack rl-border rl-radius-m rl-width-xs">
+<div class="rl-column rl-border rl-radius-m rl-width-xs">
     <div class="rl-padding-m">Dashboard</div>
     <div class="rl-divider"></div>
     <div class="rl-padding-m">Projects</div>

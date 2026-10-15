@@ -15,14 +15,14 @@ Apply class `rl-align-*` to any layout container, where `*` can be:
 
 The behavior of each value depends on the layout type and its main axis direction.
 
-### Align with stack layout
+### Align with column layout
 
-In stack layouts, the **cross axis is horizontal** (since the main axis is vertical). Align controls how items are positioned horizontally and also affects text alignment.
+In column layouts, the **cross axis is horizontal** (since the main axis is vertical). Align controls how items are positioned horizontally and also affects text alignment.
 
 #### `rl-align-start`
 
 ```preview|debug
-<div class="rl-stack rl-align-start rl-gap-m">
+<div class="rl-column rl-align-start rl-gap-m">
     <div>Aligned to start</div>
     <div>Short text</div>
     <div>This is a longer piece of content</div>
@@ -32,7 +32,7 @@ In stack layouts, the **cross axis is horizontal** (since the main axis is verti
 #### `rl-align-center`
 
 ```preview|debug
-<div class="rl-stack rl-align-center rl-gap-m">
+<div class="rl-column rl-align-center rl-gap-m">
     <div>Centered alignment</div>
     <div>Short</div>
     <div>This is a longer piece of content</div>
@@ -42,7 +42,7 @@ In stack layouts, the **cross axis is horizontal** (since the main axis is verti
 #### `rl-align-end`
 
 ```preview|debug
-<div class="rl-stack rl-align-end rl-gap-m">
+<div class="rl-column rl-align-end rl-gap-m">
     <div>Aligned to end</div>
     <div>Short text</div>
     <div>This is a longer piece of content</div>
@@ -52,37 +52,37 @@ In stack layouts, the **cross axis is horizontal** (since the main axis is verti
 #### `rl-align-stretch` (default)
 
 ```preview|debug
-<div class="rl-stack rl-align-stretch rl-gap-m">
+<div class="rl-column rl-align-stretch rl-gap-m">
     <div>Stretched to full width</div>
     <div>Short text</div>
     <div>This is a longer piece of content</div>
 </div>
 ```
 
-Stack alignment also controls text alignment within elements:
+Column alignment also controls text alignment within elements:
 
 ```preview
-<div class="rl-stack rl-gap-m rl-border rl-padding-m">
-    <div class="rl-stack rl-align-start rl-border rl-padding-s">
+<div class="rl-column rl-gap-m rl-border rl-padding-m">
+    <div class="rl-column rl-align-start rl-border rl-padding-s">
         <div>Start aligned text</div>
     </div>
-    <div class="rl-stack rl-align-center rl-border rl-padding-s">
+    <div class="rl-column rl-align-center rl-border rl-padding-s">
         <div>Center aligned text</div>
     </div>
-    <div class="rl-stack rl-align-end rl-border rl-padding-s">
+    <div class="rl-column rl-align-end rl-border rl-padding-s">
         <div>End aligned text</div>
     </div>
 </div>
 ```
 
-### Align with cluster layout
+### Align with row layout
 
-In cluster layouts, the **cross axis is vertical**. Align controls how items are positioned vertically within the container.
+In row layouts, the **cross axis is vertical**. Align controls how items are positioned vertically within the container.
 
 #### `rl-align-start`
 
 ```preview|debug
-<div class="rl-cluster rl-align-start rl-gap-m" style="height: 8em; border: 1px solid #ccc;">
+<div class="rl-row rl-align-start rl-gap-m" style="height: 8em; border: 1px solid #ccc;">
     <div>Item 1</div>
     <div>Item 2</div>
     <div>Item 3</div>
@@ -93,7 +93,7 @@ In cluster layouts, the **cross axis is vertical**. Align controls how items are
 #### `rl-align-center` (default)
 
 ```preview|debug
-<div class="rl-cluster rl-align-center rl-gap-m" style="height: 8em; border: 1px solid #ccc;">
+<div class="rl-row rl-align-center rl-gap-m" style="height: 8em; border: 1px solid #ccc;">
     <div>Item 1</div>
     <div>Item 2</div>
     <div>Item 3</div>
@@ -104,7 +104,7 @@ In cluster layouts, the **cross axis is vertical**. Align controls how items are
 #### `rl-align-end`
 
 ```preview|debug
-<div class="rl-cluster rl-align-end rl-gap-m" style="height: 8em; border: 1px solid #ccc;">
+<div class="rl-row rl-align-end rl-gap-m" style="height: 8em; border: 1px solid #ccc;">
     <div>Item 1</div>
     <div>Item 2</div>
     <div>Item 3</div>
@@ -115,95 +115,11 @@ In cluster layouts, the **cross axis is vertical**. Align controls how items are
 #### `rl-align-stretch`
 
 ```preview|debug
-<div class="rl-cluster rl-align-stretch rl-gap-m" style="height: 8em; border: 1px solid #ccc;">
+<div class="rl-row rl-align-stretch rl-gap-m" style="height: 8em; border: 1px solid #ccc;">
     <div>Item 1</div>
     <div>Item 2</div>
     <div>Item 3</div>
     <div>Item 4</div>
-</div>
-```
-
-### Align with flank layout
-
-In flank layouts, the **cross axis is vertical**. Align controls how items are positioned vertically.
-
-#### `rl-align-start`
-
-```preview|debug
-<div class="rl-flank rl-align-start rl-gap-m" style="height: 8em; border: 1px solid #ccc;">
-    <div>Logo</div>
-    <div>Navigation content that fills space</div>
-</div>
-```
-
-#### `rl-align-center` (default)
-
-```preview|debug
-<div class="rl-flank rl-align-center rl-gap-m" style="height: 8em; border: 1px solid #ccc;">
-    <div>Logo</div>
-    <div>Navigation content that fills space</div>
-</div>
-```
-
-#### `rl-align-end`
-
-```preview|debug
-<div class="rl-flank rl-align-end rl-gap-m" style="height: 8em; border: 1px solid #ccc;">
-    <div>Logo</div>
-    <div>Navigation content that fills space</div>
-</div>
-```
-
-#### `rl-align-stretch`
-
-```preview|debug
-<div class="rl-flank rl-align-stretch rl-gap-m" style="height: 8em; border: 1px solid #ccc;">
-    <div>Logo</div>
-    <div>Navigation content that fills space</div>
-</div>
-```
-
-### Align with split layout
-
-In split layouts, the **cross axis is vertical**. Align controls how items are positioned vertically.
-
-#### `rl-align-start`
-
-```preview|debug
-<div class="rl-split rl-align-start rl-gap-m" style="height: 8em; border: 1px solid #ccc;">
-    <div>Left</div>
-    <div>Center</div>
-    <div>Right</div>
-</div>
-```
-
-#### `rl-align-center` (default)
-
-```preview|debug
-<div class="rl-split rl-align-center rl-gap-m" style="height: 8em; border: 1px solid #ccc;">
-    <div>Left</div>
-    <div>Center</div>
-    <div>Right</div>
-</div>
-```
-
-#### `rl-align-end`
-
-```preview|debug
-<div class="rl-split rl-align-end rl-gap-m" style="height: 8em; border: 1px solid #ccc;">
-    <div>Left</div>
-    <div>Center</div>
-    <div>Right</div>
-</div>
-```
-
-#### `rl-align-stretch`
-
-```preview|debug
-<div class="rl-split rl-align-stretch rl-gap-m" style="height: 8em; border: 1px solid #ccc;">
-    <div>Left</div>
-    <div>Center</div>
-    <div>Right</div>
 </div>
 ```
 
@@ -296,17 +212,17 @@ In frame layouts, align controls **vertical positioning** of the content within 
 Align works well with other layout modifiers for sophisticated designs:
 
 ```preview
-<div class="rl-stack rl-gap-l">
-    <div class="rl-cluster rl-align-start rl-gap-m rl-border rl-padding-m rl-radius-m" style="height: 6em;">
+<div class="rl-column rl-gap-l">
+    <div class="rl-row rl-align-start rl-gap-m rl-border rl-padding-m rl-radius-m" style="height: 6em;">
         <div>Badge</div>
         <div>Tag</div>
         <div>Label</div>
     </div>
-    <div class="rl-flank rl-align-center rl-gap-m rl-border rl-padding-m rl-radius-m" style="height: 6em;">
+    <div class="rl-row rl-align-center rl-gap-m rl-border rl-padding-m rl-radius-m" style="height: 6em;">
         <div>Logo</div>
-        <div>Navigation</div>
+        <div class="rl-width-fill">Navigation</div>
     </div>
-    <div class="rl-split rl-align-end rl-gap-m rl-border rl-padding-m rl-radius-m" style="height: 6em;">
+    <div class="rl-row rl-justify-between rl-align-end rl-gap-m rl-border rl-padding-m rl-radius-m" style="height: 6em;">
         <div>Left</div>
         <div>Right</div>
     </div>
@@ -318,22 +234,21 @@ Align works well with other layout modifiers for sophisticated designs:
 The align modifier uses CSS flexbox and grid `align-items` properties:
 
 - **Cross axis positioning**: Align always works perpendicular to the main layout direction
-- **Stack specificity**: In stacks, align also controls `text-align` for proper text positioning
-- **Vertical layouts** (stack): Cross axis is horizontal, align controls horizontal positioning
-- **Horizontal layouts** (cluster, flank, split): Cross axis is vertical, align controls vertical positioning
+- **Column specificity**: In columns, align also controls `text-align` for proper text positioning
+- **Vertical layouts** (column): Cross axis is horizontal, align controls horizontal positioning
+- **Horizontal layouts** (row): Cross axis is vertical, align controls vertical positioning
 - **Grid layouts**: Align positions items within their individual grid cells vertically
 - **Frame layouts**: Align controls vertical positioning of centered content
-- **Default values**: Most horizontal layouts default to `center`, stack defaults to `stretch`
+- **Default values**: Row defaults to `center`, column defaults to `stretch`
 - **Stretch behavior**: `stretch` makes elements fill the cross axis unless they have intrinsic dimensions
+- **Fill elements**: An element with `rl-width-fill` in a column, or `rl-height-fill` in a row, stretches across whatever the align value (see [Height, fill and scroll](#/content/mods/height))
 
 Key differences by layout:
 
 | Layout  | Main Axis | Cross Axis | Align Controls | Default   |
 |---------|-----------|------------|----------------|-----------|
-| Stack   | Vertical  | Horizontal | Horizontal pos | `stretch` |
-| Cluster | Horizontal| Vertical   | Vertical pos   | `center`  |
-| Flank   | Horizontal| Vertical   | Vertical pos   | `center`  |
-| Split   | Horizontal| Vertical   | Vertical pos   | `center`  |
+| Column  | Vertical  | Horizontal | Horizontal pos | `stretch` |
+| Row     | Horizontal| Vertical   | Vertical pos   | `center`  |
 | Grid    | N/A       | N/A        | Vertical in cell | None    |
 | Frame   | Both      | N/A        | Vertical pos   | `center`  |
 

@@ -1,262 +1,46 @@
-## Height `(rl-height-full, rl-height-fill)`
+## Height, fill and scroll `(rl-height-full, rl-height-fill, rl-width-fill, rl-scroll)`
 
-The height modifier controls how containers fill vertical space. By default, layout containers only take the height needed for their content. Height modifiers allow containers to expand vertically to fill available space, creating full-height layouts and flexible vertical distributions.
+By default, a layout container takes only the height its content needs, and the elements of a row take only the width they need. These modifiers make an element fill the space around it, and choose which area scrolls.
 
-Height modifiers are well suited for full-page layouts, vertically scrolling sections, sidebar layouts, and any design requiring containers to fill or adapt to available vertical space.
+- **`rl-height-full`** makes the element as tall as its parent (`height: 100%`). The parent needs a height.
+- **`rl-height-fill`** and **`rl-width-fill`** go on an element inside a column or a row, and make it take the space the other elements leave. What each one does depends on the parent's direction.
+- **`rl-scroll`** makes the element scroll when its content doesn't fit (`overflow: auto`).
 
-### Height values
+None of the height and fill classes scrolls on its own. Add `rl-scroll` to the area that should scroll, and only to that one: a scrolling area clips dropdowns, tooltips and shadows, and `position: sticky` doesn't work inside it.
 
-The height modifier comes in two variants, each serving different vertical layout needs:
+### Fill classes, by parent
 
-- **`rl-height-full`**: Sets the container to `height: 100%` with `overflow-y: auto`, filling 100% of the parent's height with scrolling enabled if content exceeds the container
-- **`rl-height-fill`**: Uses `flex: 1 1 0` with `min-height: 0`, `height: auto`, and `overflow-y: auto`, making the container grow to fill available space in a flex layout while allowing proper scrolling
+The fill classes are named after what you see: `rl-width-fill` fills the width, `rl-height-fill` fills the height. Each one grows along the parent's direction and stretches across it, so it goes on the element, not on the parent.
 
-The key difference: `rl-height-full` requires a parent with defined height, while `rl-height-fill` works within flex containers to consume remaining vertical space.
+| Class | In a column | In a row |
+|---|---|---|
+| `rl-height-fill` | Grows to take the remaining height | Stretches to the row's height |
+| `rl-width-fill` | Stretches across the column's width | Grows to take the remaining width |
 
-### Height with stack
+Any element can fill, not only the first or the last. An element can have both classes. Outside a column or a row, such as in a grid, the fill classes have no effect.
 
-Height modifiers help create vertically scrolling content areas within stacks.
-
-#### `rl-height-full`
-
-```preview|debug
-<div style="height: 15em; border: 1px solid #ccc;">
-    <div class="rl-stack rl-height-full rl-border rl-padding-m">
-        <div>Stack fills parent height</div>
-        <div>With automatic scrolling</div>
-        <div>If content overflows</div>
-    </div>
-</div>
-```
+### Filling a column
 
 #### `rl-height-fill`
 
+The fill element takes the height the other elements leave. Here the column has a `min-height`, so the footer sits at the bottom, and when the content is longer, the column grows and the page scrolls.
+
 ```preview|debug
-<div class="rl-stack" style="height: 15em; border: 1px solid #ccc;">
-    <div class="rl-border rl-padding-m">Fixed height header</div>
-    <div class="rl-stack rl-height-fill rl-border rl-padding-m rl-gap-m">
-        <div>Stack grows to fill remaining space</div>
-        <div>Perfect for content areas</div>
-        <div>That need to fill available height</div>
-    </div>
+<div class="rl-column rl-gap-m" style="min-height: 15em;">
+    <div class="rl-border rl-padding-m">Header</div>
+    <div class="rl-height-fill rl-border rl-padding-m">Main content takes the remaining height</div>
+    <div class="rl-border rl-padding-m">Footer</div>
 </div>
 ```
 
-Multiple fill areas distribute space equally:
+#### `rl-height-fill rl-scroll`
+
+When the column has a set `height`, the fill element can get shorter than its content. Add `rl-scroll` to scroll what doesn't fit, while the other elements stay in place.
 
 ```preview|debug
-<div class="rl-stack rl-gap-m" style="height: 20em; border: 1px solid #ccc;">
+<div class="rl-column rl-gap-m" style="height: 15em;">
     <div class="rl-border rl-padding-m">Fixed header</div>
-    <div class="rl-stack rl-height-fill rl-border rl-padding-m">
-        <div>First fill area</div>
-        <div>Takes half the remaining space</div>
-    </div>
-    <div class="rl-stack rl-height-fill rl-border rl-padding-m">
-        <div>Second fill area</div>
-        <div>Takes the other half</div>
-    </div>
-    <div class="rl-border rl-padding-m">Fixed footer</div>
-</div>
-```
-
-### Height with cluster
-
-Height modifiers control the overall vertical space of cluster containers.
-
-#### `rl-height-full`
-
-```preview|debug
-<div style="height: 10em; border: 1px solid #ccc;">
-    <div class="rl-cluster rl-height-full rl-border rl-padding-m rl-gap-m">
-        <div>Tag 1</div>
-        <div>Tag 2</div>
-        <div>Tag 3</div>
-        <div>Tag 4</div>
-    </div>
-</div>
-```
-
-#### `rl-height-fill`
-
-```preview|debug
-<div class="rl-stack" style="height: 15em; border: 1px solid #ccc;">
-    <div class="rl-border rl-padding-m">Header</div>
-    <div class="rl-cluster rl-height-fill rl-border rl-padding-m rl-gap-m">
-        <div>Badge A</div>
-        <div>Badge B</div>
-        <div>Badge C</div>
-        <div>Badge D</div>
-    </div>
-</div>
-```
-
-### Height with flank
-
-Height modifiers expand flanks vertically, useful for sidebar layouts.
-
-#### `rl-height-full`
-
-```preview|debug
-<div style="height: 10em; border: 1px solid #ccc;">
-    <div class="rl-flank rl-height-full rl-border rl-padding-m rl-gap-m">
-        <div>Logo</div>
-        <div>Navigation fills parent height</div>
-    </div>
-</div>
-```
-
-#### `rl-height-fill`
-
-```preview|debug
-<div class="rl-stack" style="height: 15em; border: 1px solid #ccc;">
-    <div class="rl-border rl-padding-m">Header</div>
-    <div class="rl-flank rl-height-fill rl-border rl-padding-m rl-gap-m">
-        <div>Sidebar</div>
-        <div>Main content grows vertically</div>
-    </div>
-</div>
-```
-
-### Height with split
-
-Height modifiers help create vertically expanded split layouts.
-
-#### `rl-height-full`
-
-```preview|debug
-<div style="height: 10em; border: 1px solid #ccc;">
-    <div class="rl-split rl-height-full rl-border rl-padding-m rl-gap-m">
-        <div>Left</div>
-        <div>Right</div>
-    </div>
-</div>
-```
-
-#### `rl-height-fill`
-
-```preview|debug
-<div class="rl-stack" style="height: 15em; border: 1px solid #ccc;">
-    <div class="rl-border rl-padding-m">Header</div>
-    <div class="rl-split rl-height-fill rl-border rl-padding-m rl-gap-m">
-        <div>Left sidebar</div>
-        <div>Right content</div>
-    </div>
-</div>
-```
-
-### Height with grid
-
-Height modifiers control the overall grid container height.
-
-#### `rl-height-full`
-
-```preview|debug
-<div style="height: 15em; border: 1px solid #ccc;">
-    <div class="rl-grid rl-height-full rl-border rl-padding-m rl-gap-m">
-        <div>Card 1</div>
-        <div>Card 2</div>
-        <div>Card 3</div>
-        <div>Card 4</div>
-    </div>
-</div>
-```
-
-#### `rl-height-fill`
-
-```preview|debug
-<div class="rl-stack" style="height: 20em; border: 1px solid #ccc;">
-    <div class="rl-border rl-padding-m">Dashboard Header</div>
-    <div class="rl-grid rl-height-fill rl-border rl-padding-m rl-gap-m">
-        <div>Widget 1</div>
-        <div>Widget 2</div>
-        <div>Widget 3</div>
-        <div>Widget 4</div>
-    </div>
-</div>
-```
-
-### Height with frame
-
-Frames naturally fill parent height (100%), but height modifiers can be applied to frame children.
-
-#### `rl-height-full` on frame
-
-```preview|debug
-<div style="height: 12em; border: 1px solid #ccc;">
-    <div class="rl-frame rl-height-full rl-border rl-padding-m">
-        <div>Centered content in full-height frame</div>
-    </div>
-</div>
-```
-
-#### `rl-height-fill` on frame
-
-```preview|debug
-<div class="rl-stack" style="height: 18em; border: 1px solid #ccc;">
-    <div class="rl-border rl-padding-m">Header</div>
-    <div class="rl-frame rl-height-fill rl-border rl-padding-m">
-        <div>Centered content grows with available space</div>
-    </div>
-</div>
-```
-
-### Full-height layouts
-
-Height modifiers enable classic application layouts with headers, content areas, and footers.
-
-#### Classic header/content/footer
-
-```preview|debug
-<div class="rl-stack" style="height: 25em; border: 1px solid #ccc;">
-    <div class="rl-flank rl-gap-m rl-border rl-padding-m">
-        <div>Logo</div>
-        <div class="rl-cluster rl-gap-m">
-            <div>Home</div>
-            <div>About</div>
-            <div>Contact</div>
-        </div>
-    </div>
-    <div class="rl-stack rl-height-fill rl-border rl-padding-l rl-gap-m">
-        <div>Main Content Area</div>
-        <div>This area fills all available vertical space</div>
-        <div>Scrolls automatically if content overflows</div>
-    </div>
-    <div class="rl-border rl-padding-m">
-        <div>Footer content</div>
-    </div>
-</div>
-```
-
-#### Sidebar layout
-
-```preview|debug
-<div class="rl-stack" style="height: 25em; border: 1px solid #ccc;">
-    <div class="rl-border rl-padding-m">Application Header</div>
-    <div class="rl-flank rl-height-fill">
-        <div class="rl-stack rl-gap-m rl-border rl-padding-m" style="width: 12em;">
-            <div>Sidebar</div>
-            <div class="rl-divider"></div>
-            <div>Dashboard</div>
-            <div>Projects</div>
-            <div>Settings</div>
-        </div>
-        <div class="rl-stack rl-height-fill rl-border rl-padding-l rl-gap-m">
-            <div>Main Content</div>
-            <div>Fills remaining space</div>
-            <div>Both horizontally and vertically</div>
-        </div>
-    </div>
-</div>
-```
-
-### Scrolling content areas
-
-Height modifiers with overflow enable scrollable regions.
-
-```preview|debug
-<div class="rl-stack rl-gap-m" style="height: 25em; border: 1px solid #ccc;">
-    <div class="rl-border rl-padding-m">Fixed Header</div>
-    <div class="rl-stack rl-height-fill rl-border rl-padding-m rl-gap-m">
+    <div class="rl-column rl-gap-m rl-height-fill rl-scroll rl-border rl-padding-m">
         <div>Content item 1</div>
         <div>Content item 2</div>
         <div>Content item 3</div>
@@ -265,83 +49,204 @@ Height modifiers with overflow enable scrollable regions.
         <div>Content item 6</div>
         <div>Content item 7</div>
         <div>Content item 8</div>
-        <div>Content item 9</div>
-        <div>Content item 10</div>
-        <div>More content...</div>
-        <div>Even more content...</div>
         <div>This area scrolls when content overflows</div>
     </div>
-    <div class="rl-border rl-padding-m">Fixed Footer</div>
+    <div class="rl-border rl-padding-m">Fixed footer</div>
 </div>
 ```
 
-### Multi-column layouts
-
-Create flexible layouts with multiple vertical sections.
+Two fill elements share the remaining height. Each gets the height of its content plus an equal share of the space left, so they are the same height only when their content is. When the content doesn't fit, they shrink in proportion to it.
 
 ```preview|debug
-<div class="rl-flank" style="height: 25em; border: 1px solid #ccc;">
-    <div class="rl-stack" style="width: 15em; border-right: 1px solid #ccc;">
-        <div class="rl-border rl-padding-m">Left Header</div>
-        <div class="rl-stack rl-height-fill rl-padding-m rl-gap-s">
-            <div>Nav Item 1</div>
-            <div>Nav Item 2</div>
-            <div>Nav Item 3</div>
-            <div>Nav Item 4</div>
-            <div>Nav Item 5</div>
-            <div>Nav Item 6</div>
+<div class="rl-column rl-gap-m" style="height: 20em; border: 1px solid #ccc;">
+    <div class="rl-border rl-padding-m">Fixed header</div>
+    <div class="rl-column rl-height-fill rl-border rl-padding-m">
+        <div>First fill area</div>
+        <div>Takes half the remaining space</div>
+    </div>
+    <div class="rl-column rl-height-fill rl-border rl-padding-m">
+        <div>Second fill area</div>
+        <div>Takes the other half</div>
+    </div>
+    <div class="rl-border rl-padding-m">Fixed footer</div>
+</div>
+```
+
+The other elements of a column keep their height: they don't shrink to make room. Only a fill element grows or shrinks.
+
+#### `rl-width-fill`
+
+The fill element stretches across the column, even when the column aligns its elements with `rl-align-*`.
+
+```preview|debug
+<div class="rl-column rl-align-start rl-gap-m">
+    <div class="rl-border rl-padding-m">Takes the width it needs</div>
+    <div class="rl-width-fill rl-border rl-padding-m">Stretches across the column</div>
+</div>
+```
+
+### Filling a row
+
+#### `rl-width-fill`
+
+The fill element takes the width the other elements leave. In a row that wraps, it drops below the others when it no longer fits next to them, at its longest word. Resize the preview to see it wrap.
+
+```preview|debug
+<div class="rl-row rl-align-start rl-gap-m">
+    <div class="rl-border rl-padding-m" style="width: 10em;">Sidebar</div>
+    <div class="rl-width-fill rl-border rl-padding-m">Main content takes the remaining width, and moves below the sidebar when the row gets too narrow.</div>
+</div>
+```
+
+In a row with `rl-nowrap`, the fill element never wraps, and can get narrower than its content instead.
+
+#### `rl-height-fill`
+
+The fill element stretches to the row's height, even when the row aligns its elements with `rl-align-*`.
+
+```preview|debug
+<div class="rl-row rl-gap-m" style="height: 8em;">
+    <div class="rl-border rl-padding-m">Centered</div>
+    <div class="rl-height-fill rl-border rl-padding-m">Stretches to the row's height</div>
+</div>
+```
+
+### Full height
+
+#### `rl-height-full`
+
+The element is as tall as its parent, which needs a set height. It doesn't scroll on its own: add `rl-scroll` when its content can be taller.
+
+```preview|debug
+<div style="height: 10em; border: 1px solid #ccc;">
+    <div class="rl-column rl-height-full rl-border rl-padding-m">
+        <div>Fills 100% of its parent's height</div>
+        <div>The parent must have a height</div>
+    </div>
+</div>
+```
+
+Inside a column, an element with `rl-height-full` keeps that height and doesn't shrink next to the other elements. To take the height that's left, use `rl-height-fill`.
+
+#### `rl-scroll`
+
+```preview|debug
+<div style="height: 10em; border: 1px solid #ccc;">
+    <div class="rl-column rl-gap-s rl-height-full rl-scroll rl-padding-m">
+        <div>Content item 1</div>
+        <div>Content item 2</div>
+        <div>Content item 3</div>
+        <div>Content item 4</div>
+        <div>Content item 5</div>
+        <div>Content item 6</div>
+        <div>This area scrolls</div>
+    </div>
+</div>
+```
+
+### Full-height layouts
+
+#### Page with the footer at the bottom
+
+The column has a `min-height`, so it grows with its content and the page scrolls. To keep the header in view while the page scrolls, make it `position: sticky`.
+
+```preview|debug
+<div class="rl-column" style="min-height: 20em; border: 1px solid #ccc;">
+    <div class="rl-row rl-justify-between rl-gap-m rl-border rl-padding-m">
+        <div>Logo</div>
+        <div class="rl-row rl-gap-m">
+            <div>Home</div>
+            <div>About</div>
+            <div>Contact</div>
+        </div>
+    </div>
+    <div class="rl-column rl-height-fill rl-padding-l rl-gap-m">
+        <div>Main Content Area</div>
+        <div>This area fills the vertical space the header and footer leave</div>
+    </div>
+    <div class="rl-border rl-padding-m">
+        <div>Footer content</div>
+    </div>
+</div>
+```
+
+#### App shell
+
+The column has a set `height`, so the header stays in place, and the sidebar and the main area each scroll on their own.
+
+```preview|debug
+<div class="rl-column" style="height: 16em; border: 1px solid #ccc;">
+    <div class="rl-row rl-justify-between rl-gap-m rl-border rl-padding-m">
+        <div style="font-weight: bold;">Application</div>
+        <div class="rl-row rl-gap-m">
+            <div>Search</div>
+            <div>Profile</div>
+        </div>
+    </div>
+    <div class="rl-row rl-nowrap rl-height-fill">
+        <div class="rl-column rl-gap-s rl-height-fill rl-scroll rl-border rl-padding-m" style="width: 12em;">
+            <div>Dashboard</div>
+            <div>Projects</div>
+            <div>Team</div>
+            <div>Analytics</div>
+            <div>Reports</div>
+            <div>Settings</div>
+            <div>Help</div>
             <div>Many more items...</div>
-            <div>Scrolls if needed</div>
+            <div>The sidebar scrolls</div>
         </div>
-    </div>
-    <div class="rl-stack rl-height-fill">
-        <div class="rl-border rl-padding-m">Main Header</div>
-        <div class="rl-stack rl-height-fill rl-padding-l rl-gap-m">
-            <div>Main content area</div>
-            <div>Also fills and scrolls</div>
-            <div>Independently from sidebar</div>
+        <div class="rl-column rl-gap-m rl-width-fill rl-height-fill rl-scroll rl-padding-l">
+            <div style="font-size: 1.2em; font-weight: bold;">Page Title</div>
+            <div>The main area takes the remaining width and the full height of the row.</div>
+            <div>It scrolls when its content is taller.</div>
+            <div class="rl-grid rl-gap-m">
+                <div class="rl-border rl-padding-m rl-radius-m" style="height: 6em;">Card 1</div>
+                <div class="rl-border rl-padding-m rl-radius-m" style="height: 6em;">Card 2</div>
+                <div class="rl-border rl-padding-m rl-radius-m" style="height: 6em;">Card 3</div>
+            </div>
         </div>
     </div>
 </div>
 ```
 
-### Dashboard layouts
+The row needs `rl-nowrap`. A row that wraps grows to fit its tallest element, so the areas inside it would never scroll.
 
-Height modifiers organize dashboard widgets and panels.
+#### Dashboard
+
+Fill elements nest: each panel column takes half the width, and inside it, the lower panel takes the remaining height and scrolls.
 
 ```preview|debug
-<div class="rl-stack" style="height: 30em; border: 1px solid #ccc;">
-    <div class="rl-flank rl-gap-m rl-border rl-padding-m">
+<div class="rl-column" style="height: 20em; border: 1px solid #ccc;">
+    <div class="rl-row rl-justify-between rl-gap-m rl-border rl-padding-m">
         <div>Dashboard</div>
-        <div class="rl-cluster rl-gap-m">
+        <div class="rl-row rl-gap-m">
             <div>Profile</div>
             <div>Settings</div>
         </div>
     </div>
-    <div class="rl-split rl-height-fill rl-gap-m rl-padding-m">
-        <div class="rl-stack rl-gap-m" style="flex: 2;">
-            <div class="rl-stack rl-gap-s rl-border rl-radius-m rl-padding-m">
+    <div class="rl-row rl-nowrap rl-height-fill rl-gap-m rl-padding-m">
+        <div class="rl-column rl-gap-m rl-width-fill rl-height-fill">
+            <div class="rl-column rl-gap-s rl-border rl-radius-m rl-padding-m">
                 <div>Recent Activity</div>
                 <div class="rl-divider"></div>
                 <div>Activity 1</div>
                 <div>Activity 2</div>
-                <div>Activity 3</div>
             </div>
-            <div class="rl-stack rl-height-fill rl-gap-s rl-border rl-radius-m rl-padding-m">
+            <div class="rl-column rl-gap-s rl-height-fill rl-scroll rl-border rl-radius-m rl-padding-m">
                 <div>Main Content</div>
                 <div class="rl-divider"></div>
                 <div>Content grows to fill space</div>
                 <div>Scrollable if needed</div>
             </div>
         </div>
-        <div class="rl-stack rl-gap-m" style="flex: 1; min-width: 15em;">
-            <div class="rl-stack rl-gap-s rl-border rl-radius-m rl-padding-m">
+        <div class="rl-column rl-gap-m rl-width-fill rl-height-fill">
+            <div class="rl-column rl-gap-s rl-border rl-radius-m rl-padding-m">
                 <div>Stats</div>
                 <div class="rl-divider"></div>
                 <div>Users: 1,234</div>
                 <div>Revenue: $56,789</div>
             </div>
-            <div class="rl-stack rl-height-fill rl-gap-s rl-border rl-radius-m rl-padding-m">
+            <div class="rl-column rl-gap-s rl-height-fill rl-scroll rl-border rl-radius-m rl-padding-m">
                 <div>Notifications</div>
                 <div class="rl-divider"></div>
                 <div>Notification 1</div>
@@ -356,85 +261,28 @@ Height modifiers organize dashboard widgets and panels.
 </div>
 ```
 
-### Application shells
-
-Complete application layouts with navigation and content areas.
-
-```preview|debug
-<div class="rl-stack" style="height: 30em; border: 1px solid #ccc;">
-    <div class="rl-flank rl-gap-m rl-border rl-padding-m">
-        <div class="rl-cluster rl-gap-m">
-            <div class="rl-frame" style="height: 2em; width: 2em; background: #e0e0e0; border-radius: 0.25rem;"></div>
-            <div style="font-weight: bold;">My Application</div>
-        </div>
-        <div class="rl-cluster rl-gap-m">
-            <div>Search</div>
-            <div>User</div>
-        </div>
-    </div>
-    <div class="rl-flank rl-height-fill">
-        <div class="rl-stack rl-border" style="width: 14em;">
-            <div class="rl-padding-m">Navigation</div>
-            <div class="rl-divider"></div>
-            <div class="rl-stack rl-height-fill rl-padding-m rl-gap-s">
-                <div>Dashboard</div>
-                <div>Projects</div>
-                <div>Team</div>
-                <div>Analytics</div>
-                <div>Reports</div>
-                <div>Settings</div>
-                <div>Help</div>
-            </div>
-        </div>
-        <div class="rl-stack rl-height-fill">
-            <div class="rl-flank rl-gap-m rl-border rl-padding-m">
-                <div style="font-size: 1.2em; font-weight: bold;">Page Title</div>
-                <div class="rl-cluster rl-gap-m">
-                    <div class="rl-border rl-padding-s rl-radius-s">Action</div>
-                    <div class="rl-border rl-padding-s rl-radius-s">More</div>
-                </div>
-            </div>
-            <div class="rl-stack rl-height-fill rl-padding-l rl-gap-m">
-                <div>Page Content Area</div>
-                <div>This area fills all remaining vertical space</div>
-                <div>Scrolls when content exceeds available height</div>
-                <div class="rl-grid rl-gap-m">
-                    <div class="rl-border rl-padding-m rl-radius-m">Card 1</div>
-                    <div class="rl-border rl-padding-m rl-radius-m">Card 2</div>
-                    <div class="rl-border rl-padding-m rl-radius-m">Card 3</div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-```
-
-### Modal and dialog layouts
-
-Height modifiers create properly sized modal content areas.
+#### Dialog
 
 ```preview
 <div class="rl-frame" style="height: 25em; background: rgba(0,0,0,0.1);">
-    <div class="rl-stack rl-border rl-radius-m" style="width: 25em; height: 18em; background: white;">
-        <div class="rl-flank rl-gap-m rl-border rl-padding-m">
-            <div style="font-weight: bold;">Modal Title</div>
+    <div class="rl-column rl-border rl-radius-m" style="width: 25em; height: 18em; background: white;">
+        <div class="rl-row rl-justify-between rl-gap-m rl-padding-m">
+            <div style="font-weight: bold;">Dialog Title</div>
             <div>✕</div>
         </div>
         <div class="rl-divider"></div>
-        <div class="rl-stack rl-height-fill rl-padding-l rl-gap-m">
-            <div>Modal content area</div>
-            <div>Fills available space between header and footer</div>
+        <div class="rl-column rl-height-fill rl-scroll rl-padding-l rl-gap-m">
+            <div>Dialog content area</div>
+            <div>Fills the space between header and footer</div>
             <div>Scrolls if content is too long</div>
             <div>More content...</div>
             <div>Even more content...</div>
+            <div>And the last line</div>
         </div>
         <div class="rl-divider"></div>
-        <div class="rl-split rl-gap-m rl-border rl-padding-m">
-            <div></div>
-            <div class="rl-cluster rl-gap-m">
-                <div class="rl-border rl-padding-s rl-radius-s">Cancel</div>
-                <div class="rl-border rl-padding-s rl-radius-s">Save</div>
-            </div>
+        <div class="rl-row rl-justify-end rl-gap-m rl-padding-m">
+            <div class="rl-border rl-padding-s rl-radius-s">Cancel</div>
+            <div class="rl-border rl-padding-s rl-radius-s">Save</div>
         </div>
     </div>
 </div>
@@ -442,26 +290,24 @@ Height modifiers create properly sized modal content areas.
 
 ### Comparison: height-full vs height-fill
 
-Understanding when to use each modifier:
-
 ```preview|debug
-<div class="rl-split rl-gap-m">
-    <div class="rl-stack rl-gap-s" style="flex: 1;">
+<div class="rl-row rl-align-start rl-gap-m">
+    <div class="rl-column rl-gap-s rl-width-fill">
         <div>Using height-full (requires parent height):</div>
         <div style="height: 15em; border: 1px solid #ccc;">
-            <div class="rl-stack rl-height-full rl-border rl-padding-m">
+            <div class="rl-column rl-height-full rl-border rl-padding-m">
                 <div>Fills 100% of parent</div>
                 <div>Parent must have height</div>
             </div>
         </div>
     </div>
-    <div class="rl-stack rl-gap-s" style="flex: 1;">
-        <div>Using height-fill (for flex layouts):</div>
-        <div class="rl-stack" style="height: 15em; border: 1px solid #ccc;">
+    <div class="rl-column rl-gap-s rl-width-fill">
+        <div>Using height-fill (in a column):</div>
+        <div class="rl-column" style="height: 15em; border: 1px solid #ccc;">
             <div class="rl-border rl-padding-m">Fixed item</div>
-            <div class="rl-stack rl-height-fill rl-border rl-padding-m">
+            <div class="rl-column rl-height-fill rl-border rl-padding-m">
                 <div>Grows to fill remaining</div>
-                <div>Works in flex context</div>
+                <div>Takes what the column leaves</div>
             </div>
         </div>
     </div>
@@ -470,47 +316,27 @@ Understanding when to use each modifier:
 
 ### Usage notes
 
-The height modifiers enable flexible vertical layouts:
-
 - **`rl-height-full`**:
-  - Sets `height: 100%` with `overflow-y: auto`
-  - Requires parent element to have defined height
-  - Best for: Simple full-height containers, single-level layouts
-  - Scrolls automatically when content overflows
+  - Sets `height: 100%`; the parent needs a set height
+  - Doesn't scroll on its own; add `rl-scroll`
+  - Inside a column, keeps its height instead of shrinking next to other elements
 
 - **`rl-height-fill`**:
-  - Sets `flex: 1 1 0` with `min-height: 0`, `height: auto`, and `overflow-y: auto`
-  - Works within flexbox layouts (stack, cluster, flank, split, etc.)
-  - Best for: Application layouts, content areas that grow to fill available space
-  - Distributes space among multiple fill containers
-  - Scrolls automatically when content overflows
+  - In a column: grows to take the remaining height, and can shrink below its content (`flex: 999 1 auto; min-height: 0`)
+  - In a row: stretches to the row's height (`align-self: stretch`)
 
-- **Key differences**:
-  - `height-full` is absolute (100% of parent)
-  - `height-fill` is relative (grows within flex layout)
-  - `height-fill` works with multiple siblings (distributes space)
-  - `height-full` replaces parent height completely
+- **`rl-width-fill`**:
+  - In a row: grows to take the remaining width (`flex: 999 1 0`), and wraps to its own line at its longest word; with `rl-nowrap`, it can get narrower than its content instead
+  - In a column: stretches across the column's width (`align-self: stretch`)
+
+- **`rl-scroll`**:
+  - Sets `overflow: auto`, so the element scrolls when its content doesn't fit
+  - Put it on the innermost area that should scroll
 
 - **Common patterns**:
-  - Header + content + footer: Use `height-fill` on content
-  - Sidebar layouts: Use `height-fill` on main content area
-  - Scrollable regions: Both modifiers enable automatic scrolling
-  - Multiple sections: Use multiple `height-fill` to distribute space equally
+  - Header + content + footer: `rl-height-fill` on the content; the page scrolls when the column has a `min-height`
+  - Fixed header with a scrolling content area: a column with a set `height`, and `rl-height-fill rl-scroll` on the content
+  - Sidebar next to content: `rl-width-fill` on the content
+  - App shell: an `rl-row rl-nowrap rl-height-fill` inside the column, with `rl-height-fill rl-scroll` on each area that scrolls
 
-- **Important considerations**:
-  - Root container needs defined height for height modifiers to work
-  - Use `overflow-y: auto` (built-in) for long content
-  - `min-height: 0` (in height-fill) prevents flex items from overflowing
-  - Combine with other modifiers (padding, border, gap) for complete layouts
-
-Height modifiers are essential for creating modern application interfaces with fixed headers/footers and scrollable content areas. They eliminate the need for manual height calculations and enable truly flexible, responsive vertical layouts.
-
-### Browser compatibility
-
-Both height modifiers use standard CSS properties with excellent browser support:
-- `height: 100%` - Universal support
-- `flex: 1 1 0` - Modern browsers (IE10+)
-- `overflow-y: auto` - Universal support
-- `min-height: 0` - Modern browsers
-
-For production use, these modifiers work reliably across all modern browsers and gracefully degrade in older browsers.
+The [recipes](#/content/start/recipes) put these together.

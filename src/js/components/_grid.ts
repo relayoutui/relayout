@@ -10,6 +10,7 @@ import { _heightCss } from '../mods/_height.css';
 import { _justifyCss } from '../mods/_justify.css';
 import { _paddingCss } from '../mods/_padding.css';
 import { _radiusCss } from '../mods/_radius.css';
+import { _scrollCss } from '../mods/_scroll.css';
 import { _shadowCss } from '../mods/_shadow.css';
 import { _widthCss } from '../mods/_width.css';
 
@@ -28,6 +29,7 @@ export class Grid extends SlotElement
         _justifyCss,
         _paddingCss,
         _radiusCss,
+        _scrollCss,
         _shadowCss,
         _widthCss,
     ];

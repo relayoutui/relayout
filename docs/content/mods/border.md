@@ -4,14 +4,14 @@ The border modifier adds a border around a layout container. The border uses the
 
 Apply class `rl-border` to a layout container to add a border around it.
 
-### Border with stack
+### Border with column
 
-Borders on stacks create clear visual boundaries for vertical content groups.
+Borders on columns create clear visual boundaries for vertical content groups.
 
 #### `rl-border`
 
 ```preview
-<div class="rl-stack rl-border rl-padding-m">
+<div class="rl-column rl-border rl-padding-m">
     <div>Item 1</div>
     <div>Item 2</div>
     <div>Item 3</div>
@@ -19,19 +19,19 @@ Borders on stacks create clear visual boundaries for vertical content groups.
 ```
 
 ```preview
-<div class="rl-stack rl-border rl-gap-m rl-padding-l">
+<div class="rl-column rl-border rl-gap-m rl-padding-l">
     <div>Profile Information</div>
     <div>Account Settings</div>
     <div>Privacy Options</div>
 </div>
 ```
 
-### Border with cluster
+### Border with row
 
-Borders on clusters are useful for creating contained groups of tags, badges, or buttons.
+Borders on rows are useful for creating contained groups of tags, badges, or buttons.
 
 ```preview
-<div class="rl-cluster rl-border rl-gap-m rl-padding-m">
+<div class="rl-row rl-border rl-gap-m rl-padding-m">
     <div>Tag 1</div>
     <div>Tag 2</div>
     <div>Tag 3</div>
@@ -40,48 +40,11 @@ Borders on clusters are useful for creating contained groups of tags, badges, or
 ```
 
 ```preview
-<div class="rl-cluster rl-border rl-gap-s rl-padding-l">
+<div class="rl-row rl-border rl-gap-s rl-padding-l">
     <div>React</div>
     <div>Vue</div>
     <div>Angular</div>
     <div>Svelte</div>
-</div>
-```
-
-### Border with flank
-
-Borders on flanks are perfect for navigation bars, toolbars, and header layouts.
-
-```preview
-<div class="rl-flank rl-border rl-gap-m rl-padding-m">
-    <div>Logo</div>
-    <div>Navigation Menu</div>
-</div>
-```
-
-```preview
-<div class="rl-flank rl-border rl-gap-l rl-padding-l">
-    <div>Brand Name</div>
-    <div>Main Content Area</div>
-</div>
-```
-
-### Border with split
-
-Borders on splits create clear containers for space-distributed content.
-
-```preview
-<div class="rl-split rl-border rl-gap-m rl-padding-m">
-    <div>Left</div>
-    <div>Center</div>
-    <div>Right</div>
-</div>
-```
-
-```preview
-<div class="rl-split rl-border rl-gap-m rl-padding-l">
-    <div>Start</div>
-    <div>End</div>
 </div>
 ```
 
@@ -133,16 +96,16 @@ Borders on frames create clear boundaries for centered content, useful for modal
 Borders can be combined with border-radius modifiers to create rounded corners. The `--rl-radius-default` variable controls the default radius when `rl-border` is applied.
 
 ```preview
-<div class="rl-stack rl-gap-m">
-    <div class="rl-stack rl-border rl-radius-s rl-padding-m rl-gap-s">
+<div class="rl-column rl-gap-m">
+    <div class="rl-column rl-border rl-radius-s rl-padding-m rl-gap-s">
         <div>Small radius (0.25rem)</div>
         <div>Creates subtle rounded corners</div>
     </div>
-    <div class="rl-stack rl-border rl-radius-m rl-padding-m rl-gap-s">
+    <div class="rl-column rl-border rl-radius-m rl-padding-m rl-gap-s">
         <div>Medium radius (0.5rem)</div>
         <div>Moderate rounded corners</div>
     </div>
-    <div class="rl-stack rl-border rl-radius-l rl-padding-m rl-gap-s">
+    <div class="rl-column rl-border rl-radius-l rl-padding-m rl-gap-s">
         <div>Large radius (1rem)</div>
         <div>Prominent rounded corners</div>
     </div>
@@ -150,7 +113,7 @@ Borders can be combined with border-radius modifiers to create rounded corners. 
 ```
 
 ```preview
-<div class="rl-cluster rl-border rl-radius-xl rl-gap-m rl-padding-l">
+<div class="rl-row rl-border rl-radius-xl rl-gap-m rl-padding-l">
     <div>Button 1</div>
     <div>Button 2</div>
     <div>Button 3</div>
@@ -162,7 +125,7 @@ Borders can be combined with border-radius modifiers to create rounded corners. 
 While the border modifier is typically applied to containers, individual items can also have borders for more complex designs.
 
 ```preview
-<div class="rl-stack rl-gap-m">
+<div class="rl-column rl-gap-m">
     <div class="rl-border rl-radius-m rl-padding-m">Item with border 1</div>
     <div class="rl-border rl-radius-m rl-padding-m">Item with border 2</div>
     <div class="rl-border rl-radius-m rl-padding-m">Item with border 3</div>
@@ -183,9 +146,9 @@ While the border modifier is typically applied to containers, individual items c
 Borders can be applied at multiple levels to create layered visual hierarchies.
 
 ```preview
-<div class="rl-stack rl-border rl-radius-m rl-gap-m rl-padding-l">
+<div class="rl-column rl-border rl-radius-m rl-gap-m rl-padding-l">
     <div>Outer container with border</div>
-    <div class="rl-stack rl-border rl-radius-s rl-gap-s rl-padding-m">
+    <div class="rl-column rl-border rl-radius-s rl-gap-s rl-padding-m">
         <div>Nested container</div>
         <div>Also with border</div>
     </div>
@@ -193,13 +156,13 @@ Borders can be applied at multiple levels to create layered visual hierarchies.
 ```
 
 ```preview
-<div class="rl-stack rl-border rl-radius-l rl-gap-l rl-padding-xl">
-    <div class="rl-cluster rl-border rl-radius-m rl-gap-m rl-padding-m">
+<div class="rl-column rl-border rl-radius-l rl-gap-l rl-padding-xl">
+    <div class="rl-row rl-border rl-radius-m rl-gap-m rl-padding-m">
         <div>Tag 1</div>
         <div>Tag 2</div>
         <div>Tag 3</div>
     </div>
-    <div class="rl-split rl-border rl-radius-m rl-gap-m rl-padding-m">
+    <div class="rl-row rl-justify-between rl-border rl-radius-m rl-gap-m rl-padding-m">
         <div>Left</div>
         <div>Right</div>
     </div>
@@ -211,12 +174,12 @@ Borders can be applied at multiple levels to create layered visual hierarchies.
 Borders combine with other modifiers to create complete UI components.
 
 ```preview
-<div class="rl-stack rl-border rl-radius-m">
+<div class="rl-column rl-border rl-radius-m">
     <div class="rl-padding-m">Header Section</div>
     <div class="rl-divider"></div>
     <div class="rl-padding-m">Content Area</div>
     <div class="rl-divider"></div>
-    <div class="rl-split rl-gap-m rl-padding-m">
+    <div class="rl-row rl-justify-between rl-gap-m rl-padding-m">
         <div>Cancel</div>
         <div>Save</div>
     </div>
@@ -224,10 +187,10 @@ Borders combine with other modifiers to create complete UI components.
 ```
 
 ```preview
-<div class="rl-stack rl-gap-m">
-    <div class="rl-flank rl-border rl-radius-s rl-gap-m rl-padding-m">
+<div class="rl-column rl-gap-m">
+    <div class="rl-row rl-border rl-radius-s rl-gap-m rl-padding-m">
         <div>Navigation</div>
-        <div>User Menu</div>
+        <div class="rl-width-fill">User Menu</div>
     </div>
     <div class="rl-grid rl-border rl-radius-s rl-gap-m rl-padding-l">
         <div>Dashboard 1</div>
@@ -243,18 +206,18 @@ Borders combine with other modifiers to create complete UI components.
 Borders are essential for creating card-based layouts and panels.
 
 ```preview
-<div class="rl-stack rl-border rl-radius-l rl-gap-m rl-padding-l">
-    <div class="rl-stack rl-gap-s">
+<div class="rl-column rl-border rl-radius-l rl-gap-m rl-padding-l">
+    <div class="rl-column rl-gap-s">
         <h3>Card Title</h3>
         <p>Card description goes here with relevant information.</p>
     </div>
-    <div class="rl-cluster rl-gap-s">
+    <div class="rl-row rl-gap-s">
         <div>Tag A</div>
         <div>Tag B</div>
         <div>Tag C</div>
     </div>
     <div class="rl-divider"></div>
-    <div class="rl-split rl-gap-m">
+    <div class="rl-row rl-justify-between rl-gap-m">
         <div>Details</div>
         <div>Action</div>
     </div>
@@ -263,15 +226,15 @@ Borders are essential for creating card-based layouts and panels.
 
 ```preview
 <div class="rl-grid rl-gap-m">
-    <div class="rl-stack rl-border rl-radius-m rl-padding-m rl-gap-s">
+    <div class="rl-column rl-border rl-radius-m rl-padding-m rl-gap-s">
         <div>Product 1</div>
         <div>$99.99</div>
     </div>
-    <div class="rl-stack rl-border rl-radius-m rl-padding-m rl-gap-s">
+    <div class="rl-column rl-border rl-radius-m rl-padding-m rl-gap-s">
         <div>Product 2</div>
         <div>$149.99</div>
     </div>
-    <div class="rl-stack rl-border rl-radius-m rl-padding-m rl-gap-s">
+    <div class="rl-column rl-border rl-radius-m rl-padding-m rl-gap-s">
         <div>Product 3</div>
         <div>$199.99</div>
     </div>
@@ -283,7 +246,7 @@ Borders are essential for creating card-based layouts and panels.
 Borders and dividers work together to create well-structured layouts with clear sections.
 
 ```preview
-<div class="rl-stack rl-border rl-radius-m">
+<div class="rl-column rl-border rl-radius-m">
     <div class="rl-padding-m">Dashboard</div>
     <div class="rl-divider"></div>
     <div class="rl-padding-m">Projects</div>
@@ -295,10 +258,10 @@ Borders and dividers work together to create well-structured layouts with clear 
 ```
 
 ```preview
-<div class="rl-flank rl-border rl-radius-s rl-gap-m rl-padding-m">
+<div class="rl-row rl-border rl-radius-s rl-gap-m rl-padding-m">
     <div>Home</div>
     <div class="rl-divider vertical"></div>
-    <div class="rl-cluster rl-gap-m">
+    <div class="rl-row rl-gap-m rl-width-fill">
         <div>Products</div>
         <div class="rl-divider vertical"></div>
         <div>Services</div>

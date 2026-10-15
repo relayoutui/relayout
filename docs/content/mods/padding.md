@@ -14,14 +14,14 @@ Apply class `rl-padding-*` to a layout container, where `*` can be `0`, `xs`, `s
 - **`rl-padding-xl`** - Extra large padding (1.5rem / 24px)
 - **`rl-padding-2xl`** - Double extra large padding (2.25rem / 36px)
 
-### Padding with stack
+### Padding with column
 
-Padding creates internal spacing around the stack container, pushing content away from all edges.
+Padding creates internal spacing around the column container, pushing content away from all edges.
 
 #### `rl-padding-0`
 
 ```preview|debug
-<div class="rl-stack rl-padding-0 rl-border">
+<div class="rl-column rl-padding-0 rl-border">
     <div>Item 1</div>
     <div>Item 2</div>
     <div>Item 3</div>
@@ -31,7 +31,7 @@ Padding creates internal spacing around the stack container, pushing content awa
 #### `rl-padding-s`
 
 ```preview|debug
-<div class="rl-stack rl-padding-s rl-border">
+<div class="rl-column rl-padding-s rl-border">
     <div>Item 1</div>
     <div>Item 2</div>
     <div>Item 3</div>
@@ -41,7 +41,7 @@ Padding creates internal spacing around the stack container, pushing content awa
 #### `rl-padding-m`
 
 ```preview|debug
-<div class="rl-stack rl-padding-m rl-border">
+<div class="rl-column rl-padding-m rl-border">
     <div>Item 1</div>
     <div>Item 2</div>
     <div>Item 3</div>
@@ -51,7 +51,7 @@ Padding creates internal spacing around the stack container, pushing content awa
 #### `rl-padding-l`
 
 ```preview|debug
-<div class="rl-stack rl-padding-l rl-border">
+<div class="rl-column rl-padding-l rl-border">
     <div>Item 1</div>
     <div>Item 2</div>
     <div>Item 3</div>
@@ -61,7 +61,7 @@ Padding creates internal spacing around the stack container, pushing content awa
 #### `rl-padding-xl`
 
 ```preview|debug
-<div class="rl-stack rl-padding-xl rl-border">
+<div class="rl-column rl-padding-xl rl-border">
     <div>Item 1</div>
     <div>Item 2</div>
     <div>Item 3</div>
@@ -71,21 +71,21 @@ Padding creates internal spacing around the stack container, pushing content awa
 #### `rl-padding-2xl`
 
 ```preview|debug
-<div class="rl-stack rl-padding-2xl rl-border">
+<div class="rl-column rl-padding-2xl rl-border">
     <div>Item 1</div>
     <div>Item 2</div>
     <div>Item 3</div>
 </div>
 ```
 
-### Padding with cluster
+### Padding with row
 
-In cluster layouts, padding creates breathing room around the wrapped items, preventing them from touching the container edges.
+In row layouts, padding creates breathing room around the wrapped items, preventing them from touching the container edges.
 
 #### `rl-padding-m`
 
 ```preview|debug
-<div class="rl-cluster rl-gap-s rl-padding-m rl-border" style="width: 20em;">
+<div class="rl-row rl-gap-s rl-padding-m rl-border" style="width: 20em;">
     <div>Tag 1</div>
     <div>Tag 2</div>
     <div>Tag 3</div>
@@ -98,7 +98,7 @@ In cluster layouts, padding creates breathing room around the wrapped items, pre
 #### `rl-padding-l`
 
 ```preview|debug
-<div class="rl-cluster rl-gap-m rl-padding-l rl-border">
+<div class="rl-row rl-gap-m rl-padding-l rl-border">
     <div>Badge A</div>
     <div>Badge B</div>
     <div>Badge C</div>
@@ -109,74 +109,10 @@ In cluster layouts, padding creates breathing room around the wrapped items, pre
 #### `rl-padding-xl`
 
 ```preview|debug
-<div class="rl-cluster rl-gap-m rl-padding-xl rl-border">
+<div class="rl-row rl-gap-m rl-padding-xl rl-border">
     <div>Button 1</div>
     <div>Button 2</div>
     <div>Button 3</div>
-</div>
-```
-
-### Padding with flank
-
-Padding in flank layouts creates space around the entire horizontal arrangement, useful for navigation bars and toolbars.
-
-#### `rl-padding-m`
-
-```preview|debug
-<div class="rl-flank rl-gap-m rl-padding-m rl-border">
-    <div>Logo</div>
-    <div>Navigation Menu</div>
-</div>
-```
-
-#### `rl-padding-l`
-
-```preview|debug
-<div class="rl-flank rl-gap-l rl-padding-l rl-border">
-    <div>Brand</div>
-    <div>Main Content Area</div>
-</div>
-```
-
-#### `rl-padding-xl`
-
-```preview|debug
-<div class="rl-flank rl-gap-m rl-padding-xl rl-border">
-    <div>Left</div>
-    <div>Right fills space</div>
-</div>
-```
-
-### Padding with split
-
-In split layouts, padding creates consistent spacing around the space-distributed items.
-
-#### `rl-padding-m`
-
-```preview|debug
-<div class="rl-split rl-gap-m rl-padding-m rl-border">
-    <div>Left</div>
-    <div>Center</div>
-    <div>Right</div>
-</div>
-```
-
-#### `rl-padding-l`
-
-```preview|debug
-<div class="rl-split rl-gap-m rl-padding-l rl-border">
-    <div>Start</div>
-    <div>End</div>
-</div>
-```
-
-#### `rl-padding-xl`
-
-```preview|debug
-<div class="rl-split rl-gap-m rl-padding-xl rl-border">
-    <div>Item A</div>
-    <div>Item B</div>
-    <div>Item C</div>
 </div>
 ```
 
@@ -252,7 +188,7 @@ In frame layouts, padding creates space between the container edges and the cent
 Padding and gap work together: padding creates space around the container, while gap creates space between items inside it.
 
 ```preview|debug
-<div class="rl-stack rl-gap-m rl-padding-l rl-border">
+<div class="rl-column rl-gap-m rl-padding-l rl-border">
     <div>Gap controls spacing between items</div>
     <div>Padding controls spacing from container edges</div>
     <div>They work independently</div>
@@ -260,7 +196,7 @@ Padding and gap work together: padding creates space around the container, while
 ```
 
 ```preview|debug
-<div class="rl-cluster rl-gap-s rl-padding-m rl-border" style="width: 25em;">
+<div class="rl-row rl-gap-s rl-padding-m rl-border" style="width: 25em;">
     <div>Item 1</div>
     <div>Item 2</div>
     <div>Item 3</div>
@@ -284,23 +220,23 @@ Padding and gap work together: padding creates space around the container, while
 Visual comparison of different padding sizes on the same layout:
 
 ```preview
-<div class="rl-stack rl-gap-m">
-    <div class="rl-stack rl-padding-xs rl-border">
+<div class="rl-column rl-gap-m">
+    <div class="rl-column rl-padding-xs rl-border">
         <div>Extra small (xs) - 0.125rem</div>
     </div>
-    <div class="rl-stack rl-padding-s rl-border">
+    <div class="rl-column rl-padding-s rl-border">
         <div>Small (s) - 0.25rem</div>
     </div>
-    <div class="rl-stack rl-padding-m rl-border">
+    <div class="rl-column rl-padding-m rl-border">
         <div>Medium (m) - 0.5rem</div>
     </div>
-    <div class="rl-stack rl-padding-l rl-border">
+    <div class="rl-column rl-padding-l rl-border">
         <div>Large (l) - 1rem</div>
     </div>
-    <div class="rl-stack rl-padding-xl rl-border">
+    <div class="rl-column rl-padding-xl rl-border">
         <div>Extra large (xl) - 1.5rem</div>
     </div>
-    <div class="rl-stack rl-padding-2xl rl-border">
+    <div class="rl-column rl-padding-2xl rl-border">
         <div>Double extra large (2xl) - 2.25rem</div>
     </div>
 </div>
@@ -311,10 +247,10 @@ Visual comparison of different padding sizes on the same layout:
 Padding is particularly useful for creating structured, bordered layouts with proper internal spacing.
 
 ```preview
-<div class="rl-stack rl-gap-m rl-padding-l rl-border rl-radius-m">
+<div class="rl-column rl-gap-m rl-padding-l rl-border rl-radius-m">
     <div>Profile Card</div>
     <div class="rl-divider"></div>
-    <div class="rl-cluster rl-gap-s">
+    <div class="rl-row rl-gap-s">
         <div>Edit</div>
         <div>Share</div>
         <div>Delete</div>
@@ -323,10 +259,10 @@ Padding is particularly useful for creating structured, bordered layouts with pr
 ```
 
 ```preview
-<div class="rl-stack rl-gap-m">
-    <div class="rl-flank rl-gap-m rl-padding-m rl-border rl-radius-s">
+<div class="rl-column rl-gap-m">
+    <div class="rl-row rl-gap-m rl-padding-m rl-border rl-radius-s">
         <div>Header</div>
-        <div>Actions</div>
+        <div class="rl-width-fill">Actions</div>
     </div>
     <div class="rl-grid rl-gap-m rl-padding-l rl-border rl-radius-m">
         <div>Content 1</div>
@@ -338,12 +274,12 @@ Padding is particularly useful for creating structured, bordered layouts with pr
 ```
 
 ```preview
-<div class="rl-split rl-gap-m rl-padding-l rl-border rl-radius-l">
-    <div class="rl-stack rl-gap-s">
+<div class="rl-row rl-justify-between rl-gap-m rl-padding-l rl-border rl-radius-l">
+    <div class="rl-column rl-gap-s">
         <div>Section A</div>
         <div>Details here</div>
     </div>
-    <div class="rl-stack rl-gap-s">
+    <div class="rl-column rl-gap-s">
         <div>Section B</div>
         <div>Details here</div>
     </div>
@@ -355,12 +291,12 @@ Padding is particularly useful for creating structured, bordered layouts with pr
 Padding can be applied at different levels to create complex spacing hierarchies.
 
 ```preview
-<div class="rl-stack rl-gap-l rl-padding-xl rl-border rl-radius-m">
-    <div class="rl-stack rl-gap-m rl-padding-l rl-border rl-radius-s">
+<div class="rl-column rl-gap-l rl-padding-xl rl-border rl-radius-m">
+    <div class="rl-column rl-gap-m rl-padding-l rl-border rl-radius-s">
         <div>Nested container with its own padding</div>
         <div>Creates layered spacing</div>
     </div>
-    <div class="rl-cluster rl-gap-s rl-padding-m rl-border rl-radius-s">
+    <div class="rl-row rl-gap-s rl-padding-m rl-border rl-radius-s">
         <div>Tag 1</div>
         <div>Tag 2</div>
         <div>Tag 3</div>

@@ -2,14 +2,8 @@
 
 // Keep in sync with: src/js/mods/_height.css.ts
 
-.rl-height-full { 
-    height: 100%; 
-    overflow-y: auto;
-}
+// rl-height-fill depends on the parent's direction, so its rules are in layouts/_column.scss and layouts/_row.scss
 
-.rl-height-fill {
-    flex: 1 1 0; /* allow to grow and shrink, base size 0 */
-    min-height: 0; /* prevents overflow issues */
-    height: auto;   /* let flexbox control the height */
-    overflow-y: auto;
+.rl-height-full {
+    height: 100%;
 }

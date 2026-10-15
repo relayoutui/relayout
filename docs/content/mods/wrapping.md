@@ -1,6 +1,6 @@
 ## Wrapping `(rl-nowrap, rl-nowrap-scroll, rl-wrap-reverse)`
 
-The wrapping modifier controls how elements behave when they don't fit in the available space. By default, flex-based layouts (cluster, flank, split) wrap elements to the next line when they overflow. Wrapping modifiers allow you to prevent wrapping, add horizontal scrolling, or reverse the wrap direction.
+The wrapping modifier controls how elements behave when they don't fit in the available space. By default, a row wraps its elements to the next line when they overflow. Wrapping modifiers allow you to prevent wrapping, add horizontal scrolling, or reverse the wrap direction.
 
 Wrapping modifiers are well suited for horizontal menus, tag lists, toolbars, and any layout where you need precise control over overflow and wrapping behavior.
 
@@ -17,7 +17,7 @@ The wrapping modifier comes in three variants:
 Understanding the default wrapping behavior helps clarify when to use wrapping modifiers.
 
 ```preview|debug
-<div class="rl-cluster rl-gap-m">
+<div class="rl-row rl-gap-m">
     <div>Item 1</div>
     <div>Item 2</div>
     <div>Item 3</div>
@@ -29,30 +29,30 @@ Understanding the default wrapping behavior helps clarify when to use wrapping m
 </div>
 ```
 
-By default, cluster, flank, and split layouts wrap to new lines when elements don't fit.
+By default, a row wraps to new lines when its elements don't fit.
 
-### Wrapping with stack
+### Wrapping with column
 
-Stack layouts don't wrap because they arrange elements vertically. Wrapping modifiers have no effect on stacks.
+Column layouts don't wrap because they arrange elements vertically. Wrapping modifiers have no effect on columns.
 
 ```preview|debug
-<div class="rl-stack rl-gap-m rl-nowrap">
-    <div>Stack item 1</div>
-    <div>Stack item 2</div>
-    <div>Stack item 3</div>
+<div class="rl-column rl-gap-m rl-nowrap">
+    <div>Column item 1</div>
+    <div>Column item 2</div>
+    <div>Column item 3</div>
 </div>
 ```
 
-Stacks always display elements vertically regardless of wrapping modifiers.
+Columns always display elements vertically regardless of wrapping modifiers.
 
-### Wrapping with cluster
+### Wrapping with row
 
-Clusters naturally wrap by default. Wrapping modifiers control this behavior.
+Rows naturally wrap by default. Wrapping modifiers control this behavior.
 
 #### Default wrapping (wrap)
 
 ```preview|debug
-<div class="rl-cluster rl-gap-m">
+<div class="rl-row rl-gap-m">
     <div>React</div>
     <div>Vue</div>
     <div>Angular</div>
@@ -69,7 +69,7 @@ Clusters naturally wrap by default. Wrapping modifiers control this behavior.
 Prevents wrapping, causing overflow:
 
 ```preview|debug
-<div class="rl-cluster rl-gap-m rl-nowrap">
+<div class="rl-row rl-gap-m rl-nowrap">
     <div>React</div>
     <div>Vue</div>
     <div>Angular</div>
@@ -86,7 +86,7 @@ Prevents wrapping, causing overflow:
 Prevents wrapping and adds horizontal scrolling:
 
 ```preview|debug
-<div class="rl-cluster rl-gap-m rl-nowrap-scroll">
+<div class="rl-row rl-gap-m rl-nowrap-scroll">
     <div>React</div>
     <div>Vue</div>
     <div>Angular</div>
@@ -107,7 +107,7 @@ Scroll horizontally to see all items →
 Wraps in reverse order (bottom to top):
 
 ```preview|debug
-<div class="rl-cluster rl-gap-m rl-wrap-reverse">
+<div class="rl-row rl-gap-m rl-wrap-reverse">
     <div>Tag 1</div>
     <div>Tag 2</div>
     <div>Tag 3</div>
@@ -120,104 +120,6 @@ Wraps in reverse order (bottom to top):
 ```
 
 New lines appear above instead of below.
-
-### Wrapping with flank
-
-Flanks wrap by default when the growing element can't fit.
-
-#### Default wrapping (wrap)
-
-```preview|debug
-<div class="rl-flank rl-gap-m">
-    <div>Logo</div>
-    <div>This is a long navigation menu that will wrap</div>
-</div>
-```
-
-#### `rl-nowrap`
-
-Forces all content on one line:
-
-```preview|debug
-<div class="rl-flank rl-gap-m rl-nowrap">
-    <div>Logo</div>
-    <div>This content overflows horizontally</div>
-</div>
-```
-
-#### `rl-nowrap-scroll`
-
-Single line with horizontal scrolling:
-
-```preview|debug
-<div class="rl-flank rl-gap-m rl-nowrap-scroll">
-    <div>Logo</div>
-    <div>Navigation menu that you can scroll to see fully</div>
-</div>
-```
-
-#### `rl-wrap-reverse`
-
-Reverses wrap direction:
-
-```preview|debug
-<div class="rl-flank rl-gap-m rl-wrap-reverse">
-    <div>Logo</div>
-    <div>Long navigation menu wraps upward</div>
-</div>
-```
-
-### Wrapping with split
-
-Splits wrap by default to maintain space distribution.
-
-#### Default wrapping (wrap)
-
-```preview|debug
-<div class="rl-split rl-gap-m">
-    <div>Left side</div>
-    <div>Center item</div>
-    <div>Right side</div>
-</div>
-```
-
-#### `rl-nowrap`
-
-Prevents wrapping, may compress items:
-
-```preview|debug
-<div class="rl-split rl-gap-m rl-nowrap">
-    <div>Left side content</div>
-    <div>Center</div>
-    <div>Right side content</div>
-</div>
-```
-
-#### `rl-nowrap-scroll`
-
-Single line with scrolling:
-
-```preview|debug
-<div class="rl-split rl-gap-m rl-nowrap-scroll">
-    <div>Start item</div>
-    <div>Middle item</div>
-    <div>End item</div>
-    <div>Extra item</div>
-</div>
-```
-
-#### `rl-wrap-reverse`
-
-Reverses wrap direction:
-
-```preview|debug
-<div class="rl-split rl-gap-m rl-wrap-reverse">
-    <div>Item A</div>
-    <div>Item B</div>
-    <div>Item C</div>
-    <div>Item D</div>
-</div>
-```
 
 ### Wrapping with grid
 
@@ -253,7 +155,7 @@ Wrapping modifiers create different navigation patterns.
 #### Wrapping navigation (default)
 
 ```preview
-<div class="rl-cluster rl-gap-m rl-padding-m rl-border rl-radius-m">
+<div class="rl-row rl-gap-m rl-padding-m rl-border rl-radius-m">
     <div>Home</div>
     <div>Products</div>
     <div>Services</div>
@@ -267,7 +169,7 @@ Wrapping modifiers create different navigation patterns.
 #### Scrollable navigation
 
 ```preview
-<div class="rl-cluster rl-gap-m rl-padding-m rl-border rl-radius-m rl-nowrap-scroll">
+<div class="rl-row rl-gap-m rl-padding-m rl-border rl-radius-m rl-nowrap-scroll">
     <div>Home</div>
     <div>Products</div>
     <div>Services</div>
@@ -287,7 +189,7 @@ Different wrapping behaviors for tag collections.
 #### Wrapping tags (recommended)
 
 ```preview
-<div class="rl-cluster rl-gap-s rl-padding-m rl-border rl-radius-m">
+<div class="rl-row rl-gap-s rl-padding-m rl-border rl-radius-m">
     <div class="rl-border rl-padding-s rl-radius-s">JavaScript</div>
     <div class="rl-border rl-padding-s rl-radius-s">TypeScript</div>
     <div class="rl-border rl-padding-s rl-radius-s">React</div>
@@ -301,7 +203,7 @@ Different wrapping behaviors for tag collections.
 #### Scrollable tags
 
 ```preview
-<div class="rl-cluster rl-gap-s rl-padding-m rl-border rl-radius-m rl-nowrap-scroll">
+<div class="rl-row rl-gap-s rl-padding-m rl-border rl-radius-m rl-nowrap-scroll">
     <div class="rl-border rl-padding-s rl-radius-s">JavaScript</div>
     <div class="rl-border rl-padding-s rl-radius-s">TypeScript</div>
     <div class="rl-border rl-padding-s rl-radius-s">React</div>
@@ -318,9 +220,9 @@ Different wrapping behaviors for tag collections.
 Toolbars benefit from nowrap-scroll for many actions.
 
 ```preview
-<div class="rl-flank rl-gap-m rl-padding-m rl-border">
+<div class="rl-row rl-gap-m rl-padding-m rl-border">
     <div style="font-weight: bold;">Document.txt</div>
-    <div class="rl-cluster rl-gap-s rl-nowrap-scroll">
+    <div class="rl-row rl-gap-s rl-nowrap-scroll rl-width-fill">
         <div class="rl-border rl-padding-s rl-radius-s">Save</div>
         <div class="rl-border rl-padding-s rl-radius-s">Undo</div>
         <div class="rl-border rl-padding-s rl-radius-s">Redo</div>
@@ -337,8 +239,8 @@ Toolbars benefit from nowrap-scroll for many actions.
 Scrollable tabs for interfaces with many tabs.
 
 ```preview
-<div class="rl-stack rl-border rl-radius-m">
-    <div class="rl-cluster rl-gap-0 rl-nowrap-scroll rl-padding-s">
+<div class="rl-column rl-border rl-radius-m">
+    <div class="rl-row rl-gap-0 rl-nowrap-scroll rl-padding-s">
         <div class="rl-padding-m" style="border-bottom: 2px solid currentColor;">Tab 1</div>
         <div class="rl-padding-m">Tab 2</div>
         <div class="rl-padding-m">Tab 3</div>
@@ -359,7 +261,7 @@ Different wrapping strategies for action buttons.
 #### Wrapping buttons
 
 ```preview
-<div class="rl-cluster rl-gap-s rl-padding-m rl-border rl-radius-m">
+<div class="rl-row rl-gap-s rl-padding-m rl-border rl-radius-m">
     <div class="rl-border rl-padding-m rl-radius-s">New</div>
     <div class="rl-border rl-padding-m rl-radius-s">Open</div>
     <div class="rl-border rl-padding-m rl-radius-s">Save</div>
@@ -371,7 +273,7 @@ Different wrapping strategies for action buttons.
 #### Non-wrapping buttons
 
 ```preview
-<div class="rl-cluster rl-gap-s rl-padding-m rl-border rl-radius-m rl-nowrap">
+<div class="rl-row rl-gap-s rl-padding-m rl-border rl-radius-m rl-nowrap">
     <div class="rl-border rl-padding-m rl-radius-s">New</div>
     <div class="rl-border rl-padding-m rl-radius-s">Open</div>
     <div class="rl-border rl-padding-m rl-radius-s">Save</div>
@@ -383,10 +285,10 @@ Different wrapping strategies for action buttons.
 Visual comparison of all three behaviors:
 
 ```preview
-<div class="rl-stack rl-gap-m">
-    <div class="rl-stack rl-gap-s">
+<div class="rl-column rl-gap-m">
+    <div class="rl-column rl-gap-s">
         <div>Default (wrap):</div>
-        <div class="rl-cluster rl-gap-s rl-border rl-padding-m rl-radius-s">
+        <div class="rl-row rl-gap-s rl-border rl-padding-m rl-radius-s">
             <div>Item 1</div>
             <div>Item 2</div>
             <div>Item 3</div>
@@ -395,9 +297,9 @@ Visual comparison of all three behaviors:
             <div>Item 6</div>
         </div>
     </div>
-    <div class="rl-stack rl-gap-s">
+    <div class="rl-column rl-gap-s">
         <div>nowrap (overflow):</div>
-        <div class="rl-cluster rl-gap-s rl-border rl-padding-m rl-radius-s rl-nowrap">
+        <div class="rl-row rl-gap-s rl-border rl-padding-m rl-radius-s rl-nowrap">
             <div>Item 1</div>
             <div>Item 2</div>
             <div>Item 3</div>
@@ -406,9 +308,9 @@ Visual comparison of all three behaviors:
             <div>Item 6</div>
         </div>
     </div>
-    <div class="rl-stack rl-gap-s">
+    <div class="rl-column rl-gap-s">
         <div>nowrap-scroll (scrollable):</div>
-        <div class="rl-cluster rl-gap-s rl-border rl-padding-m rl-radius-s rl-nowrap-scroll">
+        <div class="rl-row rl-gap-s rl-border rl-padding-m rl-radius-s rl-nowrap-scroll">
             <div>Item 1</div>
             <div>Item 2</div>
             <div>Item 3</div>
@@ -425,17 +327,17 @@ Visual comparison of all three behaviors:
 Wrapping modifiers work well with gap, padding, align, and justify.
 
 ```preview
-<div class="rl-stack rl-gap-m">
-    <div class="rl-cluster rl-gap-m rl-padding-l rl-border rl-radius-m rl-justify-center rl-nowrap-scroll">
+<div class="rl-column rl-gap-m">
+    <div class="rl-row rl-gap-m rl-padding-l rl-border rl-radius-m rl-justify-center rl-nowrap-scroll">
         <div>Action 1</div>
         <div>Action 2</div>
         <div>Action 3</div>
         <div>Action 4</div>
         <div>Action 5</div>
     </div>
-    <div class="rl-flank rl-gap-l rl-padding-m rl-border rl-radius-m rl-nowrap">
+    <div class="rl-row rl-gap-l rl-padding-m rl-border rl-radius-m rl-nowrap">
         <div>Label</div>
-        <div>Content area</div>
+        <div class="rl-width-fill">Content area</div>
     </div>
 </div>
 ```
@@ -445,12 +347,12 @@ Wrapping modifiers work well with gap, padding, align, and justify.
 Combining wrapping with width constraints:
 
 ```preview
-<div class="rl-flank rl-gap-m rl-padding-m rl-border rl-radius-m rl-width-l">
-    <div class="rl-cluster rl-gap-s">
+<div class="rl-row rl-gap-m rl-padding-m rl-border rl-radius-m rl-width-l">
+    <div class="rl-row rl-gap-s">
         <div class="rl-frame" style="height: 2em; width: 2em; background: #e0e0e0; border-radius: 0.25rem;"></div>
         <div style="font-weight: bold;">Brand</div>
     </div>
-    <div class="rl-cluster rl-gap-m rl-nowrap-scroll">
+    <div class="rl-row rl-gap-m rl-nowrap-scroll rl-width-fill">
         <div>Products</div>
         <div>Solutions</div>
         <div>Resources</div>
@@ -466,22 +368,22 @@ Combining wrapping with width constraints:
 Horizontal scrolling card layouts:
 
 ```preview
-<div class="rl-stack rl-gap-m rl-border rl-radius-m rl-padding-m">
+<div class="rl-column rl-gap-m rl-border rl-radius-m rl-padding-m">
     <div style="font-weight: bold;">Featured Items</div>
-    <div class="rl-cluster rl-gap-m rl-nowrap-scroll">
-        <div class="rl-stack rl-gap-s rl-border rl-radius-m rl-padding-m">
+    <div class="rl-row rl-gap-m rl-nowrap-scroll">
+        <div class="rl-column rl-gap-s rl-border rl-radius-m rl-padding-m">
             <div>Card 1</div>
             <div>Featured content</div>
         </div>
-        <div class="rl-stack rl-gap-s rl-border rl-radius-m rl-padding-m">
+        <div class="rl-column rl-gap-s rl-border rl-radius-m rl-padding-m">
             <div>Card 2</div>
             <div>Featured content</div>
         </div>
-        <div class="rl-stack rl-gap-s rl-border rl-radius-m rl-padding-m">
+        <div class="rl-column rl-gap-s rl-border rl-radius-m rl-padding-m">
             <div>Card 3</div>
             <div>Featured content</div>
         </div>
-        <div class="rl-stack rl-gap-s rl-border rl-radius-m rl-padding-m">
+        <div class="rl-column rl-gap-s rl-border rl-radius-m rl-padding-m">
             <div>Card 4</div>
             <div>Featured content</div>
         </div>
@@ -493,12 +395,13 @@ Horizontal scrolling card layouts:
 
 The wrapping modifiers control flex-wrap behavior for horizontal layouts:
 
-- **Applicable layouts**: Only affects cluster, flank, and split (flex-based horizontal layouts)
-- **No effect on**: Stack (vertical), grid (CSS grid), frame (centering)
+- **Applicable layouts**: Only affects row
+- **No effect on**: Column (vertical), grid (CSS grid), frame (centering)
 
 - **`rl-nowrap`**:
   - Sets `flex-wrap: nowrap`
   - Elements stay on one line and may overflow
+  - An `rl-width-fill` element can get narrower than its content instead of overflowing
   - Use when: You want to prevent wrapping and don't mind overflow
   - Best for: Compact toolbars, single-line menus
 
@@ -517,7 +420,7 @@ The wrapping modifiers control flex-wrap behavior for horizontal layouts:
   - Best for: Special UI patterns, bottom-anchored wrapping
 
 - **Default behavior**:
-  - Cluster, flank, and split use `flex-wrap: wrap` by default
+  - Row uses `flex-wrap: wrap` by default
   - Elements naturally wrap to new lines when they don't fit
   - This is the most common and intuitive behavior
 
@@ -561,5 +464,5 @@ Choose the right wrapping strategy based on your use case:
 
 **Use `rl-wrap-reverse` when:**
 - Creating specialized UI patterns
-- Items should stack upward instead of downward
+- Items should column upward instead of downward
 - Working with bottom-anchored layouts
