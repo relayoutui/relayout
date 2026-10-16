@@ -2,9 +2,12 @@
 
 // Keep in sync with: src/js/mods/_width.css.ts
 
-.rl-width-xs { max-width: var(--rl-width-xs); margin: 0 auto; width: 100%; }
-.rl-width-s { max-width: var(--rl-width-s); margin: 0 auto; width: 100%; }
-.rl-width-m { max-width: var(--rl-width-m); margin: 0 auto; width: 100%; }
-.rl-width-l {  max-width: var(--rl-width-l); margin: 0 auto; width: 100%; }
-.rl-width-xl { max-width: var(--rl-width-xl); margin: 0 auto; width: 100%; }
-.rl-width-2xl { max-width: var(--rl-width-2xl); margin: 0 auto; width: 100%; }
+.rl-width-xs { max-width: var(--rl-width-xs); width: 100%; }
+.rl-width-s { max-width: var(--rl-width-s); width: 100%; }
+.rl-width-m { max-width: var(--rl-width-m); width: 100%; }
+.rl-width-l { max-width: var(--rl-width-l); width: 100%; }
+.rl-width-xl { max-width: var(--rl-width-xl); width: 100%; }
+.rl-width-2xl { max-width: var(--rl-width-2xl); width: 100%; }
+
+// centers the element itself in its parent, horizontally only; separate from the limits, so a limited element can also sit at the start, and rl-align-* and rl-justify-* still apply to it
+.rl-center-self { margin-inline: auto; }
