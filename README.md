@@ -72,6 +72,6 @@ Each layout is also a web component, and a modifier is an attribute with the cla
 Guides for each layout and modifier, and recipes for headers, sidebars and app shells:
 [relayoutui.github.io/pages/docs](https://relayoutui.github.io/pages/docs/)
 
-## License
+---
 
-See [LICENSE](LICENSE).
+Licensed under the MIT License. See [LICENSE](LICENSE) for full terms.
