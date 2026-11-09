@@ -6,6 +6,8 @@ import { css } from 'lit';
 export const _frameCss = css`
     :host {
         display: flex;
+        /* border-box, as the class form gets it from src/scss/partials/base/_base.scss */
+        box-sizing: border-box;
         align-items: center;
         justify-content: space-around;
         width: 100%;

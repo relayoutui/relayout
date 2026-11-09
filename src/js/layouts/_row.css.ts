@@ -6,6 +6,8 @@ import { css } from 'lit';
 export const _rowCss = css`
     :host {
         display: flex;
+        /* border-box, as the class form gets it from src/scss/partials/base/_base.scss */
+        box-sizing: border-box;
         flex-direction: row;
         align-items: center;
         justify-content: start;
