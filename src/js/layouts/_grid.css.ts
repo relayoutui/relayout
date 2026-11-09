@@ -8,6 +8,8 @@ import { css } from 'lit';
 export const _gridCss = css`
     :host {
         display: grid;
+        /* border-box, as the class form gets it from src/scss/partials/base/_base.scss */
+        box-sizing: border-box;
         grid-template-columns: repeat(auto-fit, minmax(min(var(--rl-grid-s), 100%), 1fr));
         gap: var(--rl-gap-default);
     }
