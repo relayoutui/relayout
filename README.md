@@ -22,8 +22,6 @@ Or load the CSS from a CDN, in the `<head>`:
 
 ## Example
 
-Put this on a page that loads the CSS:
-
 ```html
 <header class="rl-row rl-justify-between rl-gap-l rl-padding-l">
     <span>Acme</span>
