@@ -69,11 +69,11 @@ Each layout is also a web component, and a modifier is an attribute with the cla
 </rl-column>
 ```
 
-The elements load from a script, beside the css. [Web components](https://relayoutui.github.io/pages/docs/web-components/) in the docs shows how, and what each element takes.
+The elements load from a script, beside the css. [Web components](https://relayout.net/docs/web-components/) in the docs shows how, and what each element takes.
 
 ## Docs
 
-[relayoutui.github.io/pages/docs](https://relayoutui.github.io/pages/docs/)
+[relayout.net/docs](https://relayout.net/docs/)
 
 ---
 
