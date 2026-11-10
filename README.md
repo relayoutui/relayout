@@ -61,11 +61,15 @@ Modifiers go on the same element and set the rest.
 
 ## Web components
 
-Each layout is also a web component, and a modifier is an attribute with the class's name:
+Each layout is also a web component, and a modifier is an attribute with the class's name. `rl-div` is a plain box, for the modifiers that need no layout:
 
 ```html
-<rl-column rl-width-m rl-center-self>...</rl-column>
+<rl-column rl-width-m rl-center-self>
+    <rl-div rl-padding-m rl-border>...</rl-div>
+</rl-column>
 ```
+
+The elements load from a script, beside the css. [Web components](https://relayoutui.github.io/pages/docs/web-components/) in the docs shows how, and what each element takes.
 
 ## Docs
 
