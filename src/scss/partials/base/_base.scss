@@ -1,8 +1,14 @@
 /*
  * Set box-sizing to border-box for all relayout components 
  * so padding/border are included in the width.
+ * A class matches only when its name starts with rl-: the first class of the attribute, or one after
+ * a space, tab, line feed or form feed. A substring match would also catch names such as girl-card.
  */
-[class*="rl-"] {
+[class^="rl-"],
+[class*=" rl-"],
+[class*="\9rl-"],
+[class*="\Arl-"],
+[class*="\Crl-"] {
     box-sizing: border-box;
     outline: none;
 }
