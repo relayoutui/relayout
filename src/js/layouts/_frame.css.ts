@@ -15,11 +15,15 @@ export const _frameCss = css`
         overflow: visible;
     }
 
+    /* the children stay inside the frame */
     :host > ::slotted(*) {
         max-width: 100%;
         max-height: 100%;
-        overflow: auto;
     }
+
+    /* A child that should scroll takes rl-scroll, as in every other layout, and a slotted child can only be styled from
+       here. It is border-box, as the class form gets it from src/scss/partials/base/_base.scss. */
+    ::slotted([rl-scroll]) { box-sizing: border-box; overflow: auto; }
 
     :host > ::slotted(img) {
         display: block;

@@ -12,10 +12,11 @@
     height: 100%;
     overflow: visible;
 
+    /* the children stay inside the frame. One that should scroll takes rl-scroll, as in every other layout: a box that
+       scrolls clips shadows and focus rings, so it isn't the default */
     & > * {
         max-width: 100%;
         max-height: 100%;   /* cap to available height */
-        overflow: auto;     /* scrolls internally if needed */
     }
 
     & > img {
