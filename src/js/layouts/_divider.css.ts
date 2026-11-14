@@ -3,6 +3,8 @@ import { css } from 'lit';
 // Keep in sync with: src/scss/partials/layouts/_divider.scss
 
 // .rl-divider
+// A horizontal line. A divider that is a direct child of a row is a vertical one: that rule is `::slotted(rl-divider)`
+// in layouts/_row.css.ts, where the fill rules are.
 export const _dividerCss = css`
     :host {
         /* a block, as the div the class form goes on: an element's default is inline, which has no width or height */
@@ -17,14 +19,5 @@ export const _dividerCss = css`
         width: 100%;
         height: 0;
         border-top: var(--rl-border-default);
-    }
-
-    :host([vertical]) {
-        /* vertical, see the note in the SCSS */
-        width: 0;
-        height: auto;
-        min-height: 100%;
-        border-top: none;
-        border-left: var(--rl-border-default);
     }
 `;

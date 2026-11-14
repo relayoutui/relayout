@@ -20,4 +20,14 @@
 
     /* no wrap point to protect, so allow truncation */
     &.rl-nowrap > .rl-width-fill { min-width: 0; }
+
+    /* a divider is a vertical line in a row: a height of 100% would stop align-self: stretch, so a row with no height
+       gave a dot; min-height covers a row whose height is set but that isn't a flex container */
+    & > .rl-divider {
+        width: 0;
+        height: auto;
+        min-height: 100%;
+        border-top: none;
+        border-left: var(--rl-border-default);
+    }
 }
