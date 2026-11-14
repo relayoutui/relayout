@@ -8,6 +8,7 @@ import { _gapCss } from '../mods/_gap.css.js';
 import { _gradientCss } from '../mods/_gradient.css.js';
 import { _heightCss } from '../mods/_height.css.js';
 import { _justifyCss } from '../mods/_justify.css.js';
+import { _outlineCss } from '../mods/_outline.css.js';
 import { _paddingCss } from '../mods/_padding.css.js';
 import { _radiusCss } from '../mods/_radius.css.js';
 import { _scrollCss } from '../mods/_scroll.css.js';
@@ -28,6 +29,7 @@ export class Row extends SlotElement
         _gradientCss,
         _heightCss,
         _justifyCss,
+        _outlineCss,
         _paddingCss,
         _radiusCss,
         _scrollCss,
