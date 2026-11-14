@@ -19,7 +19,6 @@ export const _frameCss = css`
         max-width: 100%;
         max-height: 100%;
         overflow: auto;
-        -webkit-overflow-scrolling: touch;
     }
 
     :host > ::slotted(img) {
