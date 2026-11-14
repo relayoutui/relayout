@@ -4,9 +4,10 @@ import '../dist/css/relayout.css';
 import '../dist/js/relayout.js';
 
 // The base rule gives every element with an `rl-` class `box-sizing: border-box`, and takes the focus outline off the
-// ones that aren't controls. A control keeps the browser's focus ring, so a field that fills its row with
-// `rl-width-fill` shows where the keyboard is. The tests focus the element with the keyboard, as a user does, and read
-// the outline Chrome draws.
+// ones the keyboard can't stop on. What it can stop on keeps the browser's focus ring: a control, so a field that
+// fills its row with `rl-width-fill` shows where the keyboard is, and a box that scrolls, which Chrome lets the
+// keyboard reach, in the class form and as an element. `rl-outline-none` takes the ring off. The tests focus the
+// element with the keyboard, as a user does, and read the outline Chrome draws.
 
 interface Case
 {
@@ -85,20 +86,6 @@ describe('the focus ring', () =>
         });
     }
 
-    it('is still off on a layout container the keyboard reaches, a scroller', async () =>
-    {
-        const lines = Array.from({ length: 12 }, (_, index) => `<div>Line ${index}</div>`).join('');
-        const { stage, target } = await focus(`<div class="rl-column rl-scroll" style="height: 60px;" data-target>${lines}</div>`);
-        try
-        {
-            expect(getComputedStyle(target).outlineStyle).toBe('none');
-        }
-        finally
-        {
-            stage.remove();
-        }
-    });
-
     it('is the browser\'s own on an element whose class only looks like rl-', async () =>
     {
         const { stage, target } = await focus('<a href="#" class="girl-card" data-target>Link</a>');
@@ -110,6 +97,101 @@ describe('the focus ring', () =>
         {
             stage.remove();
         }
+    });
+});
+
+/** A box that scrolls, so the keyboard can stop on it, in the class form and as an element. */
+interface Scroller
+{
+    name: string;
+    html: (extra: string) => string;
+}
+
+const LINES = Array.from({ length: 12 }, (_, index) => `<div>Line ${index}</div>`).join('');
+const WIDE = '<div style="width: 300px;">A wide line</div><div style="width: 300px;">Another wide line</div>';
+
+const SCROLLERS: Scroller[] = [
+    { name: 'a class rl-scroll', html: extra => `<div class="rl-column rl-scroll${extra}" style="height: 60px;" data-target>${LINES}</div>` },
+    { name: 'a class rl-nowrap-scroll', html: extra => `<div class="rl-row rl-nowrap-scroll${extra}" style="width: 120px;" data-target>${WIDE}</div>` },
+    { name: 'a class rl-scroll with other classes', html: extra => `<div class="rl-gap-m rl-padding-m rl-column rl-scroll${extra}" style="height: 60px;" data-target>${LINES}</div>` },
+    { name: 'an element rl-scroll', html: extra => `<rl-column rl-scroll${extra ? ' rl-outline-none' : ''} style="height: 60px;" data-target>${LINES}</rl-column>` },
+    { name: 'an element rl-nowrap-scroll', html: extra => `<rl-row rl-nowrap-scroll${extra ? ' rl-outline-none' : ''} style="width: 120px;" data-target>${WIDE}</rl-row>` },
+];
+
+describe('a box that scrolls', () =>
+{
+    it.each(SCROLLERS)('shows the focus ring: $name', async ({ html }) =>
+    {
+        const { stage, target } = await focus(html(''));
+        try
+        {
+            expect(getComputedStyle(target).outlineStyle).not.toBe('none');
+        }
+        finally
+        {
+            stage.remove();
+        }
+    });
+
+    it.each(SCROLLERS)('shows no ring with rl-outline-none: $name', async ({ html }) =>
+    {
+        const { stage, target } = await focus(html(' rl-outline-none'));
+        try
+        {
+            expect(getComputedStyle(target).outlineStyle).toBe('none');
+        }
+        finally
+        {
+            stage.remove();
+        }
+    });
+});
+
+describe('rl-outline-none', () =>
+{
+    for (const control of CONTROLS)
+    {
+        it(`takes the ring off ${control.name}`, async () =>
+        {
+            const { stage, target } = await focus(control.html('rl-outline-none'), control.tabbable);
+            try
+            {
+                expect(getComputedStyle(target).outlineStyle).toBe('none');
+            }
+            finally
+            {
+                stage.remove();
+            }
+        });
+    }
+
+    it('takes the ring off a control that has other classes too', async () =>
+    {
+        const { stage, target } = await focus('<input class="rl-width-fill rl-outline-none" data-target>');
+        try
+        {
+            expect(getComputedStyle(target).outlineStyle).toBe('none');
+        }
+        finally
+        {
+            stage.remove();
+        }
+    });
+
+    it.each(['rl-column', 'rl-row', 'rl-grid', 'rl-frame', 'rl-div'])('is an attribute of <%s>', async tag =>
+    {
+        // With tabindex the element is a control, so it shows the ring unless the attribute takes it off. Each is read
+        // while it has the keyboard: an element that has lost it has no outline either way.
+        const withIt = await focus(`<${tag} rl-outline-none tabindex="0" data-target>Text</${tag}>`);
+        const outlineWith = getComputedStyle(withIt.target).outlineStyle;
+        withIt.stage.remove();
+
+        const without = await focus(`<${tag} tabindex="0" data-target>Text</${tag}>`);
+        const outlineWithout = getComputedStyle(without.target).outlineStyle;
+        without.stage.remove();
+
+        expect(outlineWith).toBe('none');
+        expect(outlineWithout).not.toBe('none');
     });
 });
 
