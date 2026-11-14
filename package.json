@@ -22,9 +22,10 @@
   ],
   "scripts": {
     "prepublishOnly": "npm run build",
-    "build": "npm run build:css && npm run build:js",
+    "build": "npm run build:css && npm run build:js && npm run check:types",
     "build:css": "sass src/scss/relayout.scss dist/css/relayout.css --style=compressed --no-source-map",
-    "build:js": "rollup -c"
+    "build:js": "rollup -c",
+    "check:types": "node .github/scripts/check-types.mjs"
   },
   "homepage": "https://relayout.net/",
   "repository": {
