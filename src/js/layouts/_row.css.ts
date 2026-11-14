@@ -20,5 +20,15 @@ export const _rowCss = css`
     ::slotted([rl-width-fill]) { box-sizing: border-box; flex: 999 1 0; }
     ::slotted([rl-height-fill]) { box-sizing: border-box; align-self: stretch; height: auto; }
     :host([rl-nowrap]) > ::slotted([rl-width-fill]) { min-width: 0; }
+
+    /* A divider is a vertical line in a row, see the note in src/scss/partials/layouts/_row.scss. A slotted child can only
+       be styled from here, and this beats the divider's own :host rule. */
+    ::slotted(rl-divider) {
+        width: 0;
+        height: auto;
+        min-height: 100%;
+        border-top: none;
+        border-left: var(--rl-border-default);
+    }
     ::slotted([rl-scroll]) { box-sizing: border-box; overflow: auto; }
 `;

@@ -4,6 +4,8 @@
 
 // Keep in sync with: src/js/layouts/_divider.css.ts
 
+// A horizontal line. A divider that is a direct child of a row is a vertical one: that rule is in layouts/_row.scss,
+// where the fill rules are.
 .rl-divider {
     align-self: stretch;
     border: none;
@@ -13,16 +15,4 @@
     width: 100%;
     height: 0;
     border-top: var(--rl-border-default);
-}
-
-.rl-divider {
-    &.vertical {
-        /* vertical: a height of 100% would stop align-self: stretch, so a row with no height gave a dot;
-           min-height covers a parent whose height is set but that isn't a flex container */
-        width: 0;
-        height: auto;
-        min-height: 100%;
-        border-top: none;
-        border-left: var(--rl-border-default);
-    }
 }
