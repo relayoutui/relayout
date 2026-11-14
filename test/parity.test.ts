@@ -9,14 +9,24 @@ import '../dist/js/relayout.js';
 // a rule added to an element is compared without a change here.
 
 type Form = 'class' | 'element';
-type Parent = 'block' | 'row' | 'column';
+
+// What a definition sits in. A layout is the same layout in each form, a div with its class and its element, and the
+// divider needs one because it follows the layout it is a child of. With no tag it is a plain block.
+interface Parent
+{
+    name: string;
+    tag?: string;
+    // the class of the layout. A plain div is the class form's counterpart of an element with no layout class.
+    layoutClass?: string;
+    style?: string;
+}
 
 interface Definition
 {
     tag: string;
     // The class of the same layout. A plain div is the class form's counterpart of an element with no layout class.
     layout?: string;
-    // Where it is compared: the box a layout is placed in decides how it sizes and stretches
+    // Where it is compared
     parents: Parent[];
     // false for a leaf, such as a divider
     hasChildren: boolean;
@@ -37,23 +47,34 @@ interface Box
     properties: Record<string, string>;
 }
 
+const BLOCK: Parent = { name: 'a block' };
 const DEFINITIONS: Definition[] = [
-    { tag: 'rl-column', layout: 'rl-column', parents: ['block'], hasChildren: true },
-    { tag: 'rl-row', layout: 'rl-row', parents: ['block'], hasChildren: true },
-    { tag: 'rl-grid', layout: 'rl-grid', parents: ['block'], hasChildren: true },
-    { tag: 'rl-frame', layout: 'rl-frame', parents: ['block'], hasChildren: true },
-    { tag: 'rl-div', parents: ['block'], hasChildren: true },
-    { tag: 'rl-divider', layout: 'rl-divider', parents: ['block', 'row', 'column'], hasChildren: false },
+    { tag: 'rl-column', layout: 'rl-column', parents: [BLOCK], hasChildren: true },
+    { tag: 'rl-row', layout: 'rl-row', parents: [BLOCK], hasChildren: true },
+    { tag: 'rl-grid', layout: 'rl-grid', parents: [BLOCK], hasChildren: true },
+    { tag: 'rl-frame', layout: 'rl-frame', parents: [BLOCK], hasChildren: true },
+    { tag: 'rl-div', parents: [BLOCK], hasChildren: true },
+    {
+        // A line across a column and a block, and down a row, whether the row has a height or not
+        tag: 'rl-divider',
+        layout: 'rl-divider',
+        hasChildren: false,
+        parents: [
+            BLOCK,
+            { name: 'an rl-column', tag: 'rl-column', layoutClass: 'rl-column' },
+            { name: 'an rl-row', tag: 'rl-row', layoutClass: 'rl-row' },
+            { name: 'an rl-row with a height', tag: 'rl-row', layoutClass: 'rl-row', style: 'height: 100px;' },
+            { name: 'an rl-grid', tag: 'rl-grid', layoutClass: 'rl-grid' },
+            { name: 'an rl-frame', tag: 'rl-frame', layoutClass: 'rl-frame' },
+            // The class form's counterpart is a plain div, which is content-box until it has an `rl-` class, so both are set
+            { name: 'an rl-div', tag: 'rl-div', style: 'box-sizing: border-box;' },
+        ],
+    },
 ];
 
 // The browser gives a div `unicode-bidi: isolate` and an unknown element `normal`, and no rule of Relayout sets it
 const IGNORED = new Set(['unicode-bidi']);
 const STAGE = { width: 480, height: 240 };
-const PARENTS: Record<Parent, string> = {
-    block: 'display: block;',
-    row: 'display: flex; flex-direction: row;',
-    column: 'display: flex; flex-direction: column;',
-};
 const IMAGE = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="600" height="300"/>');
 const HOST_ATTRIBUTE = /:host\(\[([^\]=\s]+)\]\)/g;
 const SLOTTED_ATTRIBUTE = /::slotted\(\[([^\]=\s]+)\]\)/g;
@@ -102,11 +123,11 @@ function mark(element: HTMLElement, names: string[], form: Form): void
     else element.classList.add(...names);
 }
 
-function build(definition: Definition, variant: Variant, parent: Parent, form: Form): { stage: HTMLElement; host: HTMLElement }
+function build(definition: Definition, variant: Variant, parent: Parent, form: Form): { stage: HTMLElement; root: HTMLElement }
 {
     const stage = document.createElement('div');
     stage.style.cssText = `position: absolute; left: 0; top: 0; width: ${STAGE.width}px; height: ${STAGE.height}px; `
-        + `font: 16px/20px sans-serif; ${PARENTS[parent]}`;
+        + 'font: 16px/20px sans-serif; display: block;';
 
     const host = document.createElement(form === 'element' ? definition.tag : 'div');
     mark(host, definition.layout && form === 'class' ? [definition.layout, ...variant.host] : variant.host, form);
@@ -126,15 +147,31 @@ function build(definition: Definition, variant: Variant, parent: Parent, form: F
         host.append(short, long, image);
     }
 
-    stage.append(host);
+    let root = host;
+    if (parent.tag)
+    {
+        // Text on each side, so a row and a column have content and the divider has neighbors to separate
+        const before = document.createElement('div');
+        before.textContent = 'Before';
+        const after = document.createElement('div');
+        after.textContent = 'After';
+
+        root = document.createElement(form === 'element' ? parent.tag : 'div');
+        if (form === 'class' && parent.layoutClass) root.classList.add(parent.layoutClass);
+        if (parent.style) root.style.cssText = parent.style;
+        root.append(before, host, after);
+    }
+
+    stage.append(root);
     document.body.append(stage);
-    return { stage, host };
+    return { stage, root };
 }
 
-function measure(stage: HTMLElement, host: HTMLElement): Box[]
+/** The outer box, which is the element or its parent, and the children of it. */
+function measure(stage: HTMLElement, root: HTMLElement): Box[]
 {
     const origin = stage.getBoundingClientRect();
-    return [host, ...host.children].map(element =>
+    return [root, ...root.children].map(element =>
     {
         const style = getComputedStyle(element);
         const rect = element.getBoundingClientRect();
@@ -152,7 +189,7 @@ function differences(classForm: Box[], elementForm: Box[]): string[]
     return classForm.flatMap((expected, index) =>
     {
         const actual = elementForm[index];
-        const name = index === 0 ? 'host' : `child ${index}`;
+        const name = index === 0 ? 'outer' : `child ${index}`;
         const lines = Object.keys({ ...expected.properties, ...actual.properties })
             .filter(property => !IGNORED.has(property) && expected.properties[property] !== actual.properties[property])
             .map(property => `${name} ${property}: class ${expected.properties[property]}, element ${actual.properties[property]}`);
@@ -168,9 +205,9 @@ async function compare(definition: Definition, variant: Variant, parent: Parent)
     const elementForm = build(definition, variant, parent, 'element');
     try
     {
-        const images = [...classForm.host.querySelectorAll('img'), ...elementForm.host.querySelectorAll('img')];
+        const images = [...classForm.root.querySelectorAll('img'), ...elementForm.root.querySelectorAll('img')];
         await Promise.all(images.map(image => image.decode()));
-        return differences(measure(classForm.stage, classForm.host), measure(elementForm.stage, elementForm.host));
+        return differences(measure(classForm.stage, classForm.root), measure(elementForm.stage, elementForm.root));
     }
     finally
     {
@@ -185,7 +222,7 @@ for (const definition of DEFINITIONS)
     {
         const cases = variantsOf(definition).flatMap(variant => definition.parents.map(parent => ({ variant, parent })));
 
-        it.each(cases)('matches its class with $variant.label in a $parent', async ({ variant, parent }) =>
+        it.each(cases)('matches its class with $variant.label in $parent.name', async ({ variant, parent }) =>
         {
             const found = await compare(definition, variant, parent);
             expect(found.length, `the element and the class differ:\n${found.join('\n')}`).toBe(0);
