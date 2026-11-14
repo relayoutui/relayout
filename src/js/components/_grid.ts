@@ -1,18 +1,18 @@
-import { SlotElement } from '../base/slot-element';
+import { SlotElement } from '../base/slot-element.js';
 import { customElement } from 'lit/decorators.js';
-import { _gridCss } from '../layouts/_grid.css';
-import { _alignCss } from '../mods/_align.css';
-import { _borderCss } from '../mods/_border.css';
-import { _colorCss } from '../mods/_color.css';
-import { _gapCss } from '../mods/_gap.css';
-import { _gradientCss } from '../mods/_gradient.css';
-import { _heightCss } from '../mods/_height.css';
-import { _justifyCss } from '../mods/_justify.css';
-import { _paddingCss } from '../mods/_padding.css';
-import { _radiusCss } from '../mods/_radius.css';
-import { _scrollCss } from '../mods/_scroll.css';
-import { _shadowCss } from '../mods/_shadow.css';
-import { _widthCss } from '../mods/_width.css';
+import { _gridCss } from '../layouts/_grid.css.js';
+import { _alignCss } from '../mods/_align.css.js';
+import { _borderCss } from '../mods/_border.css.js';
+import { _colorCss } from '../mods/_color.css.js';
+import { _gapCss } from '../mods/_gap.css.js';
+import { _gradientCss } from '../mods/_gradient.css.js';
+import { _heightCss } from '../mods/_height.css.js';
+import { _justifyCss } from '../mods/_justify.css.js';
+import { _paddingCss } from '../mods/_padding.css.js';
+import { _radiusCss } from '../mods/_radius.css.js';
+import { _scrollCss } from '../mods/_scroll.css.js';
+import { _shadowCss } from '../mods/_shadow.css.js';
+import { _widthCss } from '../mods/_width.css.js';
 
 @customElement('rl-grid')
 export class Grid extends SlotElement 
