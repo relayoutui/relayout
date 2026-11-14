@@ -43,7 +43,7 @@ const DEFINITIONS: Definition[] = [
     { tag: 'rl-grid', layout: 'rl-grid', parents: ['block'], hasChildren: true },
     { tag: 'rl-frame', layout: 'rl-frame', parents: ['block'], hasChildren: true },
     { tag: 'rl-div', parents: ['block'], hasChildren: true },
-    { tag: 'rl-divider', layout: 'rl-divider', parents: ['row', 'column'], hasChildren: false },
+    { tag: 'rl-divider', layout: 'rl-divider', parents: ['block', 'row', 'column'], hasChildren: false },
 ];
 
 // The browser gives a div `unicode-bidi: isolate` and an unknown element `normal`, and no rule of Relayout sets it
@@ -87,7 +87,9 @@ function variantsOf(definition: Definition): Variant[]
         const host = attributesIn(HOST_ATTRIBUTE, selector);
         const child = attributesIn(SLOTTED_ATTRIBUTE, selector);
         if (!host.length && !child.length) continue;
-        const label = [host.length ? `[${host.join('][')}]` : '', child.length ? ` > [${child.join('][')}]` : ''].join('');
+        const onHost = host.length ? `[${host.join('][')}]` : '';
+        const onChild = child.length ? `a child with [${child.join('][')}]` : '';
+        const label = [onHost, onChild].filter(Boolean).join(' and ');
         variants.set(label, { host, child, label });
     }
     return [...variants.values()];
@@ -183,7 +185,7 @@ for (const definition of DEFINITIONS)
     {
         const cases = variantsOf(definition).flatMap(variant => definition.parents.map(parent => ({ variant, parent })));
 
-        it.each(cases)('$variant.label in a $parent', async ({ variant, parent }) =>
+        it.each(cases)('matches its class with $variant.label in a $parent', async ({ variant, parent }) =>
         {
             const found = await compare(definition, variant, parent);
             expect(found.length, `the element and the class differ:\n${found.join('\n')}`).toBe(0);
