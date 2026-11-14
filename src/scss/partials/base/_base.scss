@@ -1,6 +1,6 @@
 /*
  * Set box-sizing to border-box for all relayout components 
- * so padding/border are included in the width.
+ * so padding/border are included in the width, and take the focus outline off the ones that aren't controls.
  * A class matches only when its name starts with rl-: the first class of the attribute, or one after
  * a space, tab, line feed or form feed. A substring match would also catch names such as girl-card.
  */
@@ -10,5 +10,12 @@
 [class*="\Arl-"],
 [class*="\Crl-"] {
     box-sizing: border-box;
-    outline: none;
+
+    // A layout container has no outline. A control keeps the browser's focus ring, so a field with a class, such as an
+    // input that fills its row, shows where the keyboard is: links, buttons, fields, a summary, and an element the
+    // author made focusable with tabindex (any value) or contenteditable. :where() keeps the specificity of the rule
+    // at one attribute selector, as it was before the controls were left out of it.
+    &:where(:not(a, button, input, select, textarea, summary, [tabindex], [contenteditable]:not([contenteditable="false"]))) {
+        outline: none;
+    }
 }
