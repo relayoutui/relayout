@@ -7,7 +7,7 @@
 //   node .github/scripts/check-types.mjs
 //
 // Runs as the last step of `npm run build`, so it needs the build's output in dist. Needs npm and the
-// network: the project gets Lit from the registry.
+// network: the project gets Lit from the registry, as the package's dependency.
 
 import { spawnSync } from 'node:child_process';
 import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
@@ -73,13 +73,11 @@ try
     if (!pack.ok) fail(`npm pack failed:\n${pack.err}`);
     const tarball = join(work, pack.out.split('\n').pop());
 
-    // The project: the package, and the Lit its declarations import. The package doesn't depend on Lit
-    // yet, so a project that wants the types installs it itself. It gets the version the package builds with.
+    // The project: the package alone. Lit, which its declarations import, comes with it as its dependency.
     const project = join(work, 'project');
     mkdirSync(project);
     writeFileSync(join(project, 'package.json'), JSON.stringify({ name: 'consumer', private: true, type: 'module' }));
-    const lit = { ...manifest.devDependencies, ...manifest.dependencies }.lit;
-    const install = run('npm', ['install', '--ignore-scripts', '--no-audit', '--no-fund', '--loglevel=error', tarball, `lit@${lit}`], project);
+    const install = run('npm', ['install', '--ignore-scripts', '--no-audit', '--no-fund', '--loglevel=error', tarball], project);
     if (!install.ok) fail(`npm install of the packed package failed:\n${install.err}`);
     writeFileSync(join(project, 'index.ts'), CONSUMER);
 

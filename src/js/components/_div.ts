@@ -1,5 +1,5 @@
 import { SlotElement } from '../base/slot-element.js';
-import { customElement } from 'lit/decorators.js';
+import { defineElement } from '../base/define-element.js';
 import { _divCss } from '../layouts/_div.css.js';
 import { _borderCss } from '../mods/_border.css.js';
 import { _colorCss } from '../mods/_color.css.js';
@@ -11,7 +11,7 @@ import { _scrollCss } from '../mods/_scroll.css.js';
 import { _shadowCss } from '../mods/_shadow.css.js';
 import { _widthCss } from '../mods/_width.css.js';
 
-@customElement('rl-div')
+@defineElement('rl-div')
 export class Div extends SlotElement
 {
     static styles = [

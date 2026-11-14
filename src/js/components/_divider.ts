@@ -1,8 +1,8 @@
 import { SlotElement } from '../base/slot-element.js';
-import { customElement } from 'lit/decorators.js';
+import { defineElement } from '../base/define-element.js';
 import { _dividerCss } from '../layouts/_divider.css.js';
 
-@customElement('rl-divider')
+@defineElement('rl-divider')
 export class Divider extends SlotElement
 
 {

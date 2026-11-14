@@ -37,40 +37,55 @@ function minifyLitCSS() {
   };
 }
 
-export default {
-  input: 'src/js/index.ts',
-  output: {
-    file: 'dist/js/relayout.js',
-    format: 'esm',
-    sourcemap: true,
-    banner: `/*!
+const banner = `/*!
  * Relayout v${version} | Responsive layout system
  * Copyright (c) 2025 Codesense LLC
  * MIT License: https://github.com/relayoutui/relayout/blob/main/LICENSE 
- */`
-  },
-  plugins: [
-    resolve(),
-    typescript({
-      tsconfig: './tsconfig.json',
-      declaration: true,
-      declarationDir: './dist/js/types'
-    }),
-    minifyLitCSS(),  // Run after TypeScript to affect compiled JS (uses loose regex to catch aliased imports)
-    terser({
-      ecma: 2020,
-      format: {
-        comments: /^!/  // Preserve only /*! ... */ license comments (see also 'some')
-      },
-      compress: {
-        drop_console: false,
-        passes: 2
-      },
-      mangle: {
-        properties: {
-          regex: /^_/
+ */`;
+
+/**
+ * One build of the script. The package's own, `dist/js/relayout.js`, imports Lit, which the package depends on, so
+ * an app's bundler shares one copy of it with the app's own. The bundled one, `dist/js/relayout.bundle.js`, has Lit
+ * inside, for a page that loads the script from a CDN with no bundler.
+ */
+function build({ bundled })
+{
+  return {
+    input: 'src/js/index.ts',
+    external: bundled ? [] : [/^lit(\/|$)/],
+    output: {
+      file: bundled ? 'dist/js/relayout.bundle.js' : 'dist/js/relayout.js',
+      format: 'esm',
+      sourcemap: true,
+      banner
+    },
+    plugins: [
+      ...(bundled ? [resolve()] : []),
+      typescript({
+        tsconfig: './tsconfig.json',
+        // The declarations are the package's, written once
+        declaration: !bundled,
+        declarationMap: !bundled,
+        declarationDir: bundled ? undefined : './dist/js/types'
+      }),
+      minifyLitCSS(),  // Run after TypeScript to affect compiled JS (uses loose regex to catch aliased imports)
+      terser({
+        ecma: 2020,
+        format: {
+          comments: /^!/  // Preserve only /*! ... */ license comments (see also 'some')
+        },
+        compress: {
+          drop_console: false,
+          passes: 2
+        },
+        mangle: {
+          properties: {
+            regex: /^_/
+          }
         }
-      }
-    })
-  ]
-};
+      })
+    ]
+  };
+}
+
+export default [build({ bundled: false }), build({ bundled: true })];

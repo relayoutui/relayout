@@ -1,5 +1,5 @@
 import { SlotElement } from '../base/slot-element.js';
-import { customElement } from 'lit/decorators.js';
+import { defineElement } from '../base/define-element.js';
 import { _gridCss } from '../layouts/_grid.css.js';
 import { _alignCss } from '../mods/_align.css.js';
 import { _borderCss } from '../mods/_border.css.js';
@@ -14,7 +14,7 @@ import { _scrollCss } from '../mods/_scroll.css.js';
 import { _shadowCss } from '../mods/_shadow.css.js';
 import { _widthCss } from '../mods/_width.css.js';
 
-@customElement('rl-grid')
+@defineElement('rl-grid')
 export class Grid extends SlotElement 
 {
     static styles = [
