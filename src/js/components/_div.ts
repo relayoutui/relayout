@@ -5,6 +5,7 @@ import { _borderCss } from '../mods/_border.css.js';
 import { _colorCss } from '../mods/_color.css.js';
 import { _gradientCss } from '../mods/_gradient.css.js';
 import { _heightCss } from '../mods/_height.css.js';
+import { _outlineCss } from '../mods/_outline.css.js';
 import { _paddingCss } from '../mods/_padding.css.js';
 import { _radiusCss } from '../mods/_radius.css.js';
 import { _scrollCss } from '../mods/_scroll.css.js';
@@ -22,6 +23,7 @@ export class Div extends SlotElement
         _colorCss,
         _gradientCss,
         _heightCss,
+        _outlineCss,
         _paddingCss,
         _radiusCss,
         _scrollCss,

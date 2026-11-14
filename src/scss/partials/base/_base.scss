@@ -11,11 +11,15 @@
 [class*="\Crl-"] {
     box-sizing: border-box;
 
-    // A layout container has no outline. A control keeps the browser's focus ring, so a field with a class, such as an
-    // input that fills its row, shows where the keyboard is: links, buttons, fields, a summary, and an element the
-    // author made focusable with tabindex (any value) or contenteditable. :where() keeps the specificity of the rule
-    // at one attribute selector, as it was before the controls were left out of it.
-    &:where(:not(a, button, input, select, textarea, summary, [tabindex], [contenteditable]:not([contenteditable="false"]))) {
+    // A layout container has no outline. What the keyboard can stop on keeps the browser's focus ring, so a field with
+    // a class, such as an input that fills its row, and a box that scrolls show where the keyboard is: links, buttons,
+    // fields, a summary, an element the author made focusable with tabindex (any value) or contenteditable, and the
+    // two classes that make a box scroll, which Chrome lets the keyboard reach. rl-outline-none takes a ring off.
+    // :where() keeps the specificity of the rule at one attribute selector, as it was before these were left out of it.
+    &:where(:not(
+        a, button, input, select, textarea, summary, [tabindex], [contenteditable]:not([contenteditable="false"]),
+        [class~="rl-scroll"], [class~="rl-nowrap-scroll"]
+    )) {
         outline: none;
     }
 }
