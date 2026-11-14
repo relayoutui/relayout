@@ -14,13 +14,13 @@ export const _colorCss = css`
     :host([rl-bg-surface])     { background-color: var(--rl-color-surface); }
     :host([rl-bg-surface-alt]) { background-color: var(--rl-color-surface-alt); }
 
-    :host([rl-color-primary])    { color: var(--rl-color-primary); }
-    :host([rl-color-secondary])  { color: var(--rl-color-secondary); }
-    :host([rl-color-accent])     { color: var(--rl-color-accent); }
-    :host([rl-color-success])    { color: var(--rl-color-success); }
-    :host([rl-color-warning])    { color: var(--rl-color-warning); }
-    :host([rl-color-danger])     { color: var(--rl-color-danger); }
-    :host([rl-color-info])       { color: var(--rl-color-info); }
-    :host([rl-color-text])       { color: var(--rl-color-text); }
-    :host([rl-color-text-muted]) { color: var(--rl-color-text-muted); }
+    :host([rl-color-primary])   { color: var(--rl-color-primary); }
+    :host([rl-color-secondary]) { color: var(--rl-color-secondary); }
+    :host([rl-color-accent])    { color: var(--rl-color-accent); }
+    :host([rl-color-success])   { color: var(--rl-color-success); }
+    :host([rl-color-warning])   { color: var(--rl-color-warning); }
+    :host([rl-color-danger])    { color: var(--rl-color-danger); }
+    :host([rl-color-info])      { color: var(--rl-color-info); }
+    :host([rl-color-text])      { color: var(--rl-color-text); }
+    :host([rl-color-muted])     { color: var(--rl-color-muted); }
 `;

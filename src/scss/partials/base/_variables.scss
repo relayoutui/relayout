@@ -57,7 +57,7 @@
     --rl-color-surface:      hsl(0, 0%, 100%);
     --rl-color-surface-alt:  hsl(0, 0%, 96%);
     --rl-color-text:         hsl(0, 0%, 10%);
-    --rl-color-text-muted:   hsl(0, 0%, 45%);
+    --rl-color-muted:        hsl(0, 0%, 45%);
 
     // shadow scale
     --rl-shadow-xs:    0 1px 2px hsl(0 0% 0% / 0.08);
@@ -87,6 +87,6 @@
         --rl-color-surface:      hsl(0, 0%, 12%);
         --rl-color-surface-alt:  hsl(0, 0%, 18%);
         --rl-color-text:         hsl(0, 0%, 95%);
-        --rl-color-text-muted:   hsl(0, 0%, 65%);
+        --rl-color-muted:        hsl(0, 0%, 65%);
     }
 }
