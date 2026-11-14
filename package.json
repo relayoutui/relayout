@@ -33,12 +33,14 @@
     "type": "git",
     "url": "https://github.com/relayoutui/relayout"
   },
+  "dependencies": {
+    "lit": "^3.0.0"
+  },
   "devDependencies": {
     "@rollup/plugin-node-resolve": "^16.0.3",
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^12.3.0",
     "@vitest/browser-playwright": "^5.1.0",
-    "lit": "^3.3.2",
     "playwright": "^1.65.1",
     "rollup": "^4.57.1",
     "sass": "^1.93.2",
