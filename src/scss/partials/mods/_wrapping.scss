@@ -11,8 +11,6 @@
     flex-wrap: nowrap; 
     overflow-x: auto; // enable horizontal scrolling
     overflow-y: hidden; // hide vertical scrollbar
-    -webkit-overflow-scrolling: touch; // ios smooth scrolling
-    scrollbar-gutter: stable; // prevent layout shift when scrollbar appears
 }
 
 .rl-nowrap-scroll > * {

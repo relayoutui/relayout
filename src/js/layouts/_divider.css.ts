@@ -5,6 +5,10 @@ import { css } from 'lit';
 // .rl-divider
 export const _dividerCss = css`
     :host {
+        /* a block, as the div the class form goes on: an element's default is inline, which has no width or height */
+        display: block;
+        /* border-box, as the class form gets it from src/scss/partials/base/_base.scss */
+        box-sizing: border-box;
         align-self: stretch;
         border: none;
         margin: 0;

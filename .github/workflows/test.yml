@@ -1,0 +1,34 @@
+name: Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  # The build makes the CSS and the script, then checks that TypeScript finds the types of the packed package. The
+  # test loads that build in Chrome, which the runner has, and compares each class with its element.
+  test:
+    name: Build and test
+    runs-on: ubuntu-24.04
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '24'
+          cache: npm
+
+      - run: npm ci
+
+      - name: Build and check the types
+        run: npm run build
+
+      - name: Compare the classes with the elements
+        run: npm test

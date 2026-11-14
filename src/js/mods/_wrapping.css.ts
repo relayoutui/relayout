@@ -13,8 +13,6 @@ export const _wrappingCss = css`
         flex-wrap: nowrap;
         overflow-x: auto;
         overflow-y: hidden;
-        -webkit-overflow-scrolling: touch;
-        /* scrollbar-gutter: stable; */
     }
 
     :host([rl-nowrap-scroll]) > ::slotted(*) {

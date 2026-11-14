@@ -1,6 +1,10 @@
+import { readFileSync } from 'node:fs';
 import typescript from '@rollup/plugin-typescript';
 import resolve from '@rollup/plugin-node-resolve';
 import terser from '@rollup/plugin-terser';
+
+// The release sets the version in package.json before it builds, and the CSS banner gets it from the same release
+const { version } = JSON.parse(readFileSync(new URL('./package.json', import.meta.url), 'utf8'));
 
 // Plugin to minify CSS in template literals
 function minifyLitCSS() {
@@ -40,7 +44,7 @@ export default {
     format: 'esm',
     sourcemap: true,
     banner: `/*!
- * Relayout - Responsive layout system
+ * Relayout v${version} | Responsive layout system
  * Copyright (c) 2025 Codesense LLC
  * MIT License: https://github.com/relayoutui/relayout/blob/main/LICENSE 
  */`
