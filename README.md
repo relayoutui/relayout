@@ -4,7 +4,7 @@ Relayout takes the parts of flexbox and grid that position elements and applies 
 predictable way.
 
 Four layouts set the direction. Utilities adjust the positioning: gap, padding, alignment,
-wrapping, scrolling and width. Optional extras add the fine touch. No media queries.
+wrapping, scrolling and width. Optional extras add the fine touch.
 
 Use it as CSS classes or as web components.
 
