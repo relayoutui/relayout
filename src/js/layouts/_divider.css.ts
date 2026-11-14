@@ -5,6 +5,8 @@ import { css } from 'lit';
 // .rl-divider
 export const _dividerCss = css`
     :host {
+        /* border-box, as the class form gets it from src/scss/partials/base/_base.scss */
+        box-sizing: border-box;
         align-self: stretch;
         border: none;
         margin: 0;

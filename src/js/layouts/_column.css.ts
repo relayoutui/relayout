@@ -19,9 +19,10 @@ export const _columnCss = css`
     :host([rl-align-center]) { text-align: center; }
     :host([rl-align-end]) { text-align: end; }
 
-    /* Fill and scroll, set on the child; a slotted child can only be styled from here */
+    /* Fill and scroll, set on the child; a slotted child can only be styled from here.
+       A child with one of these is border-box, as the class form gets it from src/scss/partials/base/_base.scss. */
     ::slotted(*) { flex-shrink: 0; }
-    ::slotted([rl-height-fill]) { flex: 999 1 auto; min-height: 0; }
-    ::slotted([rl-width-fill]) { align-self: stretch; width: auto; }
-    ::slotted([rl-scroll]) { overflow: auto; }
+    ::slotted([rl-height-fill]) { box-sizing: border-box; flex: 999 1 auto; min-height: 0; }
+    ::slotted([rl-width-fill]) { box-sizing: border-box; align-self: stretch; width: auto; }
+    ::slotted([rl-scroll]) { box-sizing: border-box; overflow: auto; }
 `;

@@ -15,9 +15,10 @@ export const _rowCss = css`
         gap: var(--rl-gap-default);
     }
 
-    /* Fill and scroll, set on the child; a slotted child can only be styled from here */
-    ::slotted([rl-width-fill]) { flex: 999 1 0; }
-    ::slotted([rl-height-fill]) { align-self: stretch; height: auto; }
+    /* Fill and scroll, set on the child; a slotted child can only be styled from here.
+       A child with one of these is border-box, as the class form gets it from src/scss/partials/base/_base.scss. */
+    ::slotted([rl-width-fill]) { box-sizing: border-box; flex: 999 1 0; }
+    ::slotted([rl-height-fill]) { box-sizing: border-box; align-self: stretch; height: auto; }
     :host([rl-nowrap]) > ::slotted([rl-width-fill]) { min-width: 0; }
-    ::slotted([rl-scroll]) { overflow: auto; }
+    ::slotted([rl-scroll]) { box-sizing: border-box; overflow: auto; }
 `;
