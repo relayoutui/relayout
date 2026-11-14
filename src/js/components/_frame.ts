@@ -1,5 +1,5 @@
 import { SlotElement } from '../base/slot-element.js';
-import { customElement } from 'lit/decorators.js';
+import { defineElement } from '../base/define-element.js';
 import { _frameCss } from '../layouts/_frame.css.js';
 import { _alignCss } from '../mods/_align.css.js';
 import { _borderCss } from '../mods/_border.css.js';
@@ -14,7 +14,7 @@ import { _scrollCss } from '../mods/_scroll.css.js';
 import { _shadowCss } from '../mods/_shadow.css.js';
 import { _widthCss } from '../mods/_width.css.js';
 
-@customElement('rl-frame')
+@defineElement('rl-frame')
 export class Frame extends SlotElement 
 {
     static styles = [
