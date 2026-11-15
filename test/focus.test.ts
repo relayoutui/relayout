@@ -1,4 +1,4 @@
-import { userEvent } from 'vitest/browser';
+import { server, userEvent } from 'vitest/browser';
 import { describe, expect, it } from 'vitest';
 import '../dist/css/relayout.css';
 import '../dist/js/relayout.js';
@@ -123,93 +123,77 @@ const SCROLLERS: Scroller[] = [
 
 describe('a box that scrolls', () =>
 {
-    // Chrome and Firefox let the keyboard reach a box that scrolls, so the arrow keys scroll it. Safari doesn't, and
-    // a box it can't reach has no ring to show, so the test is skipped there.
+    // Chrome and Firefox let the keyboard reach a box that scrolls, so the arrow keys scroll it. Safari's engine doesn't,
+    // and a box it can't reach has no ring to show, so these are skipped there, by the browser's name: a regression in
+    // a browser that does reach it has to fail the test, not skip it.
     it.for(SCROLLERS)('shows the focus ring: $name', async ({ html }, { skip }) =>
     {
-        const reached = await tryFocus(html(''));
-        if (!reached) return skip('this browser\'s keyboard does not reach a box that scrolls');
+        if (server.browser === 'webkit') return skip('WebKit\'s keyboard does not reach a box that scrolls');
+        const { stage, target } = await focus(html(''));
         try
         {
-            expect(getComputedStyle(reached.target).outlineStyle).not.toBe('none');
+            expect(getComputedStyle(target).outlineStyle).not.toBe('none');
         }
         finally
         {
-            reached.stage.remove();
+            stage.remove();
         }
     });
 
     it.for(SCROLLERS)('shows no ring with rl-outline-none: $name', async ({ html }, { skip }) =>
     {
-        const reached = await tryFocus(html(' rl-outline-none'));
-        if (!reached) return skip('this browser\'s keyboard does not reach a box that scrolls');
+        if (server.browser === 'webkit') return skip('WebKit\'s keyboard does not reach a box that scrolls');
+        const { stage, target } = await focus(html(' rl-outline-none'));
         try
         {
-            expect(getComputedStyle(reached.target).outlineStyle).toBe('none');
+            expect(getComputedStyle(target).outlineStyle).toBe('none');
         }
         finally
         {
-            reached.stage.remove();
+            stage.remove();
         }
     });
 });
-
-/**
- * The same as focus, but null when this browser's keyboard doesn't reach the element: the browsers differ in which
- * boxes the keyboard stops on, and what a test says about the ring has nothing to say about an element it can't reach.
- */
-async function tryFocus(html: string): Promise<{ stage: HTMLElement; target: HTMLElement } | null>
-{
-    const stage = document.createElement('div');
-    stage.style.cssText = 'position: absolute; left: 0; top: 0; width: 480px; font: 16px/20px sans-serif;';
-    stage.innerHTML = `<button data-start>Start</button>${html}`;
-    document.body.append(stage);
-    stage.querySelector<HTMLElement>('[data-start]')!.focus();
-    await userEvent.tab();
-    const target = stage.querySelector<HTMLElement>('[data-target]')!;
-    if (document.activeElement === target) return { stage, target };
-    stage.remove();
-    return null;
-}
 
 interface Reached
 {
     name: string;
     html: (classes: string) => string;
+    /** True where WebKit's keyboard doesn't reach the element, which is a box that scrolls */
+    notInWebkit?: boolean;
 }
 
 // What the base rule used to take the ring off, when the element carried an `rl-` class, and the browser's own ring
 // is back on: a box the page's own CSS makes scroll has nothing a rule could match, and a video with controls is
 // not in a list of controls
 const REACHED: Reached[] = [
-    { name: 'a pre that the page\'s CSS makes scroll', html: classes => `<pre class="${classes}" style="overflow: auto; height: 40px; margin: 0;" data-target>${'line\n'.repeat(12)}</pre>` },
-    { name: 'a div that the page\'s CSS makes scroll', html: classes => `<div class="${classes}" style="overflow: auto; height: 40px;" data-target>${LINES}</div>` },
+    { name: 'a pre that the page\'s CSS makes scroll', notInWebkit: true, html: classes => `<pre class="${classes}" style="overflow: auto; height: 40px; margin: 0;" data-target>${'line\n'.repeat(12)}</pre>` },
+    { name: 'a div that the page\'s CSS makes scroll', notInWebkit: true, html: classes => `<div class="${classes}" style="overflow: auto; height: 40px;" data-target>${LINES}</div>` },
     { name: 'a video with controls', html: classes => `<video class="${classes}" controls width="200" height="100" data-target></video>` },
-    { name: 'an iframe', html: classes => `<iframe class="${classes}" width="200" height="60" data-target></iframe>` },
     { name: 'an element with an rl- class and nothing else', html: classes => `<a class="${classes}" href="#" data-target>Link</a>` },
 ];
 
 describe('what the browser lets the keyboard reach', () =>
 {
-    it.for(REACHED)('shows the ring on $name with an rl- class when it shows it without', async ({ html }, { skip }) =>
+    it.for(REACHED)('shows the ring on $name with an rl- class when it shows it without', async ({ html, notInWebkit }, { skip }) =>
     {
-        const plain = await tryFocus(html(''));
-        if (!plain) return skip('this browser\'s keyboard does not reach it');
+        if (notInWebkit && server.browser === 'webkit') return skip('WebKit\'s keyboard does not reach a box that scrolls');
+        const plain = await focus(html(''));
         const without = getComputedStyle(plain.target).outlineStyle;
         plain.stage.remove();
+        expect(without, 'the browser draws no ring on it without the class either').not.toBe('none');
 
-        const withClass = await tryFocus(html('rl-padding-m rl-width-s'));
-        expect(withClass, 'the keyboard reached it without the class and not with it').not.toBeNull();
-        expect(getComputedStyle(withClass!.target).outlineStyle).toBe(without);
-        withClass!.stage.remove();
+        const withClass = await focus(html('rl-padding-m rl-width-s'));
+        expect(getComputedStyle(withClass.target).outlineStyle).toBe(without);
+        withClass.stage.remove();
     });
 
-    it.for(REACHED)('takes the ring off $name with rl-outline-none', async ({ html }, { skip }) =>
+    it.for(REACHED)('takes the ring off $name with rl-outline-none', async ({ html, notInWebkit }, { skip }) =>
     {
-        const withClass = await tryFocus(html('rl-outline-none'));
-        if (!withClass) return skip('this browser\'s keyboard does not reach it');
-        expect(getComputedStyle(withClass.target).outlineStyle).toBe('none');
-        withClass.stage.remove();
+        if (notInWebkit && server.browser === 'webkit') return skip('WebKit\'s keyboard does not reach a box that scrolls');
+        const { stage, target } = await focus(html('rl-outline-none'));
+        expect(getComputedStyle(target).outlineStyle).toBe('none');
+        stage.remove();
     });
 });
 

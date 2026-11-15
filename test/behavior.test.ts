@@ -239,7 +239,7 @@ describe.each(FORMS)('rl-width-* and rl-center-self in the %s form', form =>
     });
 });
 
-// The scales. Each step is a size the docs name, and 1.0 would freeze them, so each is checked against its number.
+// The scales. Each step is a size the docs name, so each is checked against its number, and a change to one is noticed.
 
 const SPACE: [string, number][] = [['0', 0], ['xs', 2], ['s', 4], ['m', 8], ['l', 16], ['xl', 24], ['2xl', 36]];
 const WIDTH: [string, number][] = [['xs', 320], ['s', 480], ['m', 640], ['l', 768], ['xl', 1024], ['2xl', 1280]];
