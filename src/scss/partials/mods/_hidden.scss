@@ -1,0 +1,15 @@
+// hidden
+
+// Keep in sync with: src/js/mods/_hidden.css.ts
+
+// The browser hides an element with `hidden` through `display: none` in its own style sheet, and any `display` that
+// a page sets beats it, which a layout's `display: flex` or `display: grid` does. So `hidden` on a row did nothing.
+// An element with a layout class that is `hidden` has no display, as any other element does. `hidden="until-found"`
+// is left alone: the browser hides that one with `content-visibility`, so the page's find still reaches it.
+.rl-column,
+.rl-row,
+.rl-grid,
+.rl-frame,
+.rl-nowrap-scroll {
+    &[hidden]:not([hidden="until-found" i]) { display: none; }
+}

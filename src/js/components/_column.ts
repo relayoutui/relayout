@@ -7,6 +7,7 @@ import { _colorCss } from '../mods/_color.css.js';
 import { _gapCss } from '../mods/_gap.css.js';
 import { _gradientCss } from '../mods/_gradient.css.js';
 import { _heightCss } from '../mods/_height.css.js';
+import { _hiddenCss } from '../mods/_hidden.css.js';
 import { _justifyCss } from '../mods/_justify.css.js';
 import { _outlineCss } from '../mods/_outline.css.js';
 import { _paddingCss } from '../mods/_padding.css.js';
@@ -27,6 +28,7 @@ export class Column extends SlotElement
         _gapCss,
         _gradientCss,
         _heightCss,
+        _hiddenCss,
         _justifyCss,
         _outlineCss,
         _paddingCss,
