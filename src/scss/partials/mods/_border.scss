@@ -6,8 +6,9 @@
     border: var(--rl-border-default);
 }
 
-// The radius default is in a cascade layer, so a rule of the page's own beats it, whatever its weight or the order of
-// the style sheets, and rl-radius-* (outside a layer) still beats it.
+// The radius default is in a cascade layer, so a rule of the page's own beats it, whatever its weight or the order of the
+// style sheets, unless the page keeps that rule in a cascade layer declared before this one. rl-radius-* (outside a
+// layer) still beats it.
 @layer rl-defaults {
     .rl-border {
         border-radius: var(--rl-radius-default);

@@ -199,25 +199,28 @@ describe('what the browser lets the keyboard reach', () =>
 
 describe('an outline of the page\'s own', () =>
 {
-    it.each(['rl-padding-m', 'rl-column', 'rl-row rl-gap-m'])('stays on an element with the classes %s, whichever style sheet comes last', classes =>
+    describe.each(['before', 'after'] as const)('in a style sheet that comes %s relayout.css', where =>
     {
-        // The page's rule comes before relayout.css, so a rule in it with the same weight would win
-        const style = document.createElement('style');
-        style.textContent = '.card { outline: 2px solid rgb(255, 0, 0); }';
-        document.head.prepend(style);
-        const element = document.createElement('div');
-        element.className = `card ${classes}`;
-        document.body.append(element);
-        try
+        it.each(['rl-padding-m', 'rl-column', 'rl-row rl-gap-m'])('stays on an element with the classes %s', classes =>
         {
-            const computed = getComputedStyle(element);
-            expect([computed.outlineStyle, computed.outlineWidth]).toEqual(['solid', '2px']);
-        }
-        finally
-        {
-            element.remove();
-            style.remove();
-        }
+            const style = document.createElement('style');
+            style.textContent = '.card { outline: 2px solid rgb(255, 0, 0); }';
+            if (where === 'before') document.head.prepend(style);
+            else document.head.append(style);
+            const element = document.createElement('div');
+            element.className = `card ${classes}`;
+            document.body.append(element);
+            try
+            {
+                const computed = getComputedStyle(element);
+                expect([computed.outlineStyle, computed.outlineWidth]).toEqual(['solid', '2px']);
+            }
+            finally
+            {
+                element.remove();
+                style.remove();
+            }
+        });
     });
 });
 

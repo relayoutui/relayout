@@ -5,9 +5,10 @@
 // Keep in sync with: src/js/layouts/_row.css.ts
 
 // The default padding is in a cascade layer, so a rule of the page's own beats it, whatever its weight or the order of the
-// style sheets, and rl-padding-* (outside a layer) still beats it. The variable isn't defined until a page sets it, and
-// the fallback, revert-layer, is the value there would be without this layer: what the page or the browser gives the
-// element, so a ul or a button with this class keeps its own padding.
+// style sheets, unless the page keeps that rule in a cascade layer declared before this one (src/js has no such
+// exception: a :host rule always loses to the page's own). rl-padding-* (outside a layer) still beats it. The variable
+// isn't defined until a page sets it, and the fallback, revert-layer, is the value there would be without this layer:
+// what the page or the browser gives the element, so a ul or a button with this class keeps its own padding.
 @layer rl-defaults {
     .rl-row { padding: var(--rl-padding-default, revert-layer); }
 }

@@ -174,6 +174,42 @@ describe('--rl-padding-default', () =>
         });
     });
 
+    // What is not covered: a rule of the page's own that sits in a cascade layer declared before relayout.css is under the
+    // default's layer. Recorded here so a change to it is noticed: until the variable is set the page's rule is what
+    // revert-layer gives back, and once it is set the default beats it in the class form. An element's default is a :host
+    // rule, which a rule of the page's own beats from any layer.
+    describe('with a rule of the page in a cascade layer declared before relayout.css', () =>
+    {
+        const PAGE = '@layer page { .card { padding: 20px; } }';
+
+        it('keeps the page\'s padding until the variable is set, in both forms', async () =>
+        {
+            addStyle(PAGE, 'before');
+            for (const form of FORMS)
+            {
+                const { target, remove } = await mount(layoutOf(form, 'column', form === 'class' ? ['card'] : ['class="card"'], '', 'Text'));
+                expect(paddingOf(target), form).toBe('20px');
+                remove();
+            }
+        });
+
+        it('lets the default beat the page\'s padding once the variable is set, in the class form', async () =>
+        {
+            addStyle(`${PAGE} :root { --rl-padding-default: 10px; }`, 'before');
+            const { target, remove } = await mount(layoutOf('class', 'column', ['card'], '', 'Text'));
+            expect(paddingOf(target)).toBe('10px');
+            remove();
+        });
+
+        it('lets the page\'s padding win once the variable is set, in the element form', async () =>
+        {
+            addStyle(`${PAGE} :root { --rl-padding-default: 10px; }`, 'before');
+            const { target, remove } = await mount(layoutOf('element', 'column', ['class="card"'], '', 'Text'));
+            expect(paddingOf(target)).toBe('20px');
+            remove();
+        });
+    });
+
     it('does not change the width of a layout, which is border-box', async () =>
     {
         addStyle(':root { --rl-padding-default: 10px; }', 'after');
