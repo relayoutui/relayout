@@ -14,7 +14,7 @@ export const _rowCss = css`
         flex-wrap: wrap;
         gap: var(--rl-gap-default);
         /* A page's own padding on the element beats a :host rule, and :host([rl-padding-*]) has a higher weight than
-           :host, as in the class form, where the default is in :where(). Until a page sets the variable the
+           :host, as in the class form, where the default is in a cascade layer. Until a page sets the variable the
            element keeps its own padding (revert) */
         padding: var(--rl-padding-default, revert);
     }

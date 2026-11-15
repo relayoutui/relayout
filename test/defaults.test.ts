@@ -4,8 +4,8 @@ import '../dist/js/relayout.js';
 import { FORMS, layoutOf, mount, type Form, type Layout } from './stage.js';
 
 // `--rl-padding-default` pads the four layouts, and `--rl-radius-default` rounds what has `rl-border`, as a class and
-// as an element. A default must not undo what is already there: it has no specificity (`:where()` in the class form), so
-// a page's own padding or radius wins whatever the load order, and `rl-padding-*` and `rl-radius-*` still beat it. The
+// as an element. A default must not undo what is already there: in the class form it is in a cascade layer, so a page's
+// own padding or radius wins, whatever its weight and the load order, and `rl-padding-*` and `rl-radius-*` still beat it. The
 // padding variable isn't defined until a page sets it, so a layout class keeps the padding its element has, such as the
 // indent of a `ul` and the padding of a `button`.
 
@@ -139,6 +139,41 @@ describe('--rl-padding-default', () =>
         });
     });
 
+    // A reset has the weight of nothing, as the default has in the class form, so a default of the same weight would win
+    // when it comes later. The default is in a cascade layer, so every rule of the page's own beats it.
+    describe.each(['before', 'after'] as const)('with a reset in a style sheet that comes %s relayout.css', where =>
+    {
+        const RESETS = [
+            { name: '* { padding: 0 }', css: '* { margin: 0; padding: 0; }' },
+            { name: ':where(button, ul, fieldset) { padding: 0 }', css: ':where(button, ul, fieldset, div) { padding: 0; }' },
+        ];
+        const ELEMENTS = [
+            { name: 'a ul', html: (classes: string) => `<ul class="${classes}" data-target><li>Item</li></ul>` },
+            { name: 'a button', html: (classes: string) => `<button class="${classes}" data-target>Button</button>` },
+            { name: 'a div', html: (classes: string) => `<div class="${classes}" data-target>Text</div>` },
+        ];
+        const CASES = RESETS.flatMap(reset => ELEMENTS.map(element => ({ reset, element })));
+
+        it.each(CASES)('leaves $element.name with a layout class at the padding $reset.name gives it', async ({ reset, element }) =>
+        {
+            addStyle(reset.css, where);
+            for (const layout of LAYOUTS)
+            {
+                const { target, remove } = await mount(element.html(`rl-${layout}`));
+                expect(getComputedStyle(target).paddingLeft, `rl-${layout}`).toBe('0px');
+                remove();
+            }
+        });
+
+        it.each(CASES)('lets $reset.name win over the default on $element.name once the variable is set', async ({ reset, element }) =>
+        {
+            addStyle(`:root { --rl-padding-default: 10px; } ${reset.css}`, where);
+            const { target, remove } = await mount(element.html('rl-column'));
+            expect(getComputedStyle(target).paddingLeft).toBe('0px');
+            remove();
+        });
+    });
+
     it('does not change the width of a layout, which is border-box', async () =>
     {
         addStyle(':root { --rl-padding-default: 10px; }', 'after');
@@ -208,6 +243,17 @@ describe('--rl-radius-default', () =>
             addStyle(':root { --rl-radius-default: 6px; } .card { border-radius: 12px; }', where);
             const { target, remove } = await mount(bordered('class', [], 'card'));
             expect(radiusOf(target)).toBe('12px');
+            remove();
+        });
+    });
+
+    describe.each(['before', 'after'] as const)('with a rule of the page that comes %s relayout.css and has no specificity', where =>
+    {
+        it.each(FORMS)('lets `* { border-radius }` round a bordered element in the %s form', async form =>
+        {
+            addStyle('* { border-radius: 4px; }', where);
+            const { target, remove } = await mount(bordered(form, []));
+            expect(radiusOf(target)).toBe('4px');
             remove();
         });
     });
