@@ -4,6 +4,15 @@
 
 // Keep in sync with: src/js/layouts/_row.css.ts
 
+// The default padding is in a cascade layer, so a rule of the page's own beats it, whatever its weight or the order of the
+// style sheets, unless the page keeps that rule in a cascade layer declared before this one (src/js has no such
+// exception: a :host rule always loses to the page's own). rl-padding-* (outside a layer) still beats it. The variable
+// isn't defined until a page sets it, and the fallback, revert-layer, is the value there would be without this layer:
+// what the page or the browser gives the element, so a ul or a button with this class keeps its own padding.
+@layer rl-defaults {
+    .rl-row { padding: var(--rl-padding-default, revert-layer); }
+}
+
 .rl-row {
     display: flex;
     flex-direction: row;
@@ -12,22 +21,35 @@
     flex-wrap: wrap;
     gap: var(--rl-gap-default);
 
+    /* What a row sets on a child is written for both forms of the child, the class and the attribute, so a child of
+       either form works in a row of either form (src/js/layouts/_row.css.ts has the same for an element row). The
+       child of the attribute form is border-box, as the base rule makes the class one. */
+
     /* grow; no min-width, so the child still wraps at its longest word */
-    & > .rl-width-fill { flex: 999 1 0; }
+    & > .rl-width-fill,
+    & > [rl-width-fill] { box-sizing: border-box; flex: 999 1 0; }
 
     /* stretch across, even with rl-align-* */
-    & > .rl-height-fill { align-self: stretch; height: auto; }
+    & > .rl-height-fill,
+    & > [rl-height-fill] { box-sizing: border-box; align-self: stretch; height: auto; }
 
     /* no wrap point to protect, so allow truncation */
-    &.rl-nowrap > .rl-width-fill { min-width: 0; }
+    &.rl-nowrap > .rl-width-fill,
+    &.rl-nowrap > [rl-width-fill] { min-width: 0; }
 
-    /* a divider is a vertical line in a row: a height of 100% would stop align-self: stretch, so a row with no height
-       gave a dot; min-height covers a row whose height is set but that isn't a flex container */
-    & > .rl-divider {
-        width: 0;
-        height: auto;
-        min-height: 100%;
-        border-top: none;
-        border-left: var(--rl-border-default);
-    }
+    & > [rl-scroll] { box-sizing: border-box; overflow: auto; }
+}
+
+/* A divider is a vertical line in a row: a height of 100% would stop align-self: stretch, so a row with no height gave
+   a dot; min-height covers a row whose height is set but that isn't a flex container. The divider's own rule is
+   global, so a divider that is a class in an element row is set here, where a slotted rule in the element couldn't:
+   an outer rule beats a rule from inside the shadow root. */
+.rl-row > .rl-divider,
+.rl-row > rl-divider,
+rl-row > .rl-divider {
+    width: 0;
+    height: auto;
+    min-height: 100%;
+    border-top: none;
+    border-left: var(--rl-border-default);
 }

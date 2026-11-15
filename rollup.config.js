@@ -57,6 +57,9 @@ function build({ bundled })
       file: bundled ? 'dist/js/relayout.bundle.js' : 'dist/js/relayout.js',
       format: 'esm',
       sourcemap: true,
+      // The TypeScript plugin writes the paths of the sources with a second `src` in them (`../../src/src/js/…`),
+      // which no file is at, and Vitest warns about them. The sources are in the map as well, so a debugger has them.
+      sourcemapPathTransform: relativeSourcePath => relativeSourcePath.replace(/(^|\/)src\/src\//, '$1src/'),
       banner
     },
     plugins: [
@@ -65,7 +68,8 @@ function build({ bundled })
         tsconfig: './tsconfig.json',
         // The declarations are the package's, written once
         declaration: !bundled,
-        declarationMap: !bundled,
+        // No declaration maps: they point at the sources, which the package doesn't ship (`files` is `dist`)
+        declarationMap: false,
         declarationDir: bundled ? undefined : './dist/js/types'
       }),
       minifyLitCSS(),  // Run after TypeScript to affect compiled JS (uses loose regex to catch aliased imports)

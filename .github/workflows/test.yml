@@ -11,7 +11,9 @@ permissions:
 
 jobs:
   # The build makes the CSS and the script, then checks that TypeScript finds the types of the packed package. The
-  # test loads that build in Chrome, which the runner has, and compares each class with its element.
+  # tests load that build in a real browser, in Chrome, which the runner has, then in Firefox and in WebKit, the engine
+  # of Safari, which Playwright installs. They are steps of one job, so the check keeps its name, and each browser runs
+  # even when the one before it failed, to show every browser's failures at once.
   test:
     name: Build and test
     runs-on: ubuntu-24.04
@@ -30,5 +32,21 @@ jobs:
       - name: Build and check the types
         run: npm run build
 
-      - name: Compare the classes with the elements
+      - name: Test in Chrome
+        run: npm test
+
+      - name: Install Firefox and WebKit
+        if: ${{ !cancelled() }}
+        run: npx playwright install --with-deps firefox webkit
+
+      - name: Test in Firefox
+        if: ${{ !cancelled() }}
+        env:
+          RELAYOUT_BROWSER: firefox
+        run: npm test
+
+      - name: Test in WebKit
+        if: ${{ !cancelled() }}
+        env:
+          RELAYOUT_BROWSER: webkit
         run: npm test

@@ -4,6 +4,15 @@
 
 // Keep in sync with: src/js/layouts/_column.css.ts
 
+// The default padding is in a cascade layer, so a rule of the page's own beats it, whatever its weight or the order of the
+// style sheets, unless the page keeps that rule in a cascade layer declared before this one (src/js has no such
+// exception: a :host rule always loses to the page's own). rl-padding-* (outside a layer) still beats it. The variable
+// isn't defined until a page sets it, and the fallback, revert-layer, is the value there would be without this layer:
+// what the page or the browser gives the element, so a ul or a button with this class keeps its own padding.
+@layer rl-defaults {
+    .rl-column { padding: var(--rl-padding-default, revert-layer); }
+}
+
 .rl-column {
     display: flex;
     flex-direction: column;
@@ -19,9 +28,17 @@
     /* only the fill child gives up space */
     & > * { flex-shrink: 0; }
 
+    /* What a column sets on a child is written for both forms of the child, the class and the attribute, so a child of
+       either form works in a column of either form (src/js/layouts/_column.css.ts has the same for an element column).
+       The child of the attribute form is border-box, as the base rule makes the class one. */
+
     /* grow; basis auto keeps long content from overlapping the next child, and min-height 0 lets a nested scroll area shrink */
-    & > .rl-height-fill { flex: 999 1 auto; min-height: 0; }
+    & > .rl-height-fill,
+    & > [rl-height-fill] { box-sizing: border-box; flex: 999 1 auto; min-height: 0; }
 
     /* stretch across, even with rl-align-* */
-    & > .rl-width-fill { align-self: stretch; width: auto; }
+    & > .rl-width-fill,
+    & > [rl-width-fill] { box-sizing: border-box; align-self: stretch; width: auto; }
+
+    & > [rl-scroll] { box-sizing: border-box; overflow: auto; }
 }

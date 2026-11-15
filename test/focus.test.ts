@@ -1,13 +1,14 @@
-import { userEvent } from 'vitest/browser';
+import { server, userEvent } from 'vitest/browser';
 import { describe, expect, it } from 'vitest';
 import '../dist/css/relayout.css';
 import '../dist/js/relayout.js';
 
-// The base rule gives every element with an `rl-` class `box-sizing: border-box`, and takes the focus outline off the
-// ones the keyboard can't stop on. What it can stop on keeps the browser's focus ring: a control, so a field that
-// fills its row with `rl-width-fill` shows where the keyboard is, and a box that scrolls, which Chrome lets the
-// keyboard reach, in the class form and as an element. `rl-outline-none` takes the ring off. The tests focus the
-// element with the keyboard, as a user does, and read the outline Chrome draws.
+// The base rule gives every element with an `rl-` class `box-sizing: border-box` and nothing else: it doesn't touch the
+// outline. An element keeps the focus ring its browser gives it, with an `rl-` class or without, so a field that fills
+// its row with `rl-width-fill` shows where the keyboard is, and so does a box that scrolls, a video with controls,
+// and anything else the browser lets the keyboard reach. A page's own outline stays too. `rl-outline-none` takes a
+// ring off. The tests focus the element with the keyboard, as a user does, and read the outline the browser draws,
+// and compare an element with its class to the same element without it in the same browser.
 
 interface Case
 {
@@ -46,11 +47,13 @@ async function focus(html: string, tabbable = true): Promise<{ stage: HTMLElemen
     const target = stage.querySelector<HTMLElement>('[data-target]')!;
     start.focus();
     // Tab goes to the next element in the page. An element with tabindex="-1" is not on that path: a script moves
-    // the focus to it, from an element the keyboard is on, so it is shown the way a keyboard user's focus is.
+    // the focus to it, from an element the keyboard is on, so it is shown the way a keyboard user's focus is. So is an
+    // element that this browser's Tab skips: Safari's skips links and buttons, which a keyboard user reaches with
+    // Option+Tab, and the focus is then drawn as the keyboard's, since the last thing the user did was press a key.
     if (tabbable) await userEvent.tab();
-    else target.focus();
+    if (document.activeElement !== target) target.focus();
 
-    expect(document.activeElement, 'the keyboard did not reach the target').toBe(target);
+    expect(document.activeElement, 'the target did not take the focus').toBe(target);
     expect(target.matches(':focus-visible'), 'the target is not shown as focused by the keyboard').toBe(true);
     return { stage, target };
 }
@@ -120,8 +123,12 @@ const SCROLLERS: Scroller[] = [
 
 describe('a box that scrolls', () =>
 {
-    it.each(SCROLLERS)('shows the focus ring: $name', async ({ html }) =>
+    // Chrome and Firefox let the keyboard reach a box that scrolls, so the arrow keys scroll it. Safari's engine doesn't,
+    // and a box it can't reach has no ring to show, so these are skipped there, by the browser's name: a regression in
+    // a browser that does reach it has to fail the test, not skip it.
+    it.for(SCROLLERS)('shows the focus ring: $name', async ({ html }, { skip }) =>
     {
+        if (server.browser === 'webkit') return skip('WebKit\'s keyboard does not reach a box that scrolls');
         const { stage, target } = await focus(html(''));
         try
         {
@@ -133,8 +140,9 @@ describe('a box that scrolls', () =>
         }
     });
 
-    it.each(SCROLLERS)('shows no ring with rl-outline-none: $name', async ({ html }) =>
+    it.for(SCROLLERS)('shows no ring with rl-outline-none: $name', async ({ html }, { skip }) =>
     {
+        if (server.browser === 'webkit') return skip('WebKit\'s keyboard does not reach a box that scrolls');
         const { stage, target } = await focus(html(' rl-outline-none'));
         try
         {
@@ -144,6 +152,75 @@ describe('a box that scrolls', () =>
         {
             stage.remove();
         }
+    });
+});
+
+interface Reached
+{
+    name: string;
+    html: (classes: string) => string;
+    /** True where WebKit's keyboard doesn't reach the element, which is a box that scrolls */
+    notInWebkit?: boolean;
+}
+
+// What the base rule used to take the ring off, when the element carried an `rl-` class, and the browser's own ring
+// is back on: a box the page's own CSS makes scroll has nothing a rule could match, and a video with controls is
+// not in a list of controls
+const REACHED: Reached[] = [
+    { name: 'a pre that the page\'s CSS makes scroll', notInWebkit: true, html: classes => `<pre class="${classes}" style="overflow: auto; height: 40px; margin: 0;" data-target>${'line\n'.repeat(12)}</pre>` },
+    { name: 'a div that the page\'s CSS makes scroll', notInWebkit: true, html: classes => `<div class="${classes}" style="overflow: auto; height: 40px;" data-target>${LINES}</div>` },
+    { name: 'a video with controls', html: classes => `<video class="${classes}" controls width="200" height="100" data-target></video>` },
+    { name: 'an element with an rl- class and nothing else', html: classes => `<a class="${classes}" href="#" data-target>Link</a>` },
+];
+
+describe('what the browser lets the keyboard reach', () =>
+{
+    it.for(REACHED)('shows the ring on $name with an rl- class when it shows it without', async ({ html, notInWebkit }, { skip }) =>
+    {
+        if (notInWebkit && server.browser === 'webkit') return skip('WebKit\'s keyboard does not reach a box that scrolls');
+        const plain = await focus(html(''));
+        const without = getComputedStyle(plain.target).outlineStyle;
+        plain.stage.remove();
+        expect(without, 'the browser draws no ring on it without the class either').not.toBe('none');
+
+        const withClass = await focus(html('rl-padding-m rl-width-s'));
+        expect(getComputedStyle(withClass.target).outlineStyle).toBe(without);
+        withClass.stage.remove();
+    });
+
+    it.for(REACHED)('takes the ring off $name with rl-outline-none', async ({ html, notInWebkit }, { skip }) =>
+    {
+        if (notInWebkit && server.browser === 'webkit') return skip('WebKit\'s keyboard does not reach a box that scrolls');
+        const { stage, target } = await focus(html('rl-outline-none'));
+        expect(getComputedStyle(target).outlineStyle).toBe('none');
+        stage.remove();
+    });
+});
+
+describe('an outline of the page\'s own', () =>
+{
+    describe.each(['before', 'after'] as const)('in a style sheet that comes %s relayout.css', where =>
+    {
+        it.each(['rl-padding-m', 'rl-column', 'rl-row rl-gap-m'])('stays on an element with the classes %s', classes =>
+        {
+            const style = document.createElement('style');
+            style.textContent = '.card { outline: 2px solid rgb(255, 0, 0); }';
+            if (where === 'before') document.head.prepend(style);
+            else document.head.append(style);
+            const element = document.createElement('div');
+            element.className = `card ${classes}`;
+            document.body.append(element);
+            try
+            {
+                const computed = getComputedStyle(element);
+                expect([computed.outlineStyle, computed.outlineWidth]).toEqual(['solid', '2px']);
+            }
+            finally
+            {
+                element.remove();
+                style.remove();
+            }
+        });
     });
 });
 

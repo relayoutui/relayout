@@ -3,6 +3,18 @@
   "version": "0.0.0",
   "type": "module",
   "description": "Responsive layout system",
+  "keywords": [
+    "css",
+    "layout",
+    "flexbox",
+    "grid",
+    "responsive",
+    "web-components",
+    "custom-elements",
+    "lit",
+    "design-system",
+    "stylesheet"
+  ],
   "license": "MIT",
   "main": "dist/js/relayout.js",
   "module": "dist/js/relayout.js",
