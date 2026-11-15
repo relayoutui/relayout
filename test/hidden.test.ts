@@ -85,6 +85,45 @@ describe('hidden', () =>
         });
     });
 
+    describe('an image in a frame', () =>
+    {
+        // The frame gives its images display: block, which would beat the display: none of hidden
+        const SOURCE = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="60" height="30"/>');
+        const IN_FRAME = [
+            { name: 'a div with the class rl-frame', html: (attribute: string) => `<div class="rl-frame" style="height: 100px;"><img ${attribute} data-target src="${SOURCE}"></div>` },
+            { name: '<rl-frame>', html: (attribute: string) => `<rl-frame style="height: 100px;"><img ${attribute} data-target src="${SOURCE}"></rl-frame>` },
+        ];
+
+        it.each(IN_FRAME)('is hidden in $name', async ({ html }) =>
+        {
+            const { target, remove } = await mount(html('hidden'));
+            expect(getComputedStyle(target).display).toBe('none');
+            remove();
+        });
+
+        it.each(IN_FRAME)('is a block again in $name when hidden is taken off', async ({ html }) =>
+        {
+            const { target, remove } = await mount(html('hidden'));
+            target.hidden = false;
+            expect(getComputedStyle(target).display).toBe('block');
+            remove();
+        });
+
+        it.each(IN_FRAME)('is a block in $name with no hidden', async ({ html }) =>
+        {
+            const { target, remove } = await mount(html(''));
+            expect(getComputedStyle(target).display).toBe('block');
+            remove();
+        });
+
+        it.each(IN_FRAME)('is left to the browser in $name with hidden="until-found"', async ({ html }) =>
+        {
+            const { target, remove } = await mount(html('hidden="until-found"'));
+            expect(getComputedStyle(target).display).not.toBe('none');
+            remove();
+        });
+    });
+
     it('leaves a div with no layout class to the browser', async () =>
     {
         const hidden = await displayOf('<div class="rl-padding-m" hidden>Text</div>');

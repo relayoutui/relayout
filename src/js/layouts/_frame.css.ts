@@ -30,6 +30,10 @@ export const _frameCss = css`
        child scrolls through its own global rule. */
     ::slotted([rl-scroll]) { box-sizing: border-box; overflow: auto; }
 
+    /* An image with hidden: the display: block below would beat the browser's display: none for hidden (see mods/_hidden.css.ts).
+       hidden="until-found" is left to the browser. */
+    :host > ::slotted(img[hidden]:not([hidden="until-found" i])) { display: none; }
+
     :host > ::slotted(img) {
         display: block;
         width: auto;

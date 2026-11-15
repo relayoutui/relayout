@@ -31,6 +31,10 @@
        frame of either form. The attribute form is border-box, as the base rule makes the class one. */
     & > [rl-scroll] { box-sizing: border-box; overflow: auto; }
 
+    /* An image with hidden: the display: block below would beat the browser's display: none for hidden (see mods/_hidden.scss).
+       hidden="until-found" is left to the browser. */
+    & > img[hidden]:not([hidden="until-found" i]) { display: none; }
+
     & > img {
         display: block;
         width: auto;
