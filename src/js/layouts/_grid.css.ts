@@ -12,6 +12,9 @@ export const _gridCss = css`
         box-sizing: border-box;
         grid-template-columns: repeat(auto-fit, minmax(min(var(--rl-grid-s), 100%), 1fr));
         gap: var(--rl-gap-default);
+        /* A page's own padding on the element beats a :host rule, and :host([rl-padding-*]) has a higher weight than
+           :host, as in the class form, where the default is in :where() */
+        padding: var(--rl-padding-default);
     }
 
     /* fit */

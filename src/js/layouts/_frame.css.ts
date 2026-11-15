@@ -13,6 +13,9 @@ export const _frameCss = css`
         width: 100%;
         height: 100%;
         overflow: visible;
+        /* A page's own padding on the element beats a :host rule, and :host([rl-padding-*]) has a higher weight than
+           :host, as in the class form, where the default is in :where() */
+        padding: var(--rl-padding-default);
     }
 
     /* the children stay inside the frame */
@@ -22,7 +25,8 @@ export const _frameCss = css`
     }
 
     /* A child that should scroll takes rl-scroll, as in every other layout, and a slotted child can only be styled from
-       here. It is border-box, as the class form gets it from src/scss/partials/base/_base.scss. */
+       here. It is border-box, as the class form gets it from src/scss/partials/base/_base.scss. The class form of the
+       child scrolls through its own global rule. */
     ::slotted([rl-scroll]) { box-sizing: border-box; overflow: auto; }
 
     :host > ::slotted(img) {

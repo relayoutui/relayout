@@ -2,7 +2,12 @@
 
 // Keep in sync with: src/js/mods/_border.css.ts
 
-.rl-border { 
-    border: var(--rl-border-default); 
-    border-radius: var(--rl-radius-default); 
+.rl-border {
+    border: var(--rl-border-default);
+}
+
+// The radius default has no specificity (:where), so a page's own border-radius on a bordered element wins whatever the
+// load order, and rl-radius-* still beats it.
+:where(.rl-border) {
+    border-radius: var(--rl-radius-default);
 }

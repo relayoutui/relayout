@@ -4,6 +4,10 @@
 
 // Keep in sync with: src/js/layouts/_grid.css.ts
 
+// The default padding has no specificity (:where), so a page's own padding on a grid wins whatever the load order, and
+// rl-padding-* still beats it.
+:where(.rl-grid) { padding: var(--rl-padding-default); }
+
 // A cell's minimum is capped at the grid's width, min(…, 100%), so in a grid narrower than one cell the single column
 // shrinks to fit instead of overflowing.
 .rl-grid {
