@@ -5,8 +5,9 @@
 // Keep in sync with: src/js/layouts/_row.css.ts
 
 // The default padding has no specificity (:where), so a page's own padding on a row wins whatever the load order, and
-// rl-padding-* still beats it.
-:where(.rl-row) { padding: var(--rl-padding-default); }
+// rl-padding-* still beats it. The variable isn't defined until a page sets it, and the fallback is the padding the element
+// has (revert), so a ul or a button with this class keeps its own.
+:where(.rl-row) { padding: var(--rl-padding-default, revert); }
 
 .rl-row {
     display: flex;

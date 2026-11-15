@@ -14,8 +14,9 @@ export const _frameCss = css`
         height: 100%;
         overflow: visible;
         /* A page's own padding on the element beats a :host rule, and :host([rl-padding-*]) has a higher weight than
-           :host, as in the class form, where the default is in :where() */
-        padding: var(--rl-padding-default);
+           :host, as in the class form, where the default is in :where(). Until a page sets the variable the
+           element keeps its own padding (revert) */
+        padding: var(--rl-padding-default, revert);
     }
 
     /* the children stay inside the frame */

@@ -5,8 +5,9 @@
 // Keep in sync with: src/js/layouts/_grid.css.ts
 
 // The default padding has no specificity (:where), so a page's own padding on a grid wins whatever the load order, and
-// rl-padding-* still beats it.
-:where(.rl-grid) { padding: var(--rl-padding-default); }
+// rl-padding-* still beats it. The variable isn't defined until a page sets it, and the fallback is the padding the element
+// has (revert), so a ul or a button with this class keeps its own.
+:where(.rl-grid) { padding: var(--rl-padding-default, revert); }
 
 // A cell's minimum is capped at the grid's width, min(…, 100%), so in a grid narrower than one cell the single column
 // shrinks to fit instead of overflowing.
@@ -15,6 +16,10 @@
     grid-template-columns: repeat(auto-fit, minmax(min(var(--rl-grid-s), 100%), 1fr));
     gap: var(--rl-gap-default);
 }
+
+// A child that scrolls, for the attribute form as well as the class (rl-scroll), so either form works in a grid of either
+// form. The attribute form is border-box, as the base rule makes the class one.
+.rl-grid > [rl-scroll] { box-sizing: border-box; overflow: auto; }
 
 .rl-grid-fit-xs { grid-template-columns: repeat(auto-fit, minmax(min(var(--rl-grid-xs), 100%), 1fr)); }
 .rl-grid-fit-s { grid-template-columns: repeat(auto-fit, minmax(min(var(--rl-grid-s), 100%), 1fr)); }

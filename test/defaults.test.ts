@@ -4,9 +4,10 @@ import '../dist/js/relayout.js';
 import { FORMS, layoutOf, mount, type Form, type Layout } from './stage.js';
 
 // `--rl-padding-default` pads the four layouts, and `--rl-radius-default` rounds what has `rl-border`, as a class and
-// as an element. A default of 0 is on every layout, so it must not undo what a page wrote: it has no specificity
-// (`:where()` in the class form), so a page's own padding or radius wins whatever the load order, and `rl-padding-*`
-// and `rl-radius-*` still beat it.
+// as an element. A default must not undo what is already there: it has no specificity (`:where()` in the class form), so
+// a page's own padding or radius wins whatever the load order, and `rl-padding-*` and `rl-radius-*` still beat it. The
+// padding variable isn't defined until a page sets it, so a layout class keeps the padding its element has, such as the
+// indent of a `ul` and the padding of a `button`.
 
 const LAYOUTS: Layout[] = ['column', 'row', 'grid', 'frame'];
 const added: HTMLStyleElement[] = [];
@@ -32,7 +33,7 @@ describe('--rl-padding-default', () =>
 {
     describe.each(FORMS)('on a layout in the %s form', form =>
     {
-        it.each(LAYOUTS)('is 0 for a %s until the variable is set', async layout =>
+        it.each(LAYOUTS)('has no padding on a %s until the variable is set', async layout =>
         {
             const { target, remove } = await mount(layoutOf(form, layout, [], '', 'Text'));
             expect(paddingOf(target)).toBe('0px');
@@ -95,6 +96,45 @@ describe('--rl-padding-default', () =>
             addStyle(':root { --rl-padding-default: 10px; } .card { padding: 20px; }', where);
             const { target, remove } = await mount(layoutOf('class', 'column', ['card'], '', 'Text'));
             expect(paddingOf(target)).toBe('20px');
+            remove();
+        });
+    });
+
+    describe('on an element that has padding of its own', () =>
+    {
+        // The markup the docs recommend when the element carries the meaning: the classes on a list, a button, a form
+        const OWN = [
+            { name: 'a ul', html: (classes: string) => `<ul class="${classes}" data-target><li>Item</li></ul>`, side: 'paddingLeft' },
+            { name: 'a button', html: (classes: string) => `<button class="${classes}" data-target>Button</button>`, side: 'paddingLeft' },
+            { name: 'a fieldset', html: (classes: string) => `<fieldset class="${classes}" data-target>Fields</fieldset>`, side: 'paddingLeft' },
+        ] as const;
+
+        it.each(OWN)('keeps the padding of $name with a layout class, until the variable is set', async ({ html, side }) =>
+        {
+            const plain = await mount(html(''));
+            const own = getComputedStyle(plain.target)[side];
+            plain.remove();
+            expect(own).not.toBe('0px');
+            for (const layout of LAYOUTS)
+            {
+                const { target, remove } = await mount(html(`rl-${layout}`));
+                expect(getComputedStyle(target)[side], `rl-${layout}`).toBe(own);
+                remove();
+            }
+        });
+
+        it.each(OWN)('pads $name with a layout class once the variable is set', async ({ html, side }) =>
+        {
+            addStyle(':root { --rl-padding-default: 10px; }', 'after');
+            const { target, remove } = await mount(html('rl-column'));
+            expect(getComputedStyle(target)[side]).toBe('10px');
+            remove();
+        });
+
+        it.each(OWN)('is beaten by rl-padding-m on $name', async ({ html, side }) =>
+        {
+            const { target, remove } = await mount(html('rl-column rl-padding-m'));
+            expect(getComputedStyle(target)[side]).toBe('8px');
             remove();
         });
     });

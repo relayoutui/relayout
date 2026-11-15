@@ -55,9 +55,11 @@ describe('rl-width-fill in a row', () =>
             remove();
         });
 
-        it('is border-box, so its padding is inside the width', async () =>
+        it('is border-box, so its padding is inside its size', async () =>
         {
+            // A fill element that grows ends as wide in either box-sizing, so the box-sizing itself is what is read
             const { target, remove } = await mountLayout(parent, 'row', ['rl-nowrap'], '', fixed(20) + child.html('rl-width-fill', 'padding: 20px;'));
+            expect(getComputedStyle(target).boxSizing).toBe('border-box');
             expect(box(target).width).toBe(300);
             remove();
         });
@@ -142,6 +144,14 @@ describe('rl-width-fill in a column', () =>
             remove();
         });
 
+        it('is border-box, so a padded element is no wider than the column', async () =>
+        {
+            const { target, remove } = await mountLayout(parent, 'column', [], '', child.html('rl-width-fill', 'padding: 20px;'));
+            expect(getComputedStyle(target).boxSizing).toBe('border-box');
+            expect(box(target).width).toBe(400);
+            remove();
+        });
+
         it('stretches across even when the column centers its elements', async () =>
         {
             const { target, remove } = await mountLayout(parent, 'column', ['rl-align-center'], '', child.html('rl-width-fill'));
@@ -151,7 +161,7 @@ describe('rl-width-fill in a column', () =>
     });
 });
 
-describe.each(['row', 'column', 'frame'] as const)('rl-scroll on a child of a %s', layout =>
+describe.each(['row', 'column', 'grid', 'frame'] as const)('rl-scroll on a child of a %s', layout =>
 {
     describe.each(COMBINATIONS)('of the $parent form, with $child.name', ({ parent, child }) =>
     {
