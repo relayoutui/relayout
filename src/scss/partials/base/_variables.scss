@@ -47,7 +47,7 @@
     --rl-radius-default: var(--rl-space-0);
     // a placeholder that keeps a boundary in sight: the whole border, its width, style and color, is the page's to set
     --rl-border-default: solid 1px hsl(0, 0%, 50%);
-    // a fill child in a row is at least this wide, or the row's width when that is less (layouts/_row.scss)
+    // a fill child in a row that wraps is at least this wide, or the row's width when that is less (layouts/_row.scss)
     --rl-fill-min: 16rem;            // 256px
 
     // color roles, light. primary is the text color; the colored fills (rl-bg-*) take surface as theirs
