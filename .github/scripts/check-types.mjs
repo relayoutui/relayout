@@ -1,8 +1,8 @@
 // Checks that TypeScript finds the types of the package as npm ships it. It packs the package, installs the
-// tarball into an empty project, and compiles a file that imports from it under each module resolution a
+// tarball into an empty project, and compiles files that import from it under each module resolution a
 // project can use. The files `types` and `exports` name have to exist, and the declarations have to resolve
-// everything they import: a Row has to be a real HTMLElement, and document.createElement('rl-row') has to
-// be a Row.
+// everything they import: the element has to be a real HTMLElement, document.createElement('rl-div') has to
+// be it, and the package exports nothing.
 //
 //   node .github/scripts/check-types.mjs
 //
@@ -27,28 +27,24 @@ const RESOLUTIONS = [
     { name: 'nodenext', options: ['--module', 'nodenext'] },
 ];
 
-// Same<A, B> is true only when A and B are the same type. When a declaration can't resolve an import, Row
+// Same<A, B> is true only when A and B are the same type. When a declaration can't resolve an import, the element
 // loses its base class, and with it classList and updateComplete, so the lines that read them fail.
-const CONSUMER = `import { Column, Div, Divider, Frame, Grid, Row } from '@relayoutui/relayout';
+const SAME = 'type Same<A, B> = (<T>() => T extends A ? 1 : 2) extends (<T>() => T extends B ? 1 : 2) ? true : false;';
 
-type Same<A, B> = (<T>() => T extends A ? 1 : 2) extends (<T>() => T extends B ? 1 : 2) ? true : false;
+const FILES = {
+    'index.ts': `import * as relayout from '@relayoutui/relayout';
 
-const tags: [
-    Same<HTMLElementTagNameMap['rl-column'], Column>,
-    Same<HTMLElementTagNameMap['rl-row'], Row>,
-    Same<HTMLElementTagNameMap['rl-grid'], Grid>,
-    Same<HTMLElementTagNameMap['rl-frame'], Frame>,
-    Same<HTMLElementTagNameMap['rl-divider'], Divider>,
-    Same<HTMLElementTagNameMap['rl-div'], Div>,
-] = [true, true, true, true, true, true];
+${SAME}
 
-const row = document.createElement('rl-row');
-const created: Same<typeof row, Row> = true;
-const isHtmlElement: Same<typeof row.classList, DOMTokenList> = true;
-const isLitElement: Same<typeof row.updateComplete, Promise<boolean>> = true;
+const exportsNothing: Same<keyof typeof relayout, never> = true;
+const div = document.createElement('rl-div');
+const created: Same<typeof div, HTMLElementTagNameMap['rl-div']> = true;
+const isHtmlElement: Same<typeof div.classList, DOMTokenList> = true;
+const isLitElement: Same<typeof div.updateComplete, Promise<boolean>> = true;
 
-export { created, isHtmlElement, isLitElement, tags };
-`;
+export { created, exportsNothing, isHtmlElement, isLitElement };
+`,
+};
 
 function fail(message)
 {
@@ -79,12 +75,13 @@ try
     writeFileSync(join(project, 'package.json'), JSON.stringify({ name: 'consumer', private: true, type: 'module' }));
     const install = run('npm', ['install', '--ignore-scripts', '--no-audit', '--no-fund', '--loglevel=error', tarball], project);
     if (!install.ok) fail(`npm install of the packed package failed:\n${install.err}`);
-    writeFileSync(join(project, 'index.ts'), CONSUMER);
+    for (const [name, text] of Object.entries(FILES)) writeFileSync(join(project, name), text);
 
     let failed = false;
     for (const { name, options } of RESOLUTIONS)
     {
-        const args = [TSC, '--noEmit', '--strict', '--skipLibCheck', 'false', '--target', 'es2022', '--lib', 'es2022,dom', ...options, 'index.ts'];
+        const args = [TSC, '--noEmit', '--strict', '--skipLibCheck', 'false', '--target', 'es2022', '--lib', 'es2022,dom',
+            ...options, ...Object.keys(FILES)];
         const compile = run(process.execPath, args, project);
         if (compile.ok)
         {

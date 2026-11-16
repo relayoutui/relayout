@@ -2,8 +2,6 @@
  * divider
  */
 
-// Keep in sync with: src/js/layouts/_divider.css.ts
-
 // A horizontal line. A divider that is a direct child of a row is a vertical one: that rule is in layouts/_row.scss,
 // where the fill rules are.
 .rl-divider {

@@ -1,6 +1,4 @@
 // outline
 
-// Keep in sync with: src/js/mods/_outline.css.ts
-
 // Takes off the focus ring. It is the only sign of where the keyboard is, so a page that uses this draws its own.
 .rl-outline-none { outline: none; }

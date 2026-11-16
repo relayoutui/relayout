@@ -1,0 +1,6 @@
+// rl-div, the element (src/js/div.ts)
+
+// Before its script runs, rl-div is an element the browser doesn't know, and such an element is inline. This makes it
+// the block it is once the script has run. :where() leaves the rule the weight of the tag alone, so a layout class
+// still sets the display: an rl-div with a layout class has its layout before the script runs, and doesn't jump.
+rl-div:where(:not(:defined)) { display: block; }
