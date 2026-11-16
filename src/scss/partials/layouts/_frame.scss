@@ -25,8 +25,9 @@
 
     /* A child with a width of its own keeps it: rl-width-* is already width: 100% of the frame at most. The rule skips
        it rather than losing to it, since in rl-div a parent's rule for its child beats the child's own, whatever their
-       weight, and the two forms would differ. */
-    & > :not(.rl-width-xs, .rl-width-s, .rl-width-m, .rl-width-l, .rl-width-xl, .rl-width-2xl) { max-width: 100%; }
+       weight, and the two forms would differ. :where() keeps the rule at the weight of one class, so a page's own
+       max-width on a child still wins when it comes after relayout.css. */
+    & > :where(:not(.rl-width-xs, .rl-width-s, .rl-width-m, .rl-width-l, .rl-width-xl, .rl-width-2xl)) { max-width: 100%; }
 
     /* An image with hidden: the display: block below would beat the browser's display: none for hidden (see mods/_hidden.scss).
        hidden="until-found" is left to the browser. */
