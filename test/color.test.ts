@@ -48,7 +48,9 @@ function computed(color: string): string
 /** A role's value in the scheme. */
 function roleValue(role: string, scheme: Scheme): string
 {
-    const [, light, dark] = ROLES.find(([name]) => name === role)!;
+    const found = ROLES.find(([name]) => name === role);
+    if (!found) throw new RangeError(`'${role}' is not one of the roles: ${ROLES.map(([name]) => name).join(', ')}`);
+    const [, light, dark] = found;
     return computed(scheme === 'light' ? light : dark);
 }
 

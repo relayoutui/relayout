@@ -489,11 +489,20 @@ describe.each(FORMS)('rl-align-baseline in the %s form', form =>
         remove();
     });
 
-    it('places as rl-align-start does in a column', async () =>
+    it('places as rl-align-start does in a column: at the start, only as wide as its content', async () =>
     {
-        const { target, remove } = await mount(layoutOf(form, 'column', ['rl-align-baseline'], '', '<div data-target style="width: 100px;">Text</div>'), { form });
-        expect(box(target).left).toBe(0);
-        remove();
+        // The column's default, stretch, would make the element as wide as the column, 400px
+        const placed = async (align: string): Promise<{ left: number; width: number }> =>
+        {
+            const { target, remove } = await mount(layoutOf(form, 'column', [align], '', '<div data-target>Text</div>'), { form });
+            const { left, width } = box(target);
+            remove();
+            return { left, width };
+        };
+        const baseline = await placed('rl-align-baseline');
+        expect(baseline).toEqual(await placed('rl-align-start'));
+        expect(baseline.left).toBe(0);
+        expect(baseline.width).toBeLessThan(400);
     });
 });
 
