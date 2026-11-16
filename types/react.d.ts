@@ -2,8 +2,9 @@
 //
 //   import type {} from '@relayoutui/relayout/types/react';
 //
-// React renders a custom element's props as attributes, so the classes go in `class`, not `className`:
-// <rl-div class="rl-row rl-gap-m">. Types only: the element itself registers with `import '@relayoutui/relayout'`.
+// The classes go in `class`, which works in every version of React: <rl-div class="rl-row rl-gap-m">. React 18
+// writes `className` on a custom element as an attribute named `classname`, which does nothing. Types only: the
+// element itself registers with `import '@relayoutui/relayout'`.
 
 import type { DetailedHTMLProps, HTMLAttributes } from 'react';
 
