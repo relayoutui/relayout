@@ -18,7 +18,7 @@ npm install @relayoutui/relayout
 Or load the CSS from a CDN, in the `<head>`:
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@relayoutui/relayout@0.7.0/dist/css/relayout.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@relayoutui/relayout@0.8.0/dist/css/relayout.css" />
 ```
 
 ## Example
