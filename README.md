@@ -6,7 +6,8 @@ predictable way.
 Four layouts set the direction. Utilities adjust the positioning: gap, padding, alignment,
 wrapping, scrolling and width. Optional extras add the fine touch.
 
-Use it as CSS classes or as web components.
+Use it as CSS classes. Inside another component's shadow root, where the page's CSS doesn't reach,
+`<rl-div class="rl-row rl-gap-m">` takes the same classes.
 
 ## Installation
 
