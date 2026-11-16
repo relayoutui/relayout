@@ -20,9 +20,9 @@
     gap: var(--rl-gap-default);
 
     /* grow. A fill child is at least --rl-fill-min wide, or as wide as the row when that is less, so in a row that wraps
-       it moves to a line of its own before it gets narrower. In a row as wide as its content, as in a centered column,
-       the minimum is the row's whole width and the child moves below the others: there is no space to fill there, so
-       the docs say to leave the class off, or to set --rl-fill-min: 0px */
+       it moves to a line of its own before it gets narrower. A row as wide as its content, as in a centered column, is
+       sized as if the minimum were 0, so a child whose content is narrower than the minimum moves below the others:
+       there is no space to fill there, so the docs say to leave the class off, or to set --rl-fill-min: 0px */
     & > .rl-width-fill { flex: 999 1 0; min-width: min(100%, var(--rl-fill-min)); }
 
     /* stretch across, even with rl-align-* */

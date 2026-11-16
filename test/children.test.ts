@@ -127,13 +127,14 @@ describe('the minimum of rl-width-fill in a row that wraps', () =>
             expect(await placed(400, '', '<div style="overflow: auto;"><div style="width: 2000px;">Code</div></div>')).toEqual({ beside: false, width: 400 });
         });
 
-        // A row as wide as its content, as in a centered column, has no space to fill: the minimum is then the row's whole
-        // width, and the fill child moves below the others. The docs say to leave the class off there, or to set 0px.
+        // A row as wide as its content, as in a centered column, has no space to fill. The browser sizes it as if the
+        // minimum were 0, so the space beside the others is only the fill child's content, and a child whose content is
+        // narrower than the minimum moves below them. The docs say to leave the class off there, or to set 0px.
         describe('in a row whose width comes from its content, in a centered column', () =>
         {
-            async function placedInContent(rowStyle: string): Promise<boolean>
+            async function placedInContent(rowStyle: string, content = 'Saved to your list'): Promise<boolean>
             {
-                const row = layoutOf(parent, 'row', ['rl-gap-m'], rowStyle, fixed(24, 24) + child.html('rl-width-fill', undefined, 'Saved to your list'));
+                const row = layoutOf(parent, 'row', ['rl-gap-m'], rowStyle, fixed(24, 24) + child.html('rl-width-fill', undefined, content));
                 const { target, all, remove } = await mount(layoutOf(parent, 'column', ['rl-align-center'], '', row), { form: parent });
                 // Beside is on the icon's line: the row centers the label's 20px line next to the 24px icon
                 const icon = box(all('[data-fixed]')[0]);
@@ -142,9 +143,14 @@ describe('the minimum of rl-width-fill in a row that wraps', () =>
                 return beside;
             }
 
-            it('moves below the others, since the minimum is the whole row', async () =>
+            it('moves below the others when its content is narrower than the minimum', async () =>
             {
                 expect(await placedInContent('')).toBe(false);
+            });
+
+            it('stays beside when its content is wider than the minimum', async () =>
+            {
+                expect(await placedInContent('', '<div style="width: 300px;">Wide</div>')).toBe(true);
             });
 
             it('stays beside with --rl-fill-min: 0px on the row', async () =>
