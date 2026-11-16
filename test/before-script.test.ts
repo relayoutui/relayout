@@ -42,9 +42,12 @@ describe('rl-div before its script runs', () =>
         remove();
     });
 
-    it('is hidden by hidden', async () =>
+    it.each([
+        ['no class', ''],
+        ['a layout class', 'rl-row'],
+    ])('is hidden by hidden, with %s', async (_, classes) =>
     {
-        const { target, remove } = await mount('<rl-div class="rl-row" hidden data-target>Text</rl-div>');
+        const { target, remove } = await mount(`<rl-div class="${classes}" hidden data-target>Text</rl-div>`);
         expect(getComputedStyle(target).display).toBe('none');
         remove();
     });
