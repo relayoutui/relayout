@@ -26,6 +26,10 @@
     /* stretch across, even with rl-align-* */
     & > .rl-height-fill { align-self: stretch; height: auto; }
 
+    /* a strip that scrolls never wraps, so its fill child has no minimum either, and takes what is left down to its
+       longest word, as it did before the minimum */
+    &.rl-nowrap-scroll > .rl-width-fill { min-width: auto; }
+
     /* no wrap point to protect, so allow truncation */
     &.rl-nowrap > .rl-width-fill { min-width: 0; }
 }

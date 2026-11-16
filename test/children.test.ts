@@ -126,6 +126,15 @@ describe('the minimum of rl-width-fill in a row that wraps', () =>
         {
             expect(await placed(400, '', '<div style="overflow: auto;"><div style="width: 2000px;">Code</div></div>')).toEqual({ beside: false, width: 400 });
         });
+
+        it('has no minimum in a strip that scrolls with rl-nowrap-scroll, so it takes what is left and the strip does not scroll', async () =>
+        {
+            const { target, all, remove } = await mountLayout(parent, 'row', ['rl-nowrap-scroll'], '', fixed(20, 150) + child.html('rl-width-fill'), { width: 300 });
+            const [strip] = all('.rl-nowrap-scroll');
+            expect(box(target).width).toBe(150);
+            expect(strip.scrollWidth).toBe(300);
+            remove();
+        });
     });
 });
 
