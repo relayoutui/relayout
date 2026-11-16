@@ -20,6 +20,7 @@
   "module": "dist/js/relayout.js",
   "style": "dist/css/relayout.css",
   "types": "dist/js/types/index.d.ts",
+  "customElements": "custom-elements.json",
   "exports": {
     ".": {
       "types": "./dist/js/types/index.d.ts",
@@ -27,10 +28,19 @@
       "default": "./dist/js/relayout.js"
     },
     "./css": "./dist/css/relayout.css",
-    "./relayout.css": "./dist/css/relayout.css"
+    "./relayout.css": "./dist/css/relayout.css",
+    "./types/react": {
+      "types": "./types/react.d.ts"
+    },
+    "./types/vue": {
+      "types": "./types/vue.d.ts"
+    },
+    "./custom-elements.json": "./custom-elements.json"
   },
   "files": [
-    "dist"
+    "dist",
+    "types",
+    "custom-elements.json"
   ],
   "scripts": {
     "prepublishOnly": "npm run build",
@@ -49,6 +59,18 @@
   },
   "dependencies": {
     "lit": "^3.0.0"
+  },
+  "peerDependencies": {
+    "@types/react": ">=18",
+    "vue": ">=3.3"
+  },
+  "peerDependenciesMeta": {
+    "@types/react": {
+      "optional": true
+    },
+    "vue": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@rollup/plugin-node-resolve": "^16.0.3",

@@ -2,12 +2,13 @@
 // tarball into an empty project, and compiles files that import from it under each module resolution a
 // project can use. The files `types` and `exports` name have to exist, and the declarations have to resolve
 // everything they import: the element has to be a real HTMLElement, document.createElement('rl-div') has to
-// be it, and the package exports nothing.
+// be it, and the package exports nothing. The type paths for React and Vue have to give <rl-div> its `class`.
 //
 //   node .github/scripts/check-types.mjs
 //
 // Runs as the last step of `npm run build`, so it needs the build's output in dist. Needs npm and the
-// network: the project gets Lit from the registry, as the package's dependency.
+// network: the project gets Lit from the registry, as the package's dependency, and React's types and Vue,
+// which a project of either kind has.
 
 import { spawnSync } from 'node:child_process';
 import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
@@ -44,6 +45,22 @@ const isLitElement: Same<typeof div.updateComplete, Promise<boolean>> = true;
 
 export { created, exportsNothing, isHtmlElement, isLitElement };
 `,
+    // <rl-div> takes `class` in JSX, and an element Relayout doesn't have is still an error
+    'react.tsx': `import type {} from '@relayoutui/relayout/types/react';
+
+export const row = <rl-div class="rl-row rl-gap-m"><span>Text</span></rl-div>;
+
+// @ts-expect-error: not an element of Relayout
+export const removed = <rl-row></rl-row>;
+`,
+    // What a template gives <rl-div>: Vue's tools read GlobalComponents
+    'vue.ts': `import type {} from '@relayoutui/relayout/types/vue';
+import type { GlobalComponents } from 'vue';
+
+type Props = InstanceType<GlobalComponents['rl-div']>['$props'];
+
+export const props: Props = { class: 'rl-row rl-gap-m' };
+`,
 };
 
 function fail(message)
@@ -69,11 +86,12 @@ try
     if (!pack.ok) fail(`npm pack failed:\n${pack.err}`);
     const tarball = join(work, pack.out.split('\n').pop());
 
-    // The project: the package alone. Lit, which its declarations import, comes with it as its dependency.
+    // The project: the package, with React's types and Vue for the two type paths. Lit, which the package's
+    // declarations import, comes with it as its dependency.
     const project = join(work, 'project');
     mkdirSync(project);
     writeFileSync(join(project, 'package.json'), JSON.stringify({ name: 'consumer', private: true, type: 'module' }));
-    const install = run('npm', ['install', '--ignore-scripts', '--no-audit', '--no-fund', '--loglevel=error', tarball], project);
+    const install = run('npm', ['install', '--ignore-scripts', '--no-audit', '--no-fund', '--loglevel=error', tarball, '@types/react', 'vue'], project);
     if (!install.ok) fail(`npm install of the packed package failed:\n${install.err}`);
     for (const [name, text] of Object.entries(FILES)) writeFileSync(join(project, name), text);
 
@@ -81,7 +99,7 @@ try
     for (const { name, options } of RESOLUTIONS)
     {
         const args = [TSC, '--noEmit', '--strict', '--skipLibCheck', 'false', '--target', 'es2022', '--lib', 'es2022,dom',
-            ...options, ...Object.keys(FILES)];
+            '--jsx', 'react-jsx', ...options, ...Object.keys(FILES)];
         const compile = run(process.execPath, args, project);
         if (compile.ok)
         {
