@@ -4,3 +4,5 @@
 .rl-align-center { align-items: center; }
 .rl-align-end { align-items: end; }
 .rl-align-stretch { align-items: stretch; }
+// The first lines of text on one line, whatever their size: for a row or a grid. In a column it places as start does
+.rl-align-baseline { align-items: baseline; }

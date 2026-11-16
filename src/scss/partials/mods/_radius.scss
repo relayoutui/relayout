@@ -7,3 +7,6 @@
 .rl-radius-l { border-radius: var(--rl-space-l); }
 .rl-radius-xl { border-radius: var(--rl-space-xl); }
 .rl-radius-2xl { border-radius: var(--rl-space-2xl); }
+
+// Fully round ends at any size: a pill, or a circle on a square. Not 50%, which makes an ellipse of a wide element
+.rl-radius-full { border-radius: 9999px; }

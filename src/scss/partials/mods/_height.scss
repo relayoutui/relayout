@@ -5,3 +5,9 @@
 .rl-height-full {
     height: 100%;
 }
+
+// The height of the window, for the page's root or a section that fills the window; inside a layout, rl-height-fill
+// takes what the others leave. dvh follows the browser's toolbar on a phone, where vh is the height without it, and
+// would cut the bottom off.
+.rl-height-screen { height: 100dvh; }
+.rl-height-screen-min { min-height: 100dvh; }

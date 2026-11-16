@@ -4,6 +4,12 @@
     border: var(--rl-border-default);
 }
 
+// One side, with no radius. Start and end follow the reading direction, as rl-text-start does
+.rl-border-top { border-top: var(--rl-border-default); }
+.rl-border-bottom { border-bottom: var(--rl-border-default); }
+.rl-border-start { border-inline-start: var(--rl-border-default); }
+.rl-border-end { border-inline-end: var(--rl-border-default); }
+
 // The radius default is in a cascade layer, so a rule of the page's own beats it, whatever its weight or the order of the
 // style sheets, unless the page keeps that rule in a cascade layer declared before this one. rl-radius-* (outside a
 // layer) still beats it.
