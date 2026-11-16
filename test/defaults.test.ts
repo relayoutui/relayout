@@ -1,13 +1,14 @@
 import { afterEach, describe, expect, it } from 'vitest';
 import '../dist/css/relayout.css';
 import '../dist/js/relayout.js';
-import { FORMS, layoutOf, mount, type Form, type Layout } from './stage.js';
+import { FORMS, PAGE_FORMS, boxOf, layoutOf, mount, type Form, type Layout } from './stage.js';
 
-// `--rl-padding-default` pads the four layouts, and `--rl-radius-default` rounds what has `rl-border`, as a class and
-// as an element. A default must not undo what is already there: in the class form it is in a cascade layer, so a page's
-// own padding or radius wins, whatever its weight and the load order, and `rl-padding-*` and `rl-radius-*` still beat it. The
-// padding variable isn't defined until a page sets it, so a layout class keeps the padding its element has, such as the
-// indent of a `ul` and the padding of a `button`.
+// `--rl-padding-default` pads the four layouts, and `--rl-radius-default` rounds what has `rl-border`, on a div and on
+// an <rl-div>, in the page and inside another component's shadow root. A default must not undo what is already there:
+// it is in a cascade layer, so a page's own padding or radius wins, whatever its weight and the load order, and
+// `rl-padding-*` and `rl-radius-*` still beat it. Inside a shadow root the component's own rules win over the
+// element's, from any layer. The padding variable isn't defined until a page sets it, so a layout class keeps the
+// padding its element has, such as the indent of a `ul` and the padding of a `button`.
 
 const LAYOUTS: Layout[] = ['column', 'row', 'grid', 'frame'];
 const added: HTMLStyleElement[] = [];
@@ -35,7 +36,7 @@ describe('--rl-padding-default', () =>
     {
         it.each(LAYOUTS)('has no padding on a %s until the variable is set', async layout =>
         {
-            const { target, remove } = await mount(layoutOf(form, layout, [], '', 'Text'));
+            const { target, remove } = await mount(layoutOf(form, layout, [], '', 'Text'), { form });
             expect(paddingOf(target)).toBe('0px');
             remove();
         });
@@ -43,7 +44,7 @@ describe('--rl-padding-default', () =>
         it.each(LAYOUTS)('pads a %s once the variable is set', async layout =>
         {
             addStyle(':root { --rl-padding-default: 10px; }', 'after');
-            const { target, remove } = await mount(layoutOf(form, layout, [], '', 'Text'));
+            const { target, remove } = await mount(layoutOf(form, layout, [], '', 'Text'), { form });
             expect(paddingOf(target)).toBe('10px');
             remove();
         });
@@ -51,7 +52,7 @@ describe('--rl-padding-default', () =>
         it.each(LAYOUTS)('is beaten by rl-padding-m on a %s', async layout =>
         {
             addStyle(':root { --rl-padding-default: 10px; }', 'after');
-            const { target, remove } = await mount(layoutOf(form, layout, ['rl-padding-m'], '', 'Text'));
+            const { target, remove } = await mount(layoutOf(form, layout, ['rl-padding-m'], '', 'Text'), { form });
             expect(paddingOf(target)).toBe('8px');
             remove();
         });
@@ -59,36 +60,31 @@ describe('--rl-padding-default', () =>
         it.each(LAYOUTS)('is beaten by rl-padding-x-xl on a %s, which leaves the other axis to the default', async layout =>
         {
             addStyle(':root { --rl-padding-default: 10px; }', 'after');
-            const { target, remove } = await mount(layoutOf(form, layout, ['rl-padding-x-xl'], '', 'Text'));
+            const { target, remove } = await mount(layoutOf(form, layout, ['rl-padding-x-xl'], '', 'Text'), { form });
             expect([getComputedStyle(target).paddingLeft, paddingOf(target)]).toEqual(['24px', '10px']);
             remove();
         });
     });
 
-    it.each(['rl-div', 'rl-divider'])('does not pad <%s>', async tag =>
+    it.each(FORMS.flatMap(form => ['', 'rl-divider'].map(classes => ({ form, classes, name: classes || 'no class' }))))('does not pad a box with $name in the $form form', async ({ form, classes }) =>
     {
         addStyle(':root { --rl-padding-default: 10px; }', 'after');
-        const { target, remove } = await mount(`<${tag}>Text</${tag}>`);
+        const { target, remove } = await mount(boxOf(form, classes, '', 'Text'), { form });
         expect(paddingOf(target)).toBe('0px');
         remove();
     });
 
     describe.each(['before', 'after'] as const)('with a page style sheet that comes %s relayout.css', where =>
     {
-        it.each(LAYOUTS)('lets the page set the padding of a div with the class rl-%s', async layout =>
+        describe.each(PAGE_FORMS)('in the %s form', form =>
         {
-            addStyle('.card { padding: 20px; }', where);
-            const { target, remove } = await mount(layoutOf('class', layout, ['card'], '', 'Text'));
-            expect(paddingOf(target)).toBe('20px');
-            remove();
-        });
-
-        it.each(LAYOUTS)('lets the page set the padding of <rl-%s>', async layout =>
-        {
-            addStyle('.card { padding: 20px; }', where);
-            const { target, remove } = await mount(layoutOf('element', layout, ['class="card"'], '', 'Text'));
-            expect(paddingOf(target)).toBe('20px');
-            remove();
+            it.each(LAYOUTS)('lets the page set the padding of a box with the class rl-%s', async layout =>
+            {
+                addStyle('.card { padding: 20px; }', where);
+                const { target, remove } = await mount(layoutOf(form, layout, ['card'], '', 'Text'), { form });
+                expect(paddingOf(target)).toBe('20px');
+                remove();
+            });
         });
 
         it('lets the page set the padding even when the default is set', async () =>
@@ -176,35 +172,41 @@ describe('--rl-padding-default', () =>
 
     // What is not covered: a rule of the page's own that sits in a cascade layer declared before relayout.css is under the
     // default's layer. Recorded here so a change to it is noticed: until the variable is set the page's rule is what
-    // revert-layer gives back, and once it is set the default beats it in the class form. An element's default is a :host
-    // rule, which a rule of the page's own beats from any layer.
-    describe('with a rule of the page in a cascade layer declared before relayout.css', () =>
+    // revert-layer gives back, and once it is set the default beats it. An <rl-div> in the page has relayout.css's rules
+    // too, so it is the same there.
+    describe.each(PAGE_FORMS)('with a rule of the page in a cascade layer declared before relayout.css, in the %s form', form =>
     {
         const PAGE = '@layer page { .card { padding: 20px; } }';
 
-        it('keeps the page\'s padding until the variable is set, in both forms', async () =>
+        it('keeps the page\'s padding until the variable is set', async () =>
         {
             addStyle(PAGE, 'before');
-            for (const form of FORMS)
-            {
-                const { target, remove } = await mount(layoutOf(form, 'column', form === 'class' ? ['card'] : ['class="card"'], '', 'Text'));
-                expect(paddingOf(target), form).toBe('20px');
-                remove();
-            }
-        });
-
-        it('lets the default beat the page\'s padding once the variable is set, in the class form', async () =>
-        {
-            addStyle(`${PAGE} :root { --rl-padding-default: 10px; }`, 'before');
-            const { target, remove } = await mount(layoutOf('class', 'column', ['card'], '', 'Text'));
-            expect(paddingOf(target)).toBe('10px');
+            const { target, remove } = await mount(layoutOf(form, 'column', ['card'], '', 'Text'), { form });
+            expect(paddingOf(target)).toBe('20px');
             remove();
         });
 
-        it('lets the page\'s padding win once the variable is set, in the element form', async () =>
+        it('lets the default beat the page\'s padding once the variable is set', async () =>
         {
             addStyle(`${PAGE} :root { --rl-padding-default: 10px; }`, 'before');
-            const { target, remove } = await mount(layoutOf('element', 'column', ['class="card"'], '', 'Text'));
+            const { target, remove } = await mount(layoutOf(form, 'column', ['card'], '', 'Text'), { form });
+            expect(paddingOf(target)).toBe('10px');
+            remove();
+        });
+    });
+
+    // Inside a shadow root, the component's own style sheet is where the page's would be. The element's rules are its
+    // own shadow root's, which any rule of the component beats, from a cascade layer too.
+    describe('inside a shadow root', () =>
+    {
+        it.each([
+            { name: 'a rule of the component', css: '.card { padding: 20px; }' },
+            { name: 'a rule of the component in a cascade layer', css: '@layer component { .card { padding: 20px; } }' },
+            { name: 'a reset of the component', css: '* { padding: 20px; }' },
+        ])('lets $name set the padding, with the variable set', async ({ css }) =>
+        {
+            addStyle(':root { --rl-padding-default: 10px; }', 'after');
+            const { target, remove } = await mount(layoutOf('shadow', 'column', ['card'], '', 'Text'), { form: 'shadow', componentCss: css });
             expect(paddingOf(target)).toBe('20px');
             remove();
         });
@@ -219,11 +221,10 @@ describe('--rl-padding-default', () =>
     });
 });
 
-/** A bordered div or element, in each form. */
-function bordered(form: Form, flags: string[], pageClass = ''): string
+/** A bordered div or <rl-div>, with the utilities and a class of the page's. */
+function bordered(form: Form, utilities: string[], pageClass = ''): string
 {
-    if (form === 'class') return `<div class="rl-border${flags.map(flag => ` ${flag}`).join('')}${pageClass ? ` ${pageClass}` : ''}">Text</div>`;
-    return `<rl-div rl-border${flags.map(flag => ` ${flag}`).join('')}${pageClass ? ` class="${pageClass}"` : ''}>Text</rl-div>`;
+    return boxOf(form, ['rl-border', ...utilities, pageClass].filter(Boolean).join(' '), '', 'Text');
 }
 
 const radiusOf = (element: HTMLElement): string => getComputedStyle(element).borderTopLeftRadius;
@@ -234,7 +235,7 @@ describe('--rl-radius-default', () =>
     {
         it('is 0 until the variable is set', async () =>
         {
-            const { target, remove } = await mount(bordered(form, []));
+            const { target, remove } = await mount(bordered(form, []), { form });
             expect(radiusOf(target)).toBe('0px');
             remove();
         });
@@ -242,7 +243,7 @@ describe('--rl-radius-default', () =>
         it('rounds the corners once the variable is set', async () =>
         {
             addStyle(':root { --rl-radius-default: 6px; }', 'after');
-            const { target, remove } = await mount(bordered(form, []));
+            const { target, remove } = await mount(bordered(form, []), { form });
             expect(radiusOf(target)).toBe('6px');
             remove();
         });
@@ -250,7 +251,7 @@ describe('--rl-radius-default', () =>
         it('is beaten by rl-radius-m', async () =>
         {
             addStyle(':root { --rl-radius-default: 6px; }', 'after');
-            const { target, remove } = await mount(bordered(form, ['rl-radius-m']));
+            const { target, remove } = await mount(bordered(form, ['rl-radius-m']), { form });
             expect(radiusOf(target)).toBe('8px');
             remove();
         });
@@ -266,10 +267,10 @@ describe('--rl-radius-default', () =>
 
     describe.each(['before', 'after'] as const)('with a page style sheet that comes %s relayout.css', where =>
     {
-        it.each(FORMS)('lets the page round a bordered element in the %s form', async form =>
+        it.each(PAGE_FORMS)('lets the page round a bordered element in the %s form', async form =>
         {
             addStyle('.card { border-radius: 12px; }', where);
-            const { target, remove } = await mount(bordered(form, [], 'card'));
+            const { target, remove } = await mount(bordered(form, [], 'card'), { form });
             expect(radiusOf(target)).toBe('12px');
             remove();
         });
@@ -285,13 +286,21 @@ describe('--rl-radius-default', () =>
 
     describe.each(['before', 'after'] as const)('with a rule of the page that comes %s relayout.css and has no specificity', where =>
     {
-        it.each(FORMS)('lets `* { border-radius }` round a bordered element in the %s form', async form =>
+        it.each(PAGE_FORMS)('lets `* { border-radius }` round a bordered element in the %s form', async form =>
         {
             addStyle('* { border-radius: 4px; }', where);
-            const { target, remove } = await mount(bordered(form, []));
+            const { target, remove } = await mount(bordered(form, []), { form });
             expect(radiusOf(target)).toBe('4px');
             remove();
         });
+    });
+
+    it('lets a rule of the component round a bordered element inside a shadow root', async () =>
+    {
+        addStyle(':root { --rl-radius-default: 6px; }', 'after');
+        const { target, remove } = await mount(bordered('shadow', [], 'card'), { form: 'shadow', componentCss: '.card { border-radius: 12px; }' });
+        expect(radiusOf(target)).toBe('12px');
+        remove();
     });
 
     it('keeps the border of rl-border', async () =>

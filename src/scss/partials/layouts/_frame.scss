@@ -2,13 +2,11 @@
  * frame
  */
 
-// Keep in sync with: src/js/layouts/_frame.css.ts
-
 // The default padding is in a cascade layer, so a rule of the page's own beats it, whatever its weight or the order of the
-// style sheets, unless the page keeps that rule in a cascade layer declared before this one (src/js has no such
-// exception: a :host rule always loses to the page's own). rl-padding-* (outside a layer) still beats it. The variable
-// isn't defined until a page sets it, and the fallback, revert-layer, is the value there would be without this layer:
-// what the page or the browser gives the element, so a ul or a button with this class keeps its own padding.
+// style sheets, unless the page keeps that rule in a cascade layer declared before this one. rl-padding-* (outside a
+// layer) still beats it. The variable isn't defined until a page sets it, and the fallback, revert-layer, is the value
+// there would be without this layer: what the page or the browser gives the element, so a ul or a button with this class
+// keeps its own padding.
 @layer rl-defaults {
     .rl-frame { padding: var(--rl-padding-default, revert-layer); }
 }
@@ -23,14 +21,13 @@
 
     /* the children stay inside the frame. One that should scroll takes rl-scroll, as in every other layout: a box that
        scrolls clips shadows and focus rings, so it isn't the default */
-    & > * {
-        max-width: 100%;
-        max-height: 100%;   /* cap to available height */
-    }
+    & > * { max-height: 100%; }
 
-    /* A child that scrolls, written for the attribute form as well as the class (rl-scroll), so either form works in a
-       frame of either form. The attribute form is border-box, as the base rule makes the class one. */
-    & > [rl-scroll] { box-sizing: border-box; overflow: auto; }
+    /* A child with a width of its own keeps it: rl-width-* is already width: 100% of the frame at most. The rule skips
+       it rather than losing to it, since in rl-div a parent's rule for its child beats the child's own, whatever their
+       weight, and the two forms would differ. :where() keeps the rule at the weight of one class, so a page's own
+       max-width on a child still wins when it comes after relayout.css. */
+    & > :where(:not(.rl-width-xs, .rl-width-s, .rl-width-m, .rl-width-l, .rl-width-xl, .rl-width-2xl)) { max-width: 100%; }
 
     /* An image with hidden: the display: block below would beat the browser's display: none for hidden (see mods/_hidden.scss).
        hidden="until-found" is left to the browser. */

@@ -43,7 +43,7 @@
     // defaults
     --rl-gap-default: var(--rl-space-0);
     // --rl-padding-default is not defined: a layout keeps the padding its element has until a page sets it, so a ul or a
-    // button with a layout class keeps its own (var(--rl-padding-default, revert-layer) in the class layouts, revert in the elements)
+    // button with a layout class keeps its own (var(--rl-padding-default, revert-layer) in the layouts)
     --rl-radius-default: var(--rl-space-0);
     --rl-border-default: solid 1px hsl(0, 0%, 50%);
 

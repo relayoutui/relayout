@@ -20,6 +20,7 @@
   "module": "dist/js/relayout.js",
   "style": "dist/css/relayout.css",
   "types": "dist/js/types/index.d.ts",
+  "customElements": "custom-elements.json",
   "exports": {
     ".": {
       "types": "./dist/js/types/index.d.ts",
@@ -27,15 +28,26 @@
       "default": "./dist/js/relayout.js"
     },
     "./css": "./dist/css/relayout.css",
-    "./relayout.css": "./dist/css/relayout.css"
+    "./relayout.css": "./dist/css/relayout.css",
+    "./types/react": {
+      "types": "./types/react.d.ts"
+    },
+    "./types/vue": {
+      "types": "./types/vue.d.ts"
+    },
+    "./custom-elements.json": "./custom-elements.json"
   },
   "files": [
-    "dist"
+    "dist",
+    "types",
+    "custom-elements.json"
   ],
   "scripts": {
     "prepublishOnly": "npm run build",
-    "build": "npm run build:css && npm run build:js && npm run check:types",
+    "build": "npm run clean && npm run build:css && npm run build:element && npm run build:js && npm run check:types",
+    "clean": "node -e \"require('node:fs').rmSync('dist', { recursive: true, force: true })\"",
     "build:css": "sass src/scss/relayout.scss dist/css/relayout.css --style=compressed --no-source-map",
+    "build:element": "node .github/scripts/element-rules.mjs",
     "build:js": "rollup -c",
     "check:types": "node .github/scripts/check-types.mjs",
     "test": "vitest run"
@@ -48,12 +60,25 @@
   "dependencies": {
     "lit": "^3.0.0"
   },
+  "peerDependencies": {
+    "@types/react": ">=18",
+    "vue": ">=3.3"
+  },
+  "peerDependenciesMeta": {
+    "@types/react": {
+      "optional": true
+    },
+    "vue": {
+      "optional": true
+    }
+  },
   "devDependencies": {
     "@rollup/plugin-node-resolve": "^16.0.3",
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^12.3.0",
     "@vitest/browser-playwright": "^5.1.0",
     "playwright": "^1.65.1",
+    "postcss": "^8.5.33",
     "rollup": "^4.57.1",
     "sass": "^1.93.2",
     "tslib": "^2.8.1",

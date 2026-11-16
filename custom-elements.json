@@ -1,0 +1,49 @@
+{
+    "schemaVersion": "2.1.0",
+    "readme": "README.md",
+    "modules": [
+        {
+            "kind": "javascript-module",
+            "path": "dist/js/relayout.js",
+            "declarations": [
+                {
+                    "kind": "class",
+                    "name": "Div",
+                    "tagName": "rl-div",
+                    "customElement": true,
+                    "summary": "A div that takes the classes of relayout.css through class, inside another component's shadow root.",
+                    "description": "Inside another component's shadow root, the page's relayout.css doesn't apply. <rl-div class=\"rl-row rl-gap-m\"> carries the rules of its classes with it, and is there what <div class=\"rl-row rl-gap-m\"> is in the page. It takes every class of relayout.css, and the page loads relayout.css, which holds the sizes and colors. See https://relayout.net/docs/web-components/.",
+                    "superclass": {
+                        "name": "LitElement",
+                        "package": "lit"
+                    },
+                    "attributes": [
+                        {
+                            "name": "class",
+                            "type": {
+                                "text": "string"
+                            },
+                            "description": "The classes of relayout.css, as on a div: rl-row rl-gap-m."
+                        }
+                    ],
+                    "slots": [
+                        {
+                            "name": "",
+                            "description": "The content, laid out by the classes."
+                        }
+                    ]
+                }
+            ],
+            "exports": [
+                {
+                    "kind": "custom-element-definition",
+                    "name": "rl-div",
+                    "declaration": {
+                        "name": "Div",
+                        "module": "dist/js/relayout.js"
+                    }
+                }
+            ]
+        }
+    ]
+}

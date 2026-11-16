@@ -3,9 +3,10 @@ import '../dist/css/relayout.css';
 import '../dist/js/relayout.js';
 import { FORMS, layoutOf, mount, round, type Form, type Layout } from './stage.js';
 
-// What a layout sets on a child, fill, scroll and the divider, works for a child of either form in a layout of either
-// form: a div with the class, a div with the attribute, an <rl-div> with the attribute and an <rl-div> with the class.
-// The Web components page says the two forms mix freely, and this is what that has to mean.
+// What a layout sets on a child, fill and the divider, and rl-scroll on a child, work in each form of the layout: a div with the class, an
+// <rl-div> with it in the page, and an <rl-div> with it inside another component's shadow root. In the page the child
+// can be a div or an <rl-div>, either way. Inside a shadow root it is an <rl-div>, as the docs say for every element
+// with an rl- class there: a div gets what the layout sets on it, but not the rules of its own classes.
 
 interface ChildForm
 {
@@ -16,17 +17,16 @@ interface ChildForm
 
 const styleAttribute = (style?: string): string => style ? ` style="${style}"` : '';
 
-const CHILDREN: ChildForm[] = [
-    { name: 'a div with the class', html: (utility, style, inner = 'Fill') => `<div class="${utility}"${styleAttribute(style)} data-target>${inner}</div>` },
-    { name: 'a div with the attribute', html: (utility, style, inner = 'Fill') => `<div ${utility}${styleAttribute(style)} data-target>${inner}</div>` },
-    { name: 'an rl-div with the attribute', html: (utility, style, inner = 'Fill') => `<rl-div ${utility}${styleAttribute(style)} data-target>${inner}</rl-div>` },
-    { name: 'an rl-div with the class', html: (utility, style, inner = 'Fill') => `<rl-div class="${utility}"${styleAttribute(style)} data-target>${inner}</rl-div>` },
-];
+const DIV: ChildForm = { name: 'a div with the class', html: (utility, style, inner = 'Fill') => `<div class="${utility}"${styleAttribute(style)} data-target>${inner}</div>` };
+const RL_DIV: ChildForm = { name: 'an rl-div with the class', html: (utility, style, inner = 'Fill') => `<rl-div class="${utility}"${styleAttribute(style)} data-target>${inner}</rl-div>` };
+
+/** The children a layout of the form takes: either kind in the page, and an <rl-div> in a shadow root. */
+const childrenOf = (form: Form): ChildForm[] => form === 'shadow' ? [RL_DIV] : [DIV, RL_DIV];
 
 const fixed = (height: number, width = 100): string => `<div data-fixed style="width: ${width}px; height: ${height}px;">Fixed</div>`;
 
-/** Each parent form with each child form. */
-const COMBINATIONS: { parent: Form; child: ChildForm }[] = FORMS.flatMap(parent => CHILDREN.map(child => ({ parent, child })));
+/** Each form of the layout with each child it takes. */
+const COMBINATIONS: { parent: Form; child: ChildForm }[] = FORMS.flatMap(parent => childrenOf(parent).map(child => ({ parent, child })));
 
 const box = (element: HTMLElement): { left: number; top: number; width: number; height: number } =>
 {
@@ -34,8 +34,8 @@ const box = (element: HTMLElement): { left: number; top: number; width: number; 
     return { left: round(left), top: round(top), width: round(width), height: round(height) };
 };
 
-const mountLayout = (form: Form, layout: Layout, flags: string[], style: string, inner: string, size = {}) =>
-    mount(layoutOf(form, layout, flags, style, inner), size);
+const mountLayout = (form: Form, layout: Layout, utilities: string[], style: string, inner: string, size: { width?: number } = {}) =>
+    mount(layoutOf(form, layout, utilities, style, inner), { ...size, form });
 
 describe('rl-width-fill in a row', () =>
 {
@@ -190,15 +190,16 @@ interface DividerChild
     html: string;
 }
 
-const DIVIDERS: DividerChild[] = [
-    { name: 'a div with the class', html: '<div class="rl-divider" data-target></div>' },
-    { name: 'an hr with the class', html: '<hr class="rl-divider" data-target>' },
-    { name: 'an <rl-divider>', html: '<rl-divider data-target></rl-divider>' },
-];
+const DIVIDER_DIV: DividerChild = { name: 'a div with the class', html: '<div class="rl-divider" data-target></div>' };
+const DIVIDER_HR: DividerChild = { name: 'an hr with the class', html: '<hr class="rl-divider" data-target>' };
+const DIVIDER_RL_DIV: DividerChild = { name: 'an rl-div with the class', html: '<rl-div class="rl-divider" data-target></rl-div>' };
+
+/** The dividers a layout of the form takes: any in the page, and an <rl-div> in a shadow root. */
+const dividersOf = (form: Form): DividerChild[] => form === 'shadow' ? [DIVIDER_RL_DIV] : [DIVIDER_DIV, DIVIDER_HR, DIVIDER_RL_DIV];
 
 describe('rl-divider', () =>
 {
-    describe.each(FORMS.flatMap(parent => DIVIDERS.map(divider => ({ parent, divider }))))('in a layout of the $parent form, as $divider.name', ({ parent, divider }) =>
+    describe.each(FORMS.flatMap(parent => dividersOf(parent).map(divider => ({ parent, divider }))))('in a layout of the $parent form, as $divider.name', ({ parent, divider }) =>
     {
         const between = `<div>Before</div>${divider.html}<div>After</div>`;
 

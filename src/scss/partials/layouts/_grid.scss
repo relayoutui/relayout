@@ -2,13 +2,11 @@
  * grid
  */
 
-// Keep in sync with: src/js/layouts/_grid.css.ts
-
 // The default padding is in a cascade layer, so a rule of the page's own beats it, whatever its weight or the order of the
-// style sheets, unless the page keeps that rule in a cascade layer declared before this one (src/js has no such
-// exception: a :host rule always loses to the page's own). rl-padding-* (outside a layer) still beats it. The variable
-// isn't defined until a page sets it, and the fallback, revert-layer, is the value there would be without this layer:
-// what the page or the browser gives the element, so a ul or a button with this class keeps its own padding.
+// style sheets, unless the page keeps that rule in a cascade layer declared before this one. rl-padding-* (outside a
+// layer) still beats it. The variable isn't defined until a page sets it, and the fallback, revert-layer, is the value
+// there would be without this layer: what the page or the browser gives the element, so a ul or a button with this class
+// keeps its own padding.
 @layer rl-defaults {
     .rl-grid { padding: var(--rl-padding-default, revert-layer); }
 }
@@ -20,10 +18,6 @@
     grid-template-columns: repeat(auto-fit, minmax(min(var(--rl-grid-s), 100%), 1fr));
     gap: var(--rl-gap-default);
 }
-
-// A child that scrolls, for the attribute form as well as the class (rl-scroll), so either form works in a grid of either
-// form. The attribute form is border-box, as the base rule makes the class one.
-.rl-grid > [rl-scroll] { box-sizing: border-box; overflow: auto; }
 
 .rl-grid-fit-xs { grid-template-columns: repeat(auto-fit, minmax(min(var(--rl-grid-xs), 100%), 1fr)); }
 .rl-grid-fit-s { grid-template-columns: repeat(auto-fit, minmax(min(var(--rl-grid-s), 100%), 1fr)); }

@@ -1,11 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import '../dist/css/relayout.css';
 import '../dist/js/relayout.js';
+import { FORMS, tagOf, type Form } from './stage.js';
 
 // A divider takes its direction from the layout it is a direct child of: a line across a column, and down a row.
-// Anywhere else it is a line across. `vertical` is gone, class and attribute: it does nothing.
-
-type Form = 'class' | 'element';
+// Anywhere else it is a line across. `vertical` is gone: it does nothing. Each form is a div, or an <rl-div> in the
+// page or inside another component's shadow root, for the divider and for its parent.
 
 interface Parent
 {
@@ -31,20 +31,29 @@ async function place(form: Form, parent: Parent, vertical: boolean): Promise<{ s
     const stage = document.createElement('div');
     stage.style.cssText = 'position: absolute; left: 0; top: 0; width: 480px; height: 240px; font: 16px/20px sans-serif;';
 
-    const container = document.createElement(form === 'element' && parent.layout ? parent.layout : 'div');
-    if (form === 'class' && parent.layout) container.className = parent.layout;
+    // A plain parent is a div in every form: it has no class, so it needs no <rl-div>
+    const container = document.createElement(parent.layout ? tagOf(form) : 'div');
+    if (parent.layout) container.className = parent.layout;
     if (parent.style) container.style.cssText = parent.style;
 
-    const divider = document.createElement(form === 'element' ? 'rl-divider' : 'div');
-    if (form === 'class') divider.className = vertical ? 'rl-divider vertical' : 'rl-divider';
-    else if (vertical) divider.setAttribute('vertical', '');
+    const divider = document.createElement(tagOf(form));
+    divider.className = vertical ? 'rl-divider vertical' : 'rl-divider';
 
     const before = document.createElement('div');
     before.textContent = 'Before';
     const after = document.createElement('div');
     after.textContent = 'After';
     container.append(before, divider, after);
-    stage.append(container);
+    if (form === 'shadow')
+    {
+        const component = document.createElement('div');
+        component.attachShadow({ mode: 'open' }).append(container);
+        stage.append(component);
+    }
+    else
+    {
+        stage.append(container);
+    }
     document.body.append(stage);
     await (container as HTMLElement & { updateComplete?: Promise<boolean> }).updateComplete;
     await (divider as HTMLElement & { updateComplete?: Promise<boolean> }).updateComplete;
@@ -58,7 +67,7 @@ function lineOf(divider: HTMLElement): { width: number; height: number; top: str
     return { width, height, top: style.borderTopWidth, left: style.borderLeftWidth };
 }
 
-describe.each(['class', 'element'] as Form[])('a divider in the %s form', form =>
+describe.each(FORMS)('a divider in the %s form', form =>
 {
     describe.each(PARENTS)('in $name', parent =>
     {

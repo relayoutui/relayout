@@ -2,29 +2,27 @@ import { describe, expect, it } from 'vitest';
 // Only the bundled script is loaded here, as on a page with no bundler and no other script
 import '../dist/js/relayout.bundle.js';
 
-const TAGS = ['rl-column', 'rl-row', 'rl-grid', 'rl-frame', 'rl-divider', 'rl-div'];
-
 describe('the bundled script', () =>
 {
-    it.each(TAGS)('registers %s', tag =>
+    it('registers rl-div', () =>
     {
-        expect(customElements.get(tag)).toBeDefined();
+        expect(customElements.get('rl-div')).toBeDefined();
     });
 
-    it('renders the children of an element in a slot', async () =>
+    it('renders the children of the element in a slot', async () =>
     {
-        const row = document.createElement('rl-row') as HTMLElement & { updateComplete: Promise<boolean> };
-        row.append(document.createElement('span'));
-        document.body.append(row);
-        await row.updateComplete;
-        expect(row.shadowRoot?.querySelector('slot')).not.toBeNull();
-        row.remove();
+        const div = document.createElement('rl-div');
+        div.append(document.createElement('span'));
+        document.body.append(div);
+        await div.updateComplete;
+        expect(div.shadowRoot?.querySelector('slot')).not.toBeNull();
+        div.remove();
     });
 
-    it('leaves the registered elements as they are when the script loads a second time', async () =>
+    it('leaves the registered element as it is when the script loads a second time', async () =>
     {
-        const registered = TAGS.map(tag => customElements.get(tag));
+        const registered = customElements.get('rl-div');
         await import('../dist/js/relayout.bundle.js?second');
-        expect(TAGS.map(tag => customElements.get(tag))).toEqual(registered);
+        expect(customElements.get('rl-div')).toBe(registered);
     });
 });
