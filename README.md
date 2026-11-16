@@ -33,7 +33,7 @@ Or load the CSS from a CDN, in the `<head>`:
         <button>Sign in</button>
     </nav>
 </header>
-<main class="rl-column rl-align-center rl-gap-l rl-padding-xl rl-text-center">
+<main class="rl-column rl-align-center rl-gap-l rl-padding-xl">
     <h2>Ship your next idea</h2>
     <p>The name sits on the left and the links on the right. On a narrow screen the links wrap under the name.</p>
     <div class="rl-row rl-justify-center rl-gap-m">
@@ -56,22 +56,30 @@ Or load the CSS from a CDN, in the `<head>`:
 
 | Classes | Set |
 |---|---|
-| `rl-gap-*`, `rl-padding-*` | The space between elements, and inside the layout, on a scale from `xs` to `2xl` |
+| `rl-gap-*`, `rl-gap-wrap-*`, `rl-padding-*` | The space between elements, between wrapped lines, and inside the layout, on a scale from `xs` to `2xl` |
 | `rl-align-*`, `rl-justify-*` | Where elements sit across the layout, and along it |
 | `rl-width-*`, `rl-center-self` | A maximum width, and centering in the parent |
 | `rl-width-fill`, `rl-height-fill`, `rl-height-full` | An element that takes the space the others leave |
+| `rl-height-screen`, `rl-height-screen-min` | The height of the window, exactly or at least |
 | `rl-scroll` | The area that scrolls |
+| `rl-sticky-top` | A header that stays at the top while the page scrolls |
 | `rl-nowrap`, `rl-nowrap-scroll`, `rl-wrap-reverse` | How a row wraps |
 
 ## Extras
 
 | Classes | Set |
 |---|---|
-| `rl-border`, `rl-radius-*` | A border, and rounded corners |
+| `rl-border`, `rl-border-top`, `-bottom`, `-start`, `-end`, `rl-radius-*` | A border, on every side or on one, and rounded corners |
 | `rl-divider` | A line between elements |
-| `rl-bg-*`, `rl-color-*`, `rl-gradient-*` | Backgrounds, text colors and gradients, from a palette of named roles with light and dark values |
+| `rl-bg-*`, `rl-color-*` | Backgrounds and text colors, from a palette of nine named roles with light and dark values |
 | `rl-font-*`, `rl-text-*`, `rl-textline-*` | Font families, weights, sizes and line heights |
 | `rl-shadow-*` | A scale of shadows, from `xs` to `xl` |
+
+The colors are light until the page sets a `color-scheme`. To follow the system's dark mode, add this to the page's CSS:
+
+```css
+:root { color-scheme: light dark; }
+```
 
 ## Docs
 

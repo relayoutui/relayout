@@ -72,13 +72,99 @@ describe('rl-width-fill in a row', () =>
             remove();
         });
 
-        it('wraps to its own line when it does not fit, at its longest word', async () =>
+        it('gets narrower than the minimum in a row that does not wrap', async () =>
         {
-            const word = child.html('rl-width-fill', undefined, '<div style="width: 120px;">Word</div>');
-            const { target, all, remove } = await mountLayout(parent, 'row', [], '', fixed(20, 150) + word, { width: 200 });
+            const { target, remove } = await mountLayout(parent, 'row', ['rl-nowrap'], '', fixed(20, 150) + child.html('rl-width-fill'), { width: 300 });
+            expect(box(target).width).toBe(150);
+            remove();
+        });
+    });
+});
+
+// A fill child in a row that wraps is at least --rl-fill-min wide, 16rem (256px), or the row's width when that is less,
+// so it moves to a line of its own before it gets narrower, rather than at its longest word.
+describe('the minimum of rl-width-fill in a row that wraps', () =>
+{
+    describe.each(COMBINATIONS)('of the $parent form, with $child.name', ({ parent, child }) =>
+    {
+        /** Where the fill child is, beside a 150px element in a row of the width, with the row's own style. */
+        async function placed(width: number, style = '', inner?: string): Promise<{ beside: boolean; width: number }>
+        {
+            const { target, all, remove } = await mountLayout(parent, 'row', [], style, fixed(20, 150) + child.html('rl-width-fill', undefined, inner), { width });
             const first = box(all('[data-fixed]')[0]);
-            expect(box(target).top).toBeGreaterThanOrEqual(first.top + first.height);
-            expect(box(target).width).toBe(200);
+            const found = box(target);
+            remove();
+            return { beside: found.top === first.top, width: found.width };
+        }
+
+        it('stays beside when the space left is at least 256px', async () =>
+        {
+            expect(await placed(420)).toEqual({ beside: true, width: 270 });
+        });
+
+        it('moves to its own line when the space left is less, and takes the whole line', async () =>
+        {
+            expect(await placed(400)).toEqual({ beside: false, width: 400 });
+        });
+
+        it('is as wide as the row on its own line when the row is narrower than the minimum', async () =>
+        {
+            expect(await placed(200)).toEqual({ beside: false, width: 200 });
+        });
+
+        it('follows --rl-fill-min set on the row', async () =>
+        {
+            expect(await placed(400, '--rl-fill-min: 10rem;')).toEqual({ beside: true, width: 250 });
+        });
+
+        it('stays beside at any width with --rl-fill-min: 0px', async () =>
+        {
+            expect(await placed(200, '--rl-fill-min: 0px;')).toEqual({ beside: true, width: 50 });
+        });
+
+        it('keeps content wider than the row inside it, so the content scrolls there and the page does not', async () =>
+        {
+            expect(await placed(400, '', '<div style="overflow: auto;"><div style="width: 2000px;">Code</div></div>')).toEqual({ beside: false, width: 400 });
+        });
+
+        // A row as wide as its content, as in a centered column, has no space to fill. The browser sizes it as if the
+        // minimum were 0, so the space beside the others is only the fill child's content, and a child whose content is
+        // narrower than the minimum moves below them. The docs say to leave the class off there, or to set 0px.
+        describe('in a row whose width comes from its content, in a centered column', () =>
+        {
+            async function placedInContent(rowStyle: string, content = 'Saved to your list'): Promise<boolean>
+            {
+                const row = layoutOf(parent, 'row', ['rl-gap-m'], rowStyle, fixed(24, 24) + child.html('rl-width-fill', undefined, content));
+                const { target, all, remove } = await mount(layoutOf(parent, 'column', ['rl-align-center'], '', row), { form: parent });
+                // Beside is on the icon's line: the row centers the label's 20px line next to the 24px icon
+                const icon = box(all('[data-fixed]')[0]);
+                const beside = box(target).top < icon.top + icon.height;
+                remove();
+                return beside;
+            }
+
+            it('moves below the others when its content is narrower than the minimum', async () =>
+            {
+                expect(await placedInContent('')).toBe(false);
+            });
+
+            it('stays beside when its content is wider than the minimum', async () =>
+            {
+                expect(await placedInContent('', '<div style="width: 300px;">Wide</div>')).toBe(true);
+            });
+
+            it('stays beside with --rl-fill-min: 0px on the row', async () =>
+            {
+                expect(await placedInContent('--rl-fill-min: 0px;')).toBe(true);
+            });
+        });
+
+        it('has no minimum in a strip that scrolls with rl-nowrap-scroll, so it takes what is left and the strip does not scroll', async () =>
+        {
+            const { target, all, remove } = await mountLayout(parent, 'row', ['rl-nowrap-scroll'], '', fixed(20, 150) + child.html('rl-width-fill'), { width: 300 });
+            const [strip] = all('.rl-nowrap-scroll');
+            expect(box(target).width).toBe(150);
+            expect(strip.scrollWidth).toBe(300);
             remove();
         });
     });

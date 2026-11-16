@@ -1,0 +1,11 @@
+// sticky
+
+// Stays at the top of the nearest box that scrolls, the window or an rl-scroll area, while its parent is in view. The
+// z-index keeps content with a position of its own, such as a card with position: relative for a badge, under it as the
+// page scrolls, and leaves above it the page's dropdowns and dialogs, which set a higher one. The page gives it a
+// background, or the content shows through it.
+.rl-sticky-top {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}

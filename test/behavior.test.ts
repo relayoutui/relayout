@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import '../dist/css/relayout.css';
 import '../dist/js/relayout.js';
-import { FORMS, boxOf, layoutOf, mount, round, type Form } from './stage.js';
+import { FORMS, PAGE_FORMS, boxOf, layoutOf, mount, round, type Form } from './stage.js';
 
 // The behavior the docs describe, in each form: a div with the classes, an <rl-div> with them in the page, and an
 // <rl-div> inside another component's shadow root. parity.test.ts proves that the forms give the same result, and
@@ -120,6 +120,21 @@ describe.each(FORMS)('a column in the %s form', form =>
     {
         const { target, remove } = await mount(layoutOf(form, 'column', ['rl-align-center'], '', '<div data-target>Text</div>'), { form });
         expect(getComputedStyle(target.parentElement!).textAlign).toBe('center');
+        remove();
+    });
+
+    // The align's text alignment is a default, so a class that names the text wins over it. The child fills the width,
+    // so where its word sits shows the alignment.
+    it.each([
+        ['rl-align-center', 'rl-text-start', 'start', 0],
+        ['rl-align-center', 'rl-text-end', 'end', 368],
+        ['rl-align-end', 'rl-text-center', 'center', 184],
+    ] as const)('lets %s on a column take %s, which aligns the text at the %s', async (align, text, value, left) =>
+    {
+        const inner = '<div class="rl-width-fill"><span data-word style="display: inline-block; width: 32px;">Text</span></div>';
+        const { target, all, remove } = await mount(layoutOf(form, 'column', [align, text], '', inner), { form });
+        expect(getComputedStyle(target).textAlign).toBe(value);
+        expect(box(all('[data-word]')[0]).left).toBe(left);
         remove();
     });
 
@@ -344,6 +359,226 @@ describe.each(FORMS)('the text scale in the %s form', form =>
     {
         const { target, remove } = await mount(boxWith(form, `rl-font-${name}`), { form });
         expect(getComputedStyle(target).fontWeight).toBe(weight);
+        remove();
+    });
+});
+
+describe.each(PAGE_FORMS)('a centered column in the %s form', form =>
+{
+    it('takes the text alignment of a rule of the page that weighs less than its own', async () =>
+    {
+        // An attribute selector weighs as much as one class, and the column's rule for its text has two
+        const style = '<style>[data-page-text] { text-align: end; }</style>';
+        const { target, remove } = await mount(style + boxOf(form, 'rl-column rl-align-center', 'data-page-text', '<div>Text</div>'), { form });
+        expect(getComputedStyle(target).textAlign).toBe('end');
+        remove();
+    });
+});
+
+describe.each(FORMS)('rl-text-start and rl-text-end in the %s form', form =>
+{
+    /** The left edge of a word 32px wide, in a box 400px wide that reads in the direction. */
+    async function leftOf(utility: string, direction: 'ltr' | 'rtl'): Promise<number>
+    {
+        const { all, remove } = await mount(boxOf(form, utility, `dir="${direction}"`, '<span data-word style="display: inline-block; width: 32px;">Text</span>'), { form });
+        const left = box(all('[data-word]')[0]).left;
+        remove();
+        return left;
+    }
+
+    it.each([
+        ['rl-text-start', 'ltr', 0],
+        ['rl-text-start', 'rtl', 368],
+        ['rl-text-end', 'ltr', 368],
+        ['rl-text-end', 'rtl', 0],
+    ] as const)('%s in a box that reads %s puts the text at %ipx from the left', async (utility, direction, left) =>
+    {
+        expect(await leftOf(utility, direction)).toBe(left);
+    });
+
+    // The names before 0.8.0 named sides, where the rest follows the reading direction
+    it.each(['rl-text-left', 'rl-text-right'])('%s does nothing', async utility =>
+    {
+        const { target, remove } = await mount(`<div style="text-align: center;">${boxOf(form, utility, 'data-target', 'Text')}</div>`, { form });
+        expect(getComputedStyle(target).textAlign).toBe('center');
+        remove();
+    });
+});
+
+describe.each(FORMS)('rl-height-screen and rl-height-screen-min in the %s form', form =>
+{
+    const tall = '<div style="height: 3000px;"></div>';
+
+    it('makes an element as tall as the window with rl-height-screen, whatever its content', async () =>
+    {
+        const { target, remove } = await mount(boxWith(form, 'rl-height-screen', '', tall), { form });
+        expect(box(target).height).toBe(innerHeight);
+        remove();
+    });
+
+    it('makes an element at least as tall as the window with rl-height-screen-min', async () =>
+    {
+        const { target, remove } = await mount(boxWith(form, 'rl-height-screen-min'), { form });
+        expect(box(target).height).toBe(innerHeight);
+        remove();
+    });
+
+    it('lets an element with rl-height-screen-min grow with its content', async () =>
+    {
+        const { target, remove } = await mount(boxWith(form, 'rl-height-screen-min', '', tall), { form });
+        expect(box(target).height).toBe(3000);
+        remove();
+    });
+});
+
+describe.each(FORMS)('rl-gap-wrap-* in the %s form', form =>
+{
+    const gaps = (element: HTMLElement): string[] => [getComputedStyle(element).columnGap, getComputedStyle(element).rowGap];
+
+    it.each(SPACE)('rl-gap-wrap-%s is %ipx between the lines of a row, beside rl-gap-l between its elements', async (size, pixels) =>
+    {
+        const { target, remove } = await mount(layoutOf(form, 'row', ['rl-gap-l', `rl-gap-wrap-${size}`], '', '<div>One</div>'), { form });
+        expect(gaps(target)).toEqual(['16px', `${pixels}px`]);
+        remove();
+    });
+
+    it('puts the next line of a row that far below, and keeps the gap between elements', async () =>
+    {
+        // Two blocks of 150px fit on a line 400px wide with a gap of 16px, and a third goes to the next line
+        const blocks = block(150) + block(150) + block(150);
+        const { all, remove } = await mount(layoutOf(form, 'row', ['rl-gap-l', 'rl-gap-wrap-xs'], '', blocks), { form });
+        const boxes = all('[style]').filter(element => element.style.width === '150px').map(box);
+        expect(boxes.map(found => [found.left, found.top])).toEqual([[0, 0], [166, 0], [0, 22]]);
+        remove();
+    });
+
+    it('sets the gap between the rows of a grid', async () =>
+    {
+        const { target, remove } = await mount(layoutOf(form, 'grid', ['rl-gap-l', 'rl-gap-wrap-xs'], '', '<div>One</div>'), { form });
+        expect(gaps(target)).toEqual(['16px', '2px']);
+        remove();
+    });
+
+    it('does nothing in a column, whose lines are its elements', async () =>
+    {
+        const { target, remove } = await mount(layoutOf(form, 'column', ['rl-gap-l', 'rl-gap-wrap-xs'], '', '<div>One</div>'), { form });
+        expect(gaps(target)).toEqual(['16px', '16px']);
+        remove();
+    });
+});
+
+describe.each(FORMS)('rl-align-baseline in the %s form', form =>
+{
+    // An inline box with no content sits on the baseline of its line, so its top is where the baseline is
+    const text = (size: number): string => `<div style="font-size: ${size}px; line-height: normal;">Text<span data-baseline style="display: inline-block;"></span></div>`;
+    const baselines = (all: (selector: string) => HTMLElement[]): number[] => all('[data-baseline]').map(element => box(element).top);
+
+    it.each(['row', 'grid'] as const)('puts text of two sizes on one baseline in a %s', async layout =>
+    {
+        const { all, remove } = await mount(layoutOf(form, layout, ['rl-align-baseline'], '', text(36) + text(12)), { form });
+        const [large, small] = baselines(all);
+        expect(small).toBeCloseTo(large, 0);
+        remove();
+    });
+
+    it('differs from rl-align-start, which lines up the tops of the elements', async () =>
+    {
+        const { all, remove } = await mount(layoutOf(form, 'row', ['rl-align-start'], '', text(36) + text(12)), { form });
+        const [large, small] = baselines(all);
+        expect(large - small).toBeGreaterThan(10);
+        remove();
+    });
+
+    it('places as rl-align-start does in a column: at the start, only as wide as its content', async () =>
+    {
+        // The column's default, stretch, would make the element as wide as the column, 400px
+        const placed = async (align: string): Promise<{ left: number; width: number }> =>
+        {
+            const { target, remove } = await mount(layoutOf(form, 'column', [align], '', '<div data-target>Text</div>'), { form });
+            const { left, width } = box(target);
+            remove();
+            return { left, width };
+        };
+        const baseline = await placed('rl-align-baseline');
+        expect(baseline).toEqual(await placed('rl-align-start'));
+        expect(baseline.left).toBe(0);
+        expect(baseline.width).toBeLessThan(400);
+    });
+});
+
+describe.each(FORMS)('rl-sticky-top in the %s form', form =>
+{
+    // A box that scrolls, with a header that sticks, and below it a card with a position of its own, as a card with a
+    // badge has. The box is scrolled 50px down.
+    async function scrolled(): Promise<{ scroller: HTMLElement; header: HTMLElement; remove: () => void }>
+    {
+        const header = boxOf(form, 'rl-sticky-top', 'data-header style="height: 20px; background: white;"', 'Header');
+        const card = '<div style="position: relative; height: 300px; background: gray;">Card</div>';
+        const { target, all, remove } = await mount(boxOf(form, 'rl-scroll', 'style="height: 100px;"', header + card), { form });
+        target.scrollTop = 50;
+        return { scroller: target, header: all('[data-header]')[0], remove };
+    }
+
+    it('stays at the top of the box that scrolls', async () =>
+    {
+        const { scroller, header, remove } = await scrolled();
+        expect(box(header).top).toBe(box(scroller).top);
+        remove();
+    });
+
+    it('keeps a card with position: relative under it as the box scrolls', async () =>
+    {
+        const { header, remove } = await scrolled();
+        const { left, top, width, height } = box(header);
+        const root = header.getRootNode() as Document | ShadowRoot;
+        expect(root.elementFromPoint(left + width / 2, top + height / 2)).toBe(header);
+        remove();
+    });
+
+    it('is sticky at the top, with a z-index of 1', async () =>
+    {
+        const { header, remove } = await scrolled();
+        const style = getComputedStyle(header);
+        expect([style.position, style.top, style.zIndex]).toEqual(['sticky', '0px', '1']);
+        remove();
+    });
+});
+
+describe.each(FORMS)('the side borders in the %s form', form =>
+{
+    const SIDES = ['top', 'right', 'bottom', 'left'] as const;
+
+    it.each([
+        ['rl-border-top', 'ltr', 'top'],
+        ['rl-border-bottom', 'ltr', 'bottom'],
+        ['rl-border-start', 'ltr', 'left'],
+        ['rl-border-end', 'ltr', 'right'],
+        ['rl-border-start', 'rtl', 'right'],
+        ['rl-border-end', 'rtl', 'left'],
+    ] as const)('%s on a box that reads %s draws a border on the %s only', async (utility, direction, side) =>
+    {
+        const { target, remove } = await mount(boxOf(form, utility, `dir="${direction}" data-target`, 'Text'), { form });
+        const style = getComputedStyle(target);
+        const widths = SIDES.map(name => style.getPropertyValue(`border-${name}-width`));
+        expect(widths).toEqual(SIDES.map(name => name === side ? '1px' : '0px'));
+        expect(style.getPropertyValue(`border-${side}-style`)).toBe('solid');
+        remove();
+    });
+
+    it('has no radius, even where --rl-radius-default is set', async () =>
+    {
+        const { target, remove } = await mount(boxOf(form, 'rl-border-bottom', 'data-target style="--rl-radius-default: 8px;"', 'Text'), { form });
+        expect(getComputedStyle(target).borderBottomLeftRadius).toBe('0px');
+        remove();
+    });
+});
+
+describe.each(FORMS)('rl-radius-full in the %s form', form =>
+{
+    it('rounds the corners by 9999px, which makes round ends at any size', async () =>
+    {
+        const { target, remove } = await mount(boxWith(form, 'rl-radius-full', 'width: 300px; height: 100px;'), { form });
+        expect(getComputedStyle(target).borderTopLeftRadius).toBe('9999px');
         remove();
     });
 });

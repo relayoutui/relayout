@@ -2,13 +2,19 @@
  * column
  */
 
-// The default padding is in a cascade layer, so a rule of the page's own beats it, whatever its weight or the order of the
-// style sheets, unless the page keeps that rule in a cascade layer declared before this one. rl-padding-* (outside a
-// layer) still beats it. The variable isn't defined until a page sets it, and the fallback, revert-layer, is the value
-// there would be without this layer: what the page or the browser gives the element, so a ul or a button with this class
-// keeps its own padding.
+// The default padding and the text alignment are in a cascade layer, so a rule of the page's own beats them, whatever
+// its weight or the order of the style sheets, unless the page keeps that rule in a cascade layer declared before this
+// one. rl-padding-* and rl-text-* (outside a layer) still beat them.
 @layer rl-defaults {
+    // The variable isn't defined until a page sets it, and the fallback, revert-layer, is the value there would be
+    // without this layer: what the page or the browser gives the element, so a ul or a button with this class keeps its
+    // own padding.
     .rl-column { padding: var(--rl-padding-default, revert-layer); }
+
+    // rl-align-* on a column also aligns the text, so a paragraph that wraps in a centered column is centered too
+    .rl-column.rl-align-start { text-align: start; }
+    .rl-column.rl-align-center { text-align: center; }
+    .rl-column.rl-align-end { text-align: end; }
 }
 
 .rl-column {
@@ -17,11 +23,6 @@
     align-items: stretch;
     justify-content: start;
     gap: var(--rl-gap-default);
-
-    /* Column specific text alignment */
-    &.rl-align-start { text-align: start; }
-    &.rl-align-center { text-align: center; }
-    &.rl-align-end { text-align: end; }
 
     /* only the fill child gives up space */
     & > * { flex-shrink: 0; }

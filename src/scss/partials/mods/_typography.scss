@@ -26,10 +26,11 @@
 .rl-text-underline { text-decoration: underline; }
 .rl-text-strike    { text-decoration: line-through; }
 
-// text alignment
-.rl-text-left   { text-align: left; }
+// text alignment: start and end follow the reading direction, as rl-align-* and the padding do, so in a page that reads
+// from right to left start is the right side
+.rl-text-start  { text-align: start; }
 .rl-text-center { text-align: center; }
-.rl-text-right  { text-align: right; }
+.rl-text-end    { text-align: end; }
 
 // text transform
 .rl-text-uppercase  { text-transform: uppercase; }

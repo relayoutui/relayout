@@ -7,3 +7,14 @@
 .rl-gap-l { gap: var(--rl-space-l); }
 .rl-gap-xl { gap: var(--rl-space-xl); }
 .rl-gap-2xl { gap: var(--rl-space-2xl); }
+
+// The gap between the lines of a row that wraps, or the rows of a grid, apart from the gap between the elements. Each
+// is two classes, so it beats rl-gap-* whatever the order of the classes. A column's lines are its elements, so it
+// does nothing there.
+.rl-row.rl-gap-wrap-0, .rl-grid.rl-gap-wrap-0 { row-gap: var(--rl-space-0); }
+.rl-row.rl-gap-wrap-xs, .rl-grid.rl-gap-wrap-xs { row-gap: var(--rl-space-xs); }
+.rl-row.rl-gap-wrap-s, .rl-grid.rl-gap-wrap-s { row-gap: var(--rl-space-s); }
+.rl-row.rl-gap-wrap-m, .rl-grid.rl-gap-wrap-m { row-gap: var(--rl-space-m); }
+.rl-row.rl-gap-wrap-l, .rl-grid.rl-gap-wrap-l { row-gap: var(--rl-space-l); }
+.rl-row.rl-gap-wrap-xl, .rl-grid.rl-gap-wrap-xl { row-gap: var(--rl-space-xl); }
+.rl-row.rl-gap-wrap-2xl, .rl-grid.rl-gap-wrap-2xl { row-gap: var(--rl-space-2xl); }
