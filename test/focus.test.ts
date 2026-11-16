@@ -35,25 +35,42 @@ const CONTROLS: Case[] = [
 
 const CLASSES = ['rl-width-fill', 'rl-padding-m', 'rl-row rl-gap-s', 'rl-column'];
 
-/** Shows the markup in a stage, with a button before it, and puts the keyboard on the target. */
-async function focus(html: string, tabbable = true): Promise<{ stage: HTMLElement; target: HTMLElement }>
+/**
+ * Shows the markup in a stage, with a button before it, and puts the keyboard on the target. With `shadow`, the markup
+ * is inside the shadow root of a component after the button, where the page's relayout.css doesn't reach.
+ */
+async function focus(html: string, tabbable = true, shadow = false): Promise<{ stage: HTMLElement; target: HTMLElement }>
 {
     const stage = document.createElement('div');
     stage.style.cssText = 'position: absolute; left: 0; top: 0; width: 480px; font: 16px/20px sans-serif;';
-    stage.innerHTML = `<button data-start>Start</button>${html}`;
+    stage.innerHTML = '<button data-start>Start</button>';
+    let root: ParentNode = stage;
+    if (shadow)
+    {
+        const component = document.createElement('div');
+        root = component.attachShadow({ mode: 'open' });
+        (root as ShadowRoot).innerHTML = html;
+        stage.append(component);
+    }
+    else
+    {
+        stage.insertAdjacentHTML('beforeend', html);
+    }
     document.body.append(stage);
 
     const start = stage.querySelector<HTMLElement>('[data-start]')!;
-    const target = stage.querySelector<HTMLElement>('[data-target]')!;
+    const target = root.querySelector<HTMLElement>('[data-target]')!;
+    await (target as HTMLElement & { updateComplete?: Promise<boolean> }).updateComplete;
     start.focus();
     // Tab goes to the next element in the page. An element with tabindex="-1" is not on that path: a script moves
     // the focus to it, from an element the keyboard is on, so it is shown the way a keyboard user's focus is. So is an
     // element that this browser's Tab skips: Safari's skips links and buttons, which a keyboard user reaches with
     // Option+Tab, and the focus is then drawn as the keyboard's, since the last thing the user did was press a key.
     if (tabbable) await userEvent.tab();
-    if (document.activeElement !== target) target.focus();
+    const active = (): Element | null => shadow ? (root as ShadowRoot).activeElement : document.activeElement;
+    if (active() !== target) target.focus();
 
-    expect(document.activeElement, 'the target did not take the focus').toBe(target);
+    expect(active(), 'the target did not take the focus').toBe(target);
     expect(target.matches(':focus-visible'), 'the target is not shown as focused by the keyboard').toBe(true);
     return { stage, target };
 }
@@ -103,7 +120,7 @@ describe('the focus ring', () =>
     });
 });
 
-/** A box that scrolls, so the keyboard can stop on it, in the class form and as an element. */
+/** A box that scrolls, so the keyboard can stop on it, as a div and as an <rl-div>. */
 interface Scroller
 {
     name: string;
@@ -117,8 +134,8 @@ const SCROLLERS: Scroller[] = [
     { name: 'a class rl-scroll', html: extra => `<div class="rl-column rl-scroll${extra}" style="height: 60px;" data-target>${LINES}</div>` },
     { name: 'a class rl-nowrap-scroll', html: extra => `<div class="rl-row rl-nowrap-scroll${extra}" style="width: 120px;" data-target>${WIDE}</div>` },
     { name: 'a class rl-scroll with other classes', html: extra => `<div class="rl-gap-m rl-padding-m rl-column rl-scroll${extra}" style="height: 60px;" data-target>${LINES}</div>` },
-    { name: 'an element rl-scroll', html: extra => `<rl-column rl-scroll${extra ? ' rl-outline-none' : ''} style="height: 60px;" data-target>${LINES}</rl-column>` },
-    { name: 'an element rl-nowrap-scroll', html: extra => `<rl-row rl-nowrap-scroll${extra ? ' rl-outline-none' : ''} style="width: 120px;" data-target>${WIDE}</rl-row>` },
+    { name: 'an rl-div rl-scroll', html: extra => `<rl-div class="rl-column rl-scroll${extra}" style="height: 60px;" data-target>${LINES}</rl-div>` },
+    { name: 'an rl-div rl-nowrap-scroll', html: extra => `<rl-div class="rl-row rl-nowrap-scroll${extra}" style="width: 120px;" data-target>${WIDE}</rl-div>` },
 ];
 
 describe('a box that scrolls', () =>
@@ -255,15 +272,18 @@ describe('rl-outline-none', () =>
         }
     });
 
-    it.each(['rl-column', 'rl-row', 'rl-grid', 'rl-frame', 'rl-div'])('is an attribute of <%s>', async tag =>
+    it.each([
+        { place: 'the page', shadow: false },
+        { place: 'a shadow root', shadow: true },
+    ])('takes the ring off an <rl-div> in $place', async ({ shadow }) =>
     {
-        // With tabindex the element is a control, so it shows the ring unless the attribute takes it off. Each is read
+        // With tabindex the element is a control, so it shows the ring unless the class takes it off. Each is read
         // while it has the keyboard: an element that has lost it has no outline either way.
-        const withIt = await focus(`<${tag} rl-outline-none tabindex="0" data-target>Text</${tag}>`);
+        const withIt = await focus('<rl-div class="rl-column rl-outline-none" tabindex="0" data-target>Text</rl-div>', true, shadow);
         const outlineWith = getComputedStyle(withIt.target).outlineStyle;
         withIt.stage.remove();
 
-        const without = await focus(`<${tag} tabindex="0" data-target>Text</${tag}>`);
+        const without = await focus('<rl-div class="rl-column" tabindex="0" data-target>Text</rl-div>', true, shadow);
         const outlineWithout = getComputedStyle(without.target).outlineStyle;
         without.stage.remove();
 

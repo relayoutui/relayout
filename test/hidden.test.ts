@@ -1,19 +1,23 @@
 import { describe, expect, it } from 'vitest';
 import '../dist/css/relayout.css';
 import '../dist/js/relayout.js';
-import { mount } from './stage.js';
+import { FORMS, boxOf, mount, type Form } from './stage.js';
 
 // An element's `display` beats the browser's `display: none` for `hidden`, so a layout, which sets one, stayed on the
 // page when an app set `hidden` on it. A layout is hidden as any other element is. `hidden="until-found"` is the
-// exception, which the browser hides with `content-visibility` so that the page's find reaches it.
+// exception, which the browser hides with `content-visibility` so that the page's find reaches it. Each case is a div
+// with the class, and an <rl-div> with it in the page and inside another component's shadow root.
 
 const CLASSES = ['rl-column', 'rl-row', 'rl-grid', 'rl-frame', 'rl-nowrap-scroll'];
-const ELEMENTS = ['rl-column', 'rl-row', 'rl-grid', 'rl-frame', 'rl-div', 'rl-divider'];
+// An <rl-div> is a block of its own, with no class too
+const ELEMENT_CLASSES = ['', ...CLASSES];
 
-/** The display of a div with the class, or of the element, hidden by the `hidden` attribute. */
-async function displayOf(markup: string): Promise<{ display: string; width: number; height: number }>
+const CASES = FORMS.flatMap(form => (form === 'class' ? CLASSES : ELEMENT_CLASSES).map(classes => ({ form, classes, name: classes || 'no class' })));
+
+/** The display and size of the box with the classes, with the `hidden` attribute of the value. */
+async function displayOf(form: Form, classes: string, hidden: string): Promise<{ display: string; width: number; height: number }>
 {
-    const { target, remove } = await mount(markup);
+    const { target, remove } = await mount(boxOf(form, classes, hidden, 'Text'), { form });
     const { width, height } = target.getBoundingClientRect();
     const display = getComputedStyle(target).display;
     remove();
@@ -22,103 +26,73 @@ async function displayOf(markup: string): Promise<{ display: string; width: numb
 
 describe('hidden', () =>
 {
-    it.each(CLASSES)('hides a div with the class %s', async layout =>
+    it.each(CASES)('hides a box with $name in the $form form', async ({ form, classes }) =>
     {
-        const hidden = await displayOf(`<div class="${layout}" hidden>Text</div>`);
-        expect(hidden).toEqual({ display: 'none', width: 0, height: 0 });
+        expect(await displayOf(form, classes, 'hidden')).toEqual({ display: 'none', width: 0, height: 0 });
     });
 
-    it.each(ELEMENTS)('hides <%s>', async tag =>
+    it.each(CASES)('shows a box with $name in the $form form again when hidden is taken off', async ({ form, classes }) =>
     {
-        const hidden = await displayOf(`<${tag} hidden>Text</${tag}>`);
-        expect(hidden).toEqual({ display: 'none', width: 0, height: 0 });
-    });
-
-    it.each(CLASSES)('shows a div with the class %s again when hidden is taken off', async layout =>
-    {
-        const { target, remove } = await mount(`<div class="${layout}" hidden>Text</div>`);
+        const { target, remove } = await mount(boxOf(form, classes, 'hidden', 'Text'), { form });
         target.hidden = false;
         expect(getComputedStyle(target).display).not.toBe('none');
         remove();
     });
 
-    it.each(ELEMENTS)('shows <%s> again when hidden is taken off', async tag =>
+    it.each(FORMS)('takes no room in a column in the %s form', async form =>
     {
-        const { target, remove } = await mount(`<${tag} hidden>Text</${tag}>`);
-        target.hidden = false;
-        expect(getComputedStyle(target).display).not.toBe('none');
-        remove();
-    });
-
-    it('takes no room in a column', async () =>
-    {
-        const { all, remove } = await mount('<div class="rl-column"><div class="rl-row" hidden style="height: 50px;">Hidden</div><div data-below>Below</div></div>');
-        expect(all('[data-below]')[0].getBoundingClientRect().top).toBe(0);
-        remove();
-    });
-
-    it('hides an element that is in an element', async () =>
-    {
-        const { all, remove } = await mount('<rl-column><rl-row hidden>Hidden</rl-row><div data-below>Below</div></rl-column>');
+        const inner = boxOf(form, 'rl-row', 'hidden style="height: 50px;"', 'Hidden') + '<div data-below>Below</div>';
+        const { all, remove } = await mount(boxOf(form, 'rl-column', '', inner), { form });
         expect(all('[data-below]')[0].getBoundingClientRect().top).toBe(0);
         remove();
     });
 
     describe('with the value until-found', () =>
     {
-        it.each(CLASSES)('leaves the display of a div with the class %s to the browser', async layout =>
+        it.each(CASES)('leaves the display of a box with $name in the $form form to the browser', async ({ form, classes }) =>
         {
-            const found = await displayOf(`<div class="${layout}" hidden="until-found">Text</div>`);
+            const found = await displayOf(form, classes, 'hidden="until-found"');
             expect(found.display).not.toBe('none');
         });
 
-        it.each(ELEMENTS)('leaves the display of <%s> to the browser', async tag =>
+        it.each(FORMS)('is read without regard to case in the %s form', async form =>
         {
-            const found = await displayOf(`<${tag} hidden="until-found">Text</${tag}>`);
-            expect(found.display).not.toBe('none');
-        });
-
-        it('is read without regard to case', async () =>
-        {
-            const found = await displayOf('<div class="rl-row" hidden="UNTIL-FOUND">Text</div>');
+            const found = await displayOf(form, 'rl-row', 'hidden="UNTIL-FOUND"');
             expect(found.display).not.toBe('none');
         });
     });
 
-    describe('an image in a frame', () =>
+    describe.each(FORMS)('an image in a frame in the %s form', form =>
     {
         // The frame gives its images display: block, which would beat the display: none of hidden
         const SOURCE = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="60" height="30"/>');
-        const IN_FRAME = [
-            { name: 'a div with the class rl-frame', html: (attribute: string) => `<div class="rl-frame" style="height: 100px;"><img ${attribute} data-target src="${SOURCE}"></div>` },
-            { name: '<rl-frame>', html: (attribute: string) => `<rl-frame style="height: 100px;"><img ${attribute} data-target src="${SOURCE}"></rl-frame>` },
-        ];
+        const inFrame = (attribute: string): string => boxOf(form, 'rl-frame', 'style="height: 100px;"', `<img ${attribute} data-target src="${SOURCE}">`);
 
-        it.each(IN_FRAME)('is hidden in $name', async ({ html }) =>
+        it('is hidden', async () =>
         {
-            const { target, remove } = await mount(html('hidden'));
+            const { target, remove } = await mount(inFrame('hidden'), { form });
             expect(getComputedStyle(target).display).toBe('none');
             remove();
         });
 
-        it.each(IN_FRAME)('is a block again in $name when hidden is taken off', async ({ html }) =>
+        it('is a block again when hidden is taken off', async () =>
         {
-            const { target, remove } = await mount(html('hidden'));
+            const { target, remove } = await mount(inFrame('hidden'), { form });
             target.hidden = false;
             expect(getComputedStyle(target).display).toBe('block');
             remove();
         });
 
-        it.each(IN_FRAME)('is a block in $name with no hidden', async ({ html }) =>
+        it('is a block with no hidden', async () =>
         {
-            const { target, remove } = await mount(html(''));
+            const { target, remove } = await mount(inFrame(''), { form });
             expect(getComputedStyle(target).display).toBe('block');
             remove();
         });
 
-        it.each(IN_FRAME)('is left to the browser in $name with hidden="until-found"', async ({ html }) =>
+        it('is left to the browser with hidden="until-found"', async () =>
         {
-            const { target, remove } = await mount(html('hidden="until-found"'));
+            const { target, remove } = await mount(inFrame('hidden="until-found"'), { form });
             expect(getComputedStyle(target).display).not.toBe('none');
             remove();
         });
@@ -126,7 +100,7 @@ describe('hidden', () =>
 
     it('leaves a div with no layout class to the browser', async () =>
     {
-        const hidden = await displayOf('<div class="rl-padding-m" hidden>Text</div>');
+        const hidden = await displayOf('class', 'rl-padding-m', 'hidden');
         expect(hidden.display).toBe('none');
     });
 });

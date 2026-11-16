@@ -1,40 +1,27 @@
 import { describe, expect, it } from 'vitest';
 import '../dist/css/relayout.css';
 import '../dist/js/relayout.js';
+import { FORMS, boxOf, mount, type Form } from './stage.js';
 
-// Muted is a color, `rl-color-muted`, from `--rl-color-muted`, as a class and as an attribute of the elements. The
-// names it had before, `rl-color-text-muted` and `--rl-color-text-muted`, and the half opacity `rl-text-muted`, are
-// gone: they do nothing.
+// Muted is a color, `rl-color-muted`, from `--rl-color-muted`, on a div and on an <rl-div>. The names it had before,
+// `rl-color-text-muted` and `--rl-color-text-muted`, and the half opacity `rl-text-muted`, are gone: they do nothing.
 
 const INHERITED = 'rgb(1, 2, 3)';
 const dark = matchMedia('(prefers-color-scheme: dark)').matches;
 // hsl(0, 0%, 65%) in the dark theme, hsl(0, 0%, 45%) in the light one
 const MUTED = dark ? 'rgb(166, 166, 166)' : 'rgb(115, 115, 115)';
 
-/** An element or a div with the class, in a parent whose color is not the page's, so a rule that does nothing shows. */
-function place(form: 'class' | 'element', name: string): { stage: HTMLElement; target: HTMLElement }
+/** The color of a box with the class, in a parent whose color is not the page's, so a rule that does nothing shows. */
+async function colorOf(form: Form, name: string): Promise<string>
 {
-    const stage = document.createElement('div');
-    stage.style.color = INHERITED;
-    const target = document.createElement(form === 'element' ? 'rl-div' : 'div');
-    if (form === 'element') target.setAttribute(name, '');
-    else target.classList.add(name);
-    target.textContent = 'Text';
-    stage.append(target);
-    document.body.append(stage);
-    return { stage, target };
-}
-
-function colorOf(form: 'class' | 'element', name: string): string
-{
-    const { stage, target } = place(form, name);
+    const { target, remove } = await mount(`<div style="color: ${INHERITED};">${boxOf(form, name, 'data-target', 'Text')}</div>`, { form });
     try
     {
         return getComputedStyle(target).color;
     }
     finally
     {
-        stage.remove();
+        remove();
     }
 }
 
@@ -86,9 +73,9 @@ function rootVariable(name: string, inDarkScheme: boolean): string | undefined
 
 describe('rl-color-muted', () =>
 {
-    it.each(['class', 'element'] as const)('sets the muted color as a %s', form =>
+    it.each(FORMS)('sets the muted color in the %s form', async form =>
     {
-        expect(colorOf(form, 'rl-color-muted')).toBe(MUTED);
+        expect(await colorOf(form, 'rl-color-muted')).toBe(MUTED);
     });
 
     it('is a color token whose light and dark values are unchanged', () =>
@@ -116,21 +103,21 @@ describe('rl-color-muted', () =>
 
 describe('the names muted had before', () =>
 {
-    it.each(['class', 'element'] as const)('rl-color-text-muted does nothing as a %s', form =>
+    it.each(FORMS)('rl-color-text-muted does nothing in the %s form', async form =>
     {
-        expect(colorOf(form, 'rl-color-text-muted')).toBe(INHERITED);
+        expect(await colorOf(form, 'rl-color-text-muted')).toBe(INHERITED);
     });
 
-    it('rl-text-muted does not change the opacity', () =>
+    it('rl-text-muted does not change the opacity', async () =>
     {
-        const { stage, target } = place('class', 'rl-text-muted');
+        const { target, remove } = await mount('<div class="rl-text-muted">Text</div>');
         try
         {
             expect(getComputedStyle(target).opacity).toBe('1');
         }
         finally
         {
-            stage.remove();
+            remove();
         }
     });
 
