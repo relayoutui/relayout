@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import '../dist/css/relayout.css';
 import '../dist/js/relayout.js';
-import { FORMS, boxOf, layoutOf, mount, round, type Form } from './stage.js';
+import { FORMS, PAGE_FORMS, boxOf, layoutOf, mount, round, type Form } from './stage.js';
 
 // The behavior the docs describe, in each form: a div with the classes, an <rl-div> with them in the page, and an
 // <rl-div> inside another component's shadow root. parity.test.ts proves that the forms give the same result, and
@@ -120,6 +120,21 @@ describe.each(FORMS)('a column in the %s form', form =>
     {
         const { target, remove } = await mount(layoutOf(form, 'column', ['rl-align-center'], '', '<div data-target>Text</div>'), { form });
         expect(getComputedStyle(target.parentElement!).textAlign).toBe('center');
+        remove();
+    });
+
+    // The align's text alignment is a default, so a class that names the text wins over it. The child fills the width,
+    // so where its word sits shows the alignment.
+    it.each([
+        ['rl-align-center', 'rl-text-start', 'start', 0],
+        ['rl-align-center', 'rl-text-end', 'end', 368],
+        ['rl-align-end', 'rl-text-center', 'center', 184],
+    ] as const)('lets %s on a column take %s, which aligns the text at the %s', async (align, text, value, left) =>
+    {
+        const inner = '<div class="rl-width-fill"><span data-word style="display: inline-block; width: 32px;">Text</span></div>';
+        const { target, all, remove } = await mount(layoutOf(form, 'column', [align, text], '', inner), { form });
+        expect(getComputedStyle(target).textAlign).toBe(value);
+        expect(box(all('[data-word]')[0]).left).toBe(left);
         remove();
     });
 
@@ -347,3 +362,46 @@ describe.each(FORMS)('the text scale in the %s form', form =>
         remove();
     });
 });
+
+describe.each(PAGE_FORMS)('a centered column in the %s form', form =>
+{
+    it('takes the text alignment of a rule of the page that weighs less than its own', async () =>
+    {
+        // An attribute selector weighs as much as one class, and the column's rule for its text has two
+        const style = '<style>[data-page-text] { text-align: end; }</style>';
+        const { target, remove } = await mount(style + boxOf(form, 'rl-column rl-align-center', 'data-page-text', '<div>Text</div>'), { form });
+        expect(getComputedStyle(target).textAlign).toBe('end');
+        remove();
+    });
+});
+
+describe.each(FORMS)('rl-text-start and rl-text-end in the %s form', form =>
+{
+    /** The left edge of a word 32px wide, in a box 400px wide that reads in the direction. */
+    async function leftOf(utility: string, direction: 'ltr' | 'rtl'): Promise<number>
+    {
+        const { all, remove } = await mount(boxOf(form, utility, `dir="${direction}"`, '<span data-word style="display: inline-block; width: 32px;">Text</span>'), { form });
+        const left = box(all('[data-word]')[0]).left;
+        remove();
+        return left;
+    }
+
+    it.each([
+        ['rl-text-start', 'ltr', 0],
+        ['rl-text-start', 'rtl', 368],
+        ['rl-text-end', 'ltr', 368],
+        ['rl-text-end', 'rtl', 0],
+    ] as const)('%s in a box that reads %s puts the text at %ipx from the left', async (utility, direction, left) =>
+    {
+        expect(await leftOf(utility, direction)).toBe(left);
+    });
+
+    // The names before 0.8.0 named sides, where the rest follows the reading direction
+    it.each(['rl-text-left', 'rl-text-right'])('%s does nothing', async utility =>
+    {
+        const { target, remove } = await mount(`<div style="text-align: center;">${boxOf(form, utility, 'data-target', 'Text')}</div>`, { form });
+        expect(getComputedStyle(target).textAlign).toBe('center');
+        remove();
+    });
+});
+
