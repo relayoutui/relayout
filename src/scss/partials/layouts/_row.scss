@@ -19,8 +19,9 @@
     flex-wrap: wrap;
     gap: var(--rl-gap-default);
 
-    /* grow; no min-width, so the child still wraps at its longest word */
-    & > .rl-width-fill { flex: 999 1 0; }
+    /* grow. A fill child is at least --rl-fill-min wide, or as wide as the row when that is less, so in a row that wraps
+       it moves to a line of its own before it gets narrower */
+    & > .rl-width-fill { flex: 999 1 0; min-width: min(100%, var(--rl-fill-min)); }
 
     /* stretch across, even with rl-align-* */
     & > .rl-height-fill { align-self: stretch; height: auto; }

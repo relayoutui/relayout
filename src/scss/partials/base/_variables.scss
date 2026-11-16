@@ -46,6 +46,8 @@
     // button with a layout class keeps its own (var(--rl-padding-default, revert-layer) in the layouts)
     --rl-radius-default: var(--rl-space-0);
     --rl-border-default: solid 1px hsl(0, 0%, 50%);
+    // a fill child in a row is at least this wide, or the row's width when that is less (layouts/_row.scss)
+    --rl-fill-min: 16rem;            // 256px
 
     // color scale
     --rl-color-primary:      hsl(215, 80%, 45%);
