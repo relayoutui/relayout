@@ -21,10 +21,12 @@
 
     /* the children stay inside the frame. One that should scroll takes rl-scroll, as in every other layout: a box that
        scrolls clips shadows and focus rings, so it isn't the default */
-    & > * {
-        max-width: 100%;
-        max-height: 100%;   /* cap to available height */
-    }
+    & > * { max-height: 100%; }
+
+    /* A child with a width of its own keeps it: rl-width-* is already width: 100% of the frame at most. The rule skips
+       it rather than losing to it, since in rl-div a parent's rule for its child beats the child's own, whatever their
+       weight, and the two forms would differ. */
+    & > :not(.rl-width-xs, .rl-width-s, .rl-width-m, .rl-width-l, .rl-width-xl, .rl-width-2xl) { max-width: 100%; }
 
     /* An image with hidden: the display: block below would beat the browser's display: none for hidden (see mods/_hidden.scss).
        hidden="until-found" is left to the browser. */

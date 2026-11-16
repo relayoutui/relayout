@@ -86,14 +86,13 @@ const classesIn = (selector: string): string[] => [...selector.matchAll(CLASS)].
 
 /**
  * The variants to compare: no class; each class alone; each class beside each layout; the classes of each rule, with
- * those of a rule for a layout's child on the child; and each class a layout's rules name on a child, as the child of
- * each layout.
+ * those of a rule for a layout's child on the child; and each class on a child of each layout, where a layout's rule
+ * for its children meets the child's own rules.
  */
 function variants(): Variant[]
 {
     const selectors = selectorsOf(relayoutCss);
     const classes = [...new Set(selectors.flatMap(classesIn))].sort();
-    const childClasses = new Set<string>();
     const found = new Map<string, Variant>();
     const add = (host: string[], child: string[]): void =>
     {
@@ -110,9 +109,8 @@ function variants(): Variant[]
     {
         const [host, child] = splitOutside(selector, '>');
         add(classesIn(host), child === undefined ? [] : classesIn(child));
-        if (child !== undefined) classesIn(child).forEach(name => childClasses.add(name));
     }
-    for (const layout of LAYOUTS) for (const name of childClasses) add([layout], [name]);
+    for (const layout of LAYOUTS) for (const name of classes) add([layout], [name]);
     return [...found.values()];
 }
 
