@@ -6,10 +6,11 @@
 //   .rl-row > .rl-width-fill        :host(.rl-row) ::slotted(.rl-width-fill)
 //
 // The @layer, @media and @supports around a rule stay around it, and so does the order of the rules, so the element's
-// rules win over each other as the classes do. A rule for :root is left out: the variables it sets reach the element
-// from the page, which loads relayout.css. A rule for rl-div itself is left out too: it is the page's, for the element
-// before its script runs, and the element has its own (src/js/div.ts). A selector that maps to none of the three forms
-// stops the build, so a rule added to the SCSS is never left out of the element without a word.
+// rules win over each other as the classes do. @keyframes is copied as it is. A rule for :root is left out: the
+// variables it sets reach the element from the page, which loads relayout.css. A rule for rl-div itself is left out
+// too: it is the page's, for the element before its script runs, and the element has its own (src/js/div.ts). A
+// selector that maps to none of the three forms stops the build, so a rule added to the SCSS is never left out of the
+// element without a word.
 //
 //   node .github/scripts/element-rules.mjs
 //
@@ -111,6 +112,8 @@ function mapSelector(selector)
         if (compound.includes('::')) throw new UnmappedSelectorError(selector, 'this script maps no pseudo-element');
         if (/^[a-z]/i.test(compound) && compound.split(/[.[:#]/)[0] === ELEMENT) throw new UnmappedSelectorError(selector, `${ELEMENT} in a compound selector`);
     }
+    // The element is always rl-div, so `:host(hr.rl-divider)` would never match
+    if (/^[a-z]/i.test(compounds[0])) throw new UnmappedSelectorError(selector, `a tag on the element itself, which is always ${ELEMENT}`);
     if (compounds.length === 1) return `:host(${compounds[0]})`;
     if (compounds.length === 2 && combinators[0] === '>') return `:host(${compounds[0]}) ::slotted(${compounds[1]})`;
     throw new UnmappedSelectorError(selector, 'only a selector of the element itself, or of its direct child, has a form inside a shadow root');
@@ -127,6 +130,8 @@ export function elementRules(css)
     root.walkComments(comment => comment.remove());
     root.walkRules(rule =>
     {
+        // A step of @keyframes (from, 50%) is no selector: the animation is copied as it is
+        if (rule.parent?.type === 'atrule' && /keyframes$/i.test(rule.parent.name)) return;
         const selectors = rule.selectors.map(selector => mapSelector(selector.trim())).filter(Boolean);
         if (selectors.length) rule.selectors = selectors;
         else rule.remove();
