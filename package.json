@@ -52,7 +52,7 @@
     "check:types": "node .github/scripts/check-types.mjs",
     "test": "vitest run"
   },
-  "homepage": "https://relayout.net/",
+  "homepage": "https://relayout.net",
   "repository": {
     "type": "git",
     "url": "https://github.com/relayoutui/relayout"
